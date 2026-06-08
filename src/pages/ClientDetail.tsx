@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
 import type { Client, ClientProperty, OperationWithAgent } from '../lib/supabase'
+import { CLIENT_SEGMENT_LABELS, CLIENT_CHANNEL_LABELS } from '../lib/supabase'
 import { useOperations } from '../hooks/useOperations'
 import { useProfiles } from '../hooks/useProfiles'
 import { useClients } from '../hooks/useClients'
@@ -104,6 +105,22 @@ export default function ClientDetail() {
   const fullName = client.name
   const mapsUrl = client.address ? `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(client.address)}` : null
 
+  // Prossimo contatto dovuto = ultimo contatto + cadenza (mesi)
+  const contactStatus = (() => {
+    if (client.do_not_contact) return { label: 'Escluso dal dialogo periodico', color: 'var(--g)', due: null as Date | null, overdue: false }
+    const cadence = client.contact_cadence_months || 12
+    const base = client.last_contact_at ? new Date(client.last_contact_at) : null
+    const due = base ? new Date(base.getFullYear(), base.getMonth() + cadence, base.getDate()) : null
+    const snooze = client.snooze_until ? new Date(client.snooze_until) : null
+    const effectiveDue = snooze && (!due || snooze > due) ? snooze : due
+    const today = new Date(); today.setHours(0, 0, 0, 0)
+    if (!effectiveDue) return { label: 'Mai contattato — da pianificare', color: 'var(--amber)', due: null, overdue: true }
+    const daysUntil = Math.round((effectiveDue.getTime() - today.getTime()) / 86400000)
+    if (daysUntil < 0) return { label: `In ritardo di ${-daysUntil} giorni`, color: 'var(--amber)', due: effectiveDue, overdue: true }
+    if (daysUntil <= 30) return { label: `Tra ${daysUntil} giorni`, color: 'var(--teal)', due: effectiveDue, overdue: false }
+    return { label: formatDate(effectiveDue.toISOString().slice(0, 10)), color: 'var(--green)', due: effectiveDue, overdue: false }
+  })()
+
   return (
     <div>
       {/* Header */}
@@ -196,6 +213,28 @@ export default function ClientDetail() {
               </div>
             </div>
           </div>
+        </div>
+      </div>
+
+      {/* Relazione & contatto periodico */}
+      <div style={{ background: 'var(--s1)', borderRadius: 12, padding: 16, border: '1px solid var(--bd)', marginBottom: 20 }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 }}>
+          <div style={{ ...mono, fontSize: 11, color: 'var(--ld)', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
+            // Relazione & contatto periodico
+          </div>
+          <span style={{ ...mono, fontSize: 12, fontWeight: 700, color: contactStatus.color }}>
+            {contactStatus.overdue ? '● ' : ''}{contactStatus.label}
+          </span>
+        </div>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 10 }}>
+          <MiniStat label="Segmento" value={client.segment ? CLIENT_SEGMENT_LABELS[client.segment] : '—'} />
+          <MiniStat label="Priorità" value={client.tier ? `Tier ${client.tier}` : '—'} />
+          <MiniStat label="Canale preferito" value={client.preferred_channel ? CLIENT_CHANNEL_LABELS[client.preferred_channel] : '—'} />
+          <MiniStat label="Cadenza" value={`${client.contact_cadence_months || 12} mesi`} />
+          <MiniStat label="Ultimo contatto" value={client.last_contact_at ? formatDate(client.last_contact_at.slice(0, 10)) : 'Mai'} />
+          <MiniStat label="Anniversario rogito" value={client.rogito_date ? formatDate(client.rogito_date) : '—'} />
+          <MiniStat label="Posticipato al" value={client.snooze_until ? formatDate(client.snooze_until) : '—'} />
+          <MiniStat label="Stato" value={client.do_not_contact ? 'Escluso' : 'Attivo'} />
         </div>
       </div>
 
@@ -336,6 +375,15 @@ export default function ClientDetail() {
 }
 
 /* ─── Sub-components ─── */
+
+function MiniStat({ label, value }: { label: string; value: React.ReactNode }) {
+  return (
+    <div>
+      <div style={{ fontSize: 10, color: 'var(--g)', textTransform: 'uppercase', letterSpacing: '0.3px', marginBottom: 3 }}>{label}</div>
+      <div style={{ fontSize: 13, fontWeight: 600, color: 'var(--w)' }}>{value}</div>
+    </div>
+  )
+}
 
 function InfoRow({ label, value }: { label: string; value: React.ReactNode }) {
   return (

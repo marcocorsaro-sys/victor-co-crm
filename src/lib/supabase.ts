@@ -71,6 +71,31 @@ export type Client = {
   // Privacy
   privacy_diffusione_consenso: boolean | null
   privacy_marketing_consenso: boolean | null
+  // Relazione & dialogo periodico
+  segment: 'ex_cliente' | 'cerchia' | 'lead' | 'farm' | 'network' | 'altro' | null
+  tier: 'A' | 'B' | 'C' | null
+  preferred_channel: 'chiamata' | 'email' | 'whatsapp' | 'incontro' | null
+  rogito_date: string | null
+  contact_cadence_months: number
+  last_contact_at: string | null
+  snooze_until: string | null
+  do_not_contact: boolean
+}
+
+export const CLIENT_SEGMENT_LABELS: Record<NonNullable<Client['segment']>, string> = {
+  ex_cliente: 'Ex cliente',
+  cerchia: 'Cerchia personale',
+  lead: 'Lead / Prospect',
+  farm: 'Zona presidiata',
+  network: 'Network professionale',
+  altro: 'Altro',
+}
+
+export const CLIENT_CHANNEL_LABELS: Record<NonNullable<Client['preferred_channel']>, string> = {
+  chiamata: 'Chiamata',
+  email: 'Email',
+  whatsapp: 'WhatsApp',
+  incontro: 'Incontro',
 }
 
 export type AgencySettings = {

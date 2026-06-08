@@ -76,6 +76,8 @@ export default function DocumentsTab({ operation }: Props) {
         pep: false, pep_carica: null, provenienza_fondi: null,
         scopo_operazione: null, scopo_operazione_altro: null,
         privacy_diffusione_consenso: null, privacy_marketing_consenso: null,
+        segment: null, tier: null, preferred_channel: null, rogito_date: null,
+        contact_cadence_months: 12, last_contact_at: null, snooze_until: null, do_not_contact: false,
       }
     }
     return null

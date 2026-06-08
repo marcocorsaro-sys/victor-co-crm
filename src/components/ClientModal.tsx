@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react'
 import type { Client, Profile } from '../lib/supabase'
+import { CLIENT_SEGMENT_LABELS, CLIENT_CHANNEL_LABELS } from '../lib/supabase'
 import { formatDate } from '../lib/calculations'
+import { birthDateFromCodiceFiscale } from '../lib/codiceFiscale'
 
 type Props = {
   open: boolean
@@ -28,7 +30,7 @@ const SOURCE_OPTIONS = [
 ]
 
 export default function ClientModal({ open, onClose, onSave, initial, agents }: Props) {
-  const [form, setForm] = useState({
+  const emptyForm = {
     first_name: '',
     last_name: '',
     phone: '',
@@ -40,7 +42,18 @@ export default function ClientModal({ open, onClose, onSave, initial, agents }: 
     company: '',
     source: '',
     linked_agent_id: '',
-  })
+    codice_fiscale: '',
+    // Relazione & dialogo periodico
+    segment: '' as Client['segment'] | '',
+    tier: '' as Client['tier'] | '',
+    preferred_channel: '' as Client['preferred_channel'] | '',
+    rogito_date: '',
+    contact_cadence_months: '12',
+    last_contact_at: '',
+    snooze_until: '',
+    do_not_contact: false,
+  }
+  const [form, setForm] = useState(emptyForm)
   const [errors, setErrors] = useState<Record<string, string>>({})
 
   const isEditing = !!initial
@@ -59,14 +72,21 @@ export default function ClientModal({ open, onClose, onSave, initial, agents }: 
         company: initial.company || '',
         source: initial.source || '',
         linked_agent_id: initial.linked_agent_id || '',
+        codice_fiscale: initial.codice_fiscale || '',
+        segment: initial.segment || '',
+        tier: initial.tier || '',
+        preferred_channel: initial.preferred_channel || '',
+        rogito_date: initial.rogito_date || '',
+        contact_cadence_months: String(initial.contact_cadence_months ?? 12),
+        last_contact_at: initial.last_contact_at ? initial.last_contact_at.slice(0, 10) : '',
+        snooze_until: initial.snooze_until || '',
+        do_not_contact: !!initial.do_not_contact,
       })
     } else {
-      setForm({
-        first_name: '', last_name: '', phone: '', email: '', type: 'acquirente',
-        address: '', notes: '', birth_date: '', company: '', source: '', linked_agent_id: '',
-      })
+      setForm(emptyForm)
     }
     setErrors({})
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [initial, open])
 
   if (!open) return null
@@ -93,12 +113,27 @@ export default function ClientModal({ open, onClose, onSave, initial, agents }: 
       company: form.company.trim() || null,
       source: form.source || null,
       linked_agent_id: form.linked_agent_id || null,
+      codice_fiscale: form.codice_fiscale.trim().toUpperCase() || null,
+      segment: form.segment || null,
+      tier: form.tier || null,
+      preferred_channel: form.preferred_channel || null,
+      rogito_date: form.rogito_date || null,
+      contact_cadence_months: parseInt(form.contact_cadence_months, 10) || 12,
+      last_contact_at: form.last_contact_at || null,
+      snooze_until: form.snooze_until || null,
+      do_not_contact: form.do_not_contact,
     })
   }
 
-  const set = (key: string, val: string) => {
+  const set = (key: string, val: string | boolean) => {
     setForm(prev => ({ ...prev, [key]: val }))
-    if (errors[key]) setErrors(prev => ({ ...prev, [key]: '' }))
+    if (typeof val === 'string' && errors[key]) setErrors(prev => ({ ...prev, [key]: '' }))
+  }
+
+  const deriveBirthDate = () => {
+    const d = birthDateFromCodiceFiscale(form.codice_fiscale)
+    if (d) set('birth_date', d)
+    else setErrors(prev => ({ ...prev, codice_fiscale: 'Codice fiscale non valido' }))
   }
 
   const mono = { fontFamily: "'JetBrains Mono', monospace" }
@@ -165,6 +200,24 @@ export default function ClientModal({ open, onClose, onSave, initial, agents }: 
           </div>
 
           <div className="form-group">
+            <label className="form-label">Codice fiscale</label>
+            <div style={{ display: 'flex', gap: 8 }}>
+              <input className={`form-input ${errors.codice_fiscale ? 'error' : ''}`}
+                value={form.codice_fiscale}
+                onChange={e => set('codice_fiscale', e.target.value.toUpperCase())}
+                placeholder="RSSMRA85M01H501Z" maxLength={16}
+                style={{ flex: 1, fontFamily: "'JetBrains Mono', monospace", textTransform: 'uppercase' }} />
+              <button type="button" className="btn btn-secondary btn-sm"
+                onClick={deriveBirthDate} disabled={form.codice_fiscale.trim().length !== 16}
+                title="Compila la data di nascita dal codice fiscale"
+                style={{ whiteSpace: 'nowrap' }}>
+                ↓ Compleanno
+              </button>
+            </div>
+            {errors.codice_fiscale && <div className="form-error">{errors.codice_fiscale}</div>}
+          </div>
+
+          <div className="form-group">
             <label className="form-label">Tipo *</label>
             <div style={{ display: 'flex', gap: 8 }}>
               {(['acquirente', 'venditore', 'entrambi'] as const).map(t => (
@@ -219,6 +272,82 @@ export default function ClientModal({ open, onClose, onSave, initial, agents }: 
                 </select>
               </div>
             )}
+          </div>
+
+          {sectionLabel('Relazione & Contatto periodico')}
+          <div className="form-row">
+            <div className="form-group">
+              <label className="form-label">Segmento</label>
+              <select className="form-select" value={form.segment || ''}
+                onChange={e => set('segment', e.target.value)}>
+                <option value="">Non assegnato</option>
+                {(Object.keys(CLIENT_SEGMENT_LABELS) as Array<keyof typeof CLIENT_SEGMENT_LABELS>).map(s => (
+                  <option key={s} value={s}>{CLIENT_SEGMENT_LABELS[s]}</option>
+                ))}
+              </select>
+            </div>
+            <div className="form-group">
+              <label className="form-label">Priorità (tier)</label>
+              <div style={{ display: 'flex', gap: 6 }}>
+                {(['A', 'B', 'C'] as const).map(t => (
+                  <button key={t} type="button" onClick={() => set('tier', form.tier === t ? '' : t)} style={{
+                    flex: 1, padding: '8px 0', borderRadius: 8,
+                    border: `2px solid ${form.tier === t ? 'var(--lime)' : 'var(--bd)'}`,
+                    background: form.tier === t ? 'rgba(190,227,39,0.1)' : 'var(--bg2)',
+                    color: form.tier === t ? 'var(--lime)' : 'var(--g)',
+                    cursor: 'pointer', fontWeight: form.tier === t ? 700 : 400, fontSize: 13, transition: 'all 0.15s',
+                  }}>{t}</button>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          <div className="form-row">
+            <div className="form-group">
+              <label className="form-label">Canale preferito</label>
+              <select className="form-select" value={form.preferred_channel || ''}
+                onChange={e => set('preferred_channel', e.target.value)}>
+                <option value="">Nessuna preferenza</option>
+                {(Object.keys(CLIENT_CHANNEL_LABELS) as Array<keyof typeof CLIENT_CHANNEL_LABELS>).map(c => (
+                  <option key={c} value={c}>{CLIENT_CHANNEL_LABELS[c]}</option>
+                ))}
+              </select>
+            </div>
+            <div className="form-group">
+              <label className="form-label">Cadenza contatto (mesi)</label>
+              <input className="form-input" type="number" min={1} max={60}
+                value={form.contact_cadence_months}
+                onChange={e => set('contact_cadence_months', e.target.value)}
+                style={{ fontFamily: "'JetBrains Mono', monospace" }} />
+            </div>
+          </div>
+
+          <div className="form-row">
+            <div className="form-group">
+              <label className="form-label">Ultimo contatto</label>
+              <input className="form-input" type="date" value={form.last_contact_at}
+                onChange={e => set('last_contact_at', e.target.value)} />
+            </div>
+            <div className="form-group">
+              <label className="form-label">Data rogito</label>
+              <input className="form-input" type="date" value={form.rogito_date}
+                onChange={e => set('rogito_date', e.target.value)} />
+            </div>
+          </div>
+
+          <div className="form-row">
+            <div className="form-group">
+              <label className="form-label">Posticipa fino al</label>
+              <input className="form-input" type="date" value={form.snooze_until}
+                onChange={e => set('snooze_until', e.target.value)} />
+            </div>
+            <div className="form-group" style={{ display: 'flex', alignItems: 'flex-end' }}>
+              <label style={{ display: 'flex', alignItems: 'center', gap: 8, cursor: 'pointer', fontSize: 13, color: 'var(--gl)', paddingBottom: 10 }}>
+                <input type="checkbox" checked={form.do_not_contact}
+                  onChange={e => set('do_not_contact', e.target.checked)} />
+                Escludi dal dialogo periodico
+              </label>
+            </div>
           </div>
 
           {sectionLabel('Note')}
