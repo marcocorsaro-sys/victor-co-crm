@@ -379,7 +379,6 @@ export default function AgentDashboard({ profile }: Props) {
           <option value="">Tutte le origini</option>
           <option value="agente">Agente</option>
           <option value="agenzia">Agenzia</option>
-          <option value="valutazione">Valutazione</option>
         </select>
         <select className="filter-select" value={fProbability} onChange={e => setFProbability(e.target.value)}>
           <option value="">Tutte le prob.</option>

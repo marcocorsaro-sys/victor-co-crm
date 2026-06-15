@@ -40,8 +40,10 @@ export default function OpModal({ open, onClose, onSave, initial, agentId, agent
     collaborator_comm_pct: '',
     mandate_start_date: '',
     mandate_end_date: '',
-    commission_collected: '',
-    collection_date: '',
+    commission_collected_seller: '',
+    commission_collected_buyer: '',
+    collection_date_seller: '',
+    collection_date_buyer: '',
     sale_probability: '' as '' | '30' | '60' | '90',
     publish_to_website: false,
   })
@@ -87,8 +89,15 @@ export default function OpModal({ open, onClose, onSave, initial, agentId, agent
         collaborator_comm_pct: initial.collaborator_comm_pct ? initial.collaborator_comm_pct.toString() : '',
         mandate_start_date: initial.mandate_start_date || '',
         mandate_end_date: initial.mandate_end_date || '',
-        commission_collected: initial.commission_collected ? toEurInput(initial.commission_collected) : '',
-        collection_date: initial.collection_date || '',
+        // Fallback: operazioni legacy hanno solo commission_collected → mostrala come quota venditore
+        commission_collected_seller: initial.commission_collected_seller != null
+          ? toEurInput(initial.commission_collected_seller)
+          : (initial.commission_collected_buyer == null && initial.commission_collected != null
+              ? toEurInput(initial.commission_collected) : ''),
+        commission_collected_buyer: initial.commission_collected_buyer != null
+          ? toEurInput(initial.commission_collected_buyer) : '',
+        collection_date_seller: initial.collection_date_seller || initial.collection_date || '',
+        collection_date_buyer: initial.collection_date_buyer || '',
         sale_probability: initial.sale_probability ? initial.sale_probability.toString() as '30' | '60' | '90' : '',
         publish_to_website: (initial as Record<string, unknown>).publish_to_website as boolean || false,
       })
@@ -119,8 +128,10 @@ export default function OpModal({ open, onClose, onSave, initial, agentId, agent
         collaborator_comm_pct: '',
         mandate_start_date: '',
         mandate_end_date: '',
-        commission_collected: '',
-        collection_date: '',
+        commission_collected_seller: '',
+        commission_collected_buyer: '',
+        collection_date_seller: '',
+        collection_date_buyer: '',
         sale_probability: '',
         publish_to_website: false,
       })
@@ -202,14 +213,24 @@ export default function OpModal({ open, onClose, onSave, initial, agentId, agent
         data.agent_commission = commResult.agentCommission
         data.collaborator_commission = commResult.collaboratorCommission
       }
-      data.commission_collected = form.commission_collected ? parseEurInput(form.commission_collected) : null
-      data.collection_date = form.collection_date || null
+      const ccSeller = form.commission_collected_seller ? parseEurInput(form.commission_collected_seller) : null
+      const ccBuyer = form.commission_collected_buyer ? parseEurInput(form.commission_collected_buyer) : null
+      data.commission_collected_seller = ccSeller
+      data.commission_collected_buyer = ccBuyer
+      data.collection_date_seller = form.collection_date_seller || null
+      data.collection_date_buyer = form.collection_date_buyer || null
+      data.commission_collected = ccSeller != null || ccBuyer != null ? (ccSeller || 0) + (ccBuyer || 0) : null
+      data.collection_date = form.collection_date_seller || form.collection_date_buyer || null
     } else {
       data.sale_date = null
       data.final_value = null
       data.gross_commission = null
       data.agent_commission = null
       data.collaborator_commission = null
+      data.commission_collected_seller = null
+      data.commission_collected_buyer = null
+      data.collection_date_seller = null
+      data.collection_date_buyer = null
       data.commission_collected = null
       data.collection_date = null
     }
@@ -569,18 +590,34 @@ export default function OpModal({ open, onClose, onSave, initial, agentId, agent
               </div>
               <div className="form-row">
                 <div className="form-group">
-                  <label className="form-label">Importo incassato (EUR)</label>
+                  <label className="form-label">Importo incassato vend. (EUR)</label>
                   <input className="form-input" type="text" inputMode="decimal"
-                    value={form.commission_collected}
-                    onChange={e => set('commission_collected', e.target.value)}
+                    value={form.commission_collected_seller}
+                    onChange={e => set('commission_collected_seller', e.target.value)}
                     onFocus={e => { const n = parseEurInput(e.target.value); if (n) e.target.value = String(n) }}
-                    onBlur={e => { const n = parseEurInput(e.target.value); set('commission_collected', n ? toEurInput(n) : '') }}
+                    onBlur={e => { const n = parseEurInput(e.target.value); set('commission_collected_seller', n ? toEurInput(n) : '') }}
                     placeholder="0,00" />
                 </div>
                 <div className="form-group">
-                  <label className="form-label">Data incasso</label>
-                  <input className="form-input" type="date" value={form.collection_date}
-                    onChange={e => set('collection_date', e.target.value)} />
+                  <label className="form-label">Data incasso vend.</label>
+                  <input className="form-input" type="date" value={form.collection_date_seller}
+                    onChange={e => set('collection_date_seller', e.target.value)} />
+                </div>
+              </div>
+              <div className="form-row">
+                <div className="form-group">
+                  <label className="form-label">Importo incassato acq. (EUR)</label>
+                  <input className="form-input" type="text" inputMode="decimal"
+                    value={form.commission_collected_buyer}
+                    onChange={e => set('commission_collected_buyer', e.target.value)}
+                    onFocus={e => { const n = parseEurInput(e.target.value); if (n) e.target.value = String(n) }}
+                    onBlur={e => { const n = parseEurInput(e.target.value); set('commission_collected_buyer', n ? toEurInput(n) : '') }}
+                    placeholder="0,00" />
+                </div>
+                <div className="form-group">
+                  <label className="form-label">Data incasso acq.</label>
+                  <input className="form-input" type="date" value={form.collection_date_buyer}
+                    onChange={e => set('collection_date_buyer', e.target.value)} />
                 </div>
               </div>
             </>

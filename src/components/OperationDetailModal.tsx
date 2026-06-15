@@ -155,8 +155,11 @@ export default function OperationDetailModal({ open, operation, onClose, onEdit,
         {/* Incasso */}
         <div style={{ marginTop: 16 }}>
           {sectionLabel('Incasso')}
-          {infoRow('Commissione incassata', operation.commission_collected != null ? formatEur(operation.commission_collected) : null)}
-          {infoRow('Data incasso', operation.collection_date ? formatDate(operation.collection_date) : null)}
+          {infoRow('Importo incassato vend.', operation.commission_collected_seller != null ? formatEur(operation.commission_collected_seller) : null)}
+          {infoRow('Data incasso vend.', operation.collection_date_seller ? formatDate(operation.collection_date_seller) : null)}
+          {infoRow('Importo incassato acq.', operation.commission_collected_buyer != null ? formatEur(operation.commission_collected_buyer) : null)}
+          {infoRow('Data incasso acq.', operation.collection_date_buyer ? formatDate(operation.collection_date_buyer) : null)}
+          {infoRow('Totale incassato', operation.commission_collected != null ? formatEur(operation.commission_collected) : null)}
         </div>
 
         {/* Note */}

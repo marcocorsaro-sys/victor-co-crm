@@ -69,7 +69,8 @@ export async function setIncaricoPreso(valutazioneId: string) {
       property_value: val.estimated_price ?? null,
       type: 'vendita',
       status: 'pipeline',
-      origin: 'valutazione',
+      // L'incarico eredita l'origine reale della valutazione (agente/agenzia)
+      origin: val.origin ?? 'agente',
       notes: val.notes ?? null,
     })
     .select()

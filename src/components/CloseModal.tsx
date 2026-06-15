@@ -22,8 +22,10 @@ export default function CloseModal({ open, onClose, onConfirm, operation, agentP
   const [commFixedBuyer, setCommFixedBuyer] = useState('')
   const [buyerFirstName, setBuyerFirstName] = useState('')
   const [buyerLastName, setBuyerLastName] = useState('')
-  const [commissionCollected, setCommissionCollected] = useState('')
-  const [collectionDate, setCollectionDate] = useState('')
+  const [commissionCollectedSeller, setCommissionCollectedSeller] = useState('')
+  const [commissionCollectedBuyer, setCommissionCollectedBuyer] = useState('')
+  const [collectionDateSeller, setCollectionDateSeller] = useState('')
+  const [collectionDateBuyer, setCollectionDateBuyer] = useState('')
   const [errors, setErrors] = useState<Record<string, string>>({})
 
   useEffect(() => {
@@ -38,8 +40,10 @@ export default function CloseModal({ open, onClose, onConfirm, operation, agentP
       setCommFixedBuyer(operation.comm_fixed_buyer ? toEurInput(operation.comm_fixed_buyer) : '')
       setBuyerFirstName(operation.buyer_first_name || '')
       setBuyerLastName(operation.buyer_last_name || '')
-      setCommissionCollected('')
-      setCollectionDate('')
+      setCommissionCollectedSeller('')
+      setCommissionCollectedBuyer('')
+      setCollectionDateSeller('')
+      setCollectionDateBuyer('')
     }
     setErrors({})
   }, [operation, open])
@@ -80,6 +84,9 @@ export default function CloseModal({ open, onClose, onConfirm, operation, agentP
     e.preventDefault()
     if (!validate()) return
 
+    const ccSeller = commissionCollectedSeller ? parseEurInput(commissionCollectedSeller) : null
+    const ccBuyer = commissionCollectedBuyer ? parseEurInput(commissionCollectedBuyer) : null
+
     onConfirm({
       status: 'incassato',
       sale_date: saleDate,
@@ -95,8 +102,12 @@ export default function CloseModal({ open, onClose, onConfirm, operation, agentP
       collaborator_commission: result.collaboratorCommission,
       buyer_first_name: buyerFirstName.trim() || null,
       buyer_last_name: buyerLastName.trim() || null,
-      commission_collected: commissionCollected ? parseEurInput(commissionCollected) : null,
-      collection_date: collectionDate || null,
+      commission_collected_seller: ccSeller,
+      commission_collected_buyer: ccBuyer,
+      collection_date_seller: collectionDateSeller || null,
+      collection_date_buyer: collectionDateBuyer || null,
+      commission_collected: ccSeller != null || ccBuyer != null ? (ccSeller || 0) + (ccBuyer || 0) : null,
+      collection_date: collectionDateSeller || collectionDateBuyer || null,
     })
   }
 
@@ -226,18 +237,34 @@ export default function CloseModal({ open, onClose, onConfirm, operation, agentP
           </div>
           <div className="form-row">
             <div className="form-group">
-              <label className="form-label">Importo incassato (EUR)</label>
+              <label className="form-label">Importo incassato vend. (EUR)</label>
               <input className="form-input" type="text" inputMode="decimal"
-                value={commissionCollected}
-                onChange={e => setCommissionCollected(e.target.value)}
+                value={commissionCollectedSeller}
+                onChange={e => setCommissionCollectedSeller(e.target.value)}
                 onFocus={e => { const n = parseEurInput(e.target.value); if (n) e.target.value = String(n) }}
-                onBlur={e => { const n = parseEurInput(e.target.value); setCommissionCollected(n ? toEurInput(n) : '') }}
+                onBlur={e => { const n = parseEurInput(e.target.value); setCommissionCollectedSeller(n ? toEurInput(n) : '') }}
                 placeholder="0,00" />
             </div>
             <div className="form-group">
-              <label className="form-label">Data incasso</label>
-              <input className="form-input" type="date" value={collectionDate}
-                onChange={e => setCollectionDate(e.target.value)} />
+              <label className="form-label">Data incasso vend.</label>
+              <input className="form-input" type="date" value={collectionDateSeller}
+                onChange={e => setCollectionDateSeller(e.target.value)} />
+            </div>
+          </div>
+          <div className="form-row">
+            <div className="form-group">
+              <label className="form-label">Importo incassato acq. (EUR)</label>
+              <input className="form-input" type="text" inputMode="decimal"
+                value={commissionCollectedBuyer}
+                onChange={e => setCommissionCollectedBuyer(e.target.value)}
+                onFocus={e => { const n = parseEurInput(e.target.value); if (n) e.target.value = String(n) }}
+                onBlur={e => { const n = parseEurInput(e.target.value); setCommissionCollectedBuyer(n ? toEurInput(n) : '') }}
+                placeholder="0,00" />
+            </div>
+            <div className="form-group">
+              <label className="form-label">Data incasso acq.</label>
+              <input className="form-input" type="date" value={collectionDateBuyer}
+                onChange={e => setCollectionDateBuyer(e.target.value)} />
             </div>
           </div>
 
