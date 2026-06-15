@@ -201,9 +201,13 @@ export type Operation = {
   comm_mode_buyer: 'pct' | 'fixed'
   comm_fixed_seller: number
   comm_fixed_buyer: number
-  // Provvigioni incassate
+  // Provvigioni incassate (totale = venditore + acquirente)
   commission_collected: number | null
   collection_date: string | null
+  commission_collected_seller: number | null
+  commission_collected_buyer: number | null
+  collection_date_seller: string | null
+  collection_date_buyer: string | null
   // Date incarico
   mandate_start_date: string | null
   mandate_end_date: string | null
