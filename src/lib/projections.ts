@@ -41,6 +41,15 @@ function opStartDate(op: Operation): Date {
   return new Date(op.mandate_start_date || op.date_added)
 }
 
+/** Lead mediano storico incarico (o inserimento) → incasso, in giorni. */
+export function computeMedianLeadDays(completedOps: Operation[]): number {
+  const leads = completedOps
+    .filter(o => o.sale_date)
+    .map(o => Math.round((new Date(o.sale_date!).getTime() - opStartDate(o).getTime()) / 86400000))
+    .filter(d => d >= 0 && d <= 730)
+  return leads.length >= 3 ? medianOf(leads)! : FALLBACK_LEAD_DAYS
+}
+
 /**
  * Proiezione a fine anno basata sulla PIPELINE PESATA (nessuna componente di
  * trend storico):
@@ -60,6 +69,8 @@ export function calculateProjectedTrajectory(
   openOps: Operation[],
   agents: Profile[],
   year: number,
+  /** Lead mediano da usare (es. globale per stime per-agente); se assente, calcolato da completedOps. */
+  leadDaysOverride?: number,
 ): { monthly: MonthlyProjection[]; breakdown: ProjectionBreakdown } {
   const now = new Date()
   const isCurrentYear = now.getFullYear() === year
@@ -84,11 +95,7 @@ export function calculateProjectedTrajectory(
   const ytdActual = actuals.slice(0, currentMonth + 1).reduce((a, b) => a + b, 0)
 
   // ── Lead mediano storico: incarico (o inserimento) → incasso ──
-  const leads = completedOps
-    .filter(o => o.sale_date)
-    .map(o => Math.round((new Date(o.sale_date!).getTime() - opStartDate(o).getTime()) / 86400000))
-    .filter(d => d >= 0 && d <= 730)
-  const medianLeadDays = leads.length >= 3 ? medianOf(leads)! : FALLBACK_LEAD_DAYS
+  const medianLeadDays = leadDaysOverride ?? computeMedianLeadDays(completedOps)
 
   // ── Pipeline pesata + proposte accettate ──
   let acceptedGross = 0

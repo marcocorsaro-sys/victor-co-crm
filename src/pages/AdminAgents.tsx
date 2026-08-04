@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import { useProfiles } from '../hooks/useProfiles'
 import { useOperations } from '../hooks/useOperations'
 import { formatEur } from '../lib/calculations'
+import { calculateProjectedTrajectory, computeMedianLeadDays } from '../lib/projections'
 
 
 export default function AdminAgents() {
@@ -13,6 +14,8 @@ export default function AdminAgents() {
   const currentYear = new Date().getFullYear()
 
   const agentStats = useMemo(() => {
+    // Lead mediano globale per il fattore tempo del modello di proiezione
+    const globalLead = computeMedianLeadDays(operations.filter(o => o.status === 'incassato'))
     return agents.map(agent => {
       const ops = operations.filter(o => o.agent_id === agent.id)
       const completed = ops.filter(o => o.status === 'incassato')
@@ -30,7 +33,12 @@ export default function AdminAgents() {
       const closingRate = (completedYear.length + pipeline.length) > 0
         ? (completedYear.length / (completedYear.length + pipeline.length) * 100) : 0
 
+      // Stima chiusura 31/12: YTD + proposte accettate × 90% + pipeline × prob × fattore tempo
+      const { breakdown: proj } = calculateProjectedTrajectory(completed, pipeline, agents, currentYear, globalLead)
+
       return {
+        projectedTotal: proj.projectedTotal,
+        projectedAgent: proj.projectedAgent,
         agent,
         totalOps: ops.length,
         completedYear: completedYear.length,
@@ -54,7 +62,7 @@ export default function AdminAgents() {
         <div className="skeleton skeleton-row" style={{ height: 200 }} />
       ) : (
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(340px, 1fr))', gap: 16 }}>
-          {agentStats.map(({ agent, completedYear, pipelineCount, grossYear, agentYear, agencyMargin, pipelineValue, closingRate }) => (
+          {agentStats.map(({ agent, completedYear, pipelineCount, grossYear, agentYear, agencyMargin, pipelineValue, closingRate, projectedTotal, projectedAgent }) => (
             <div
               key={agent.id}
               onClick={() => navigate(`/admin/agent/${agent.id}`)}
@@ -95,6 +103,8 @@ export default function AdminAgents() {
                 <StatItem label="Quota Agente" value={formatEur(agentYear)} color="var(--teal)" mono />
                 <StatItem label="Margine Agenzia" value={formatEur(agencyMargin)} color="var(--green)" mono />
                 <StatItem label="% Chiusura" value={`${closingRate.toFixed(0)}%`} />
+                <StatItem label={`Stima 31/12 (lorde)`} value={formatEur(projectedTotal)} color="var(--amber)" mono />
+                <StatItem label="Quota Agente Stim." value={formatEur(projectedAgent)} color="var(--teal)" mono />
               </div>
 
               {/* Pipeline value bar */}

@@ -4,7 +4,7 @@ import { useProfiles } from '../hooks/useProfiles'
 import { useValuations } from '../hooks/useValuations'
 import { formatEur, PIPELINE_FORMULAS } from '../lib/calculations'
 import FormulaTip from '../components/FormulaTip'
-import { calculateProjectedTrajectory } from '../lib/projections'
+import { calculateProjectedTrajectory, computeMedianLeadDays } from '../lib/projections'
 import KpiCard from '../components/KpiCard'
 import PriceDistributionChart from '../components/PriceDistributionChart'
 import MonthlyAvgPriceChart from '../components/MonthlyAvgPriceChart'
@@ -93,6 +93,46 @@ export default function AdminIntelligence() {
   const prevMargin = prevGross - prevAgent
   const prevValue = prevCompleted.reduce((s, o) => s + (o.final_value || o.property_value || 0), 0)
 
+  // ── Δ YoY sul periodo omologo ──
+  // Per l'anno corrente il consuntivo è parziale: il confronto onesto è con lo
+  // STESSO periodo dell'anno precedente (1 gen → oggi, anno -1). Se però i dati
+  // dell'anno precedente risultano importati in blocco (≥80% inseriti lo stesso
+  // giorno) la distribuzione intra-anno non è affidabile → pro-rata del totale
+  // annuo sull'avanzamento dell'anno corrente.
+  const prevPeriod = useMemo(() => {
+    if (!isCurrentYear) {
+      return { gross: prevGross, agent: prevAgent, margin: prevMargin, value: prevValue, ops: prevCompleted.length, proRata: false }
+    }
+    const now = new Date()
+    const elapsedFraction = Math.min(1, (now.getTime() - yearStart.getTime()) / (yearEnd.getTime() - yearStart.getTime()))
+
+    const dayCounts = new Map<string, number>()
+    prevCompleted.forEach(o => {
+      const day = (o.date_added || '').slice(0, 10)
+      dayCounts.set(day, (dayCounts.get(day) || 0) + 1)
+    })
+    const maxSameDay = dayCounts.size > 0 ? Math.max(...dayCounts.values()) : 0
+    const bulkLoaded = prevCompleted.length > 0 && maxSameDay / prevCompleted.length >= 0.8
+
+    if (bulkLoaded) {
+      return {
+        gross: prevGross * elapsedFraction,
+        agent: prevAgent * elapsedFraction,
+        margin: prevMargin * elapsedFraction,
+        value: prevValue * elapsedFraction,
+        ops: prevCompleted.length * elapsedFraction,
+        proRata: true,
+      }
+    }
+    const periodEnd = new Date(selectedYear - 1, now.getMonth(), now.getDate(), 23, 59, 59)
+    const inPeriod = prevCompleted.filter(o => o.sale_date && new Date(o.sale_date) <= periodEnd)
+    const g = inPeriod.reduce((s, o) => s + (o.gross_commission || 0), 0)
+    const a = inPeriod.reduce((s, o) => s + (o.agent_commission || 0), 0)
+    const v = inPeriod.reduce((s, o) => s + (o.final_value || o.property_value || 0), 0)
+    return { gross: g, agent: a, margin: g - a, value: v, ops: inPeriod.length, proRata: false }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [prevCompleted, isCurrentYear, selectedYear, prevGross, prevAgent, prevMargin, prevValue])
+
   // Projection only for current year
   const projResult = useMemo(() => {
     if (!isCurrentYear) return null
@@ -105,6 +145,24 @@ export default function AdminIntelligence() {
 
   const bd = projResult?.breakdown || null
   const [showFormula, setShowFormula] = useState(false)
+
+  // Stima chiusura per agente: stesso modello, lead mediano globale per coerenza
+  const agentProjections = useMemo(() => {
+    if (!isCurrentYear) return []
+    const completedAll = operations.filter(o => o.status === 'incassato')
+    const globalLead = computeMedianLeadDays(completedAll)
+    return agents
+      .filter(a => a.active)
+      .map(agent => {
+        const comp = completedAll.filter(o => o.agent_id === agent.id)
+        const open = operations.filter(o =>
+          (o.status === 'pipeline' || o.status === 'proposta_accettata') && o.agent_id === agent.id)
+        const { breakdown } = calculateProjectedTrajectory(comp, open, agents, selectedYear, globalLead)
+        return { agent, bd: breakdown }
+      })
+      .filter(x => x.bd.projectedTotal > 0)
+      .sort((a, b) => b.bd.projectedTotal - a.bd.projectedTotal)
+  }, [operations, agents, selectedYear, isCurrentYear])
 
   // Proiezioni dal modello pipeline pesata (solo anno corrente)
   const projectedGross = isCurrentYear ? (bd?.projectedTotal || 0) : totalGross
@@ -303,11 +361,11 @@ export default function AdminIntelligence() {
               </thead>
               <tbody>
                 {[
-                  { label: 'Commissioni lorde', actual: totalGross, proj: projectedGross, prev: prevGross },
-                  { label: 'Quota agenti', actual: totalAgent, proj: projAgent, prev: prevAgent },
-                  { label: 'Margine agenzia', actual: agencyMargin, proj: projMargin, prev: prevMargin },
-                  { label: 'Valore venduto', actual: totalValue, proj: projValue, prev: prevValue },
-                  { label: 'Operazioni chiuse', actual: completed.length, proj: projOps, prev: prevCompleted.length },
+                  { label: 'Commissioni lorde', actual: totalGross, proj: projectedGross, prev: prevGross, prevPeriod: prevPeriod.gross },
+                  { label: 'Quota agenti', actual: totalAgent, proj: projAgent, prev: prevAgent, prevPeriod: prevPeriod.agent },
+                  { label: 'Margine agenzia', actual: agencyMargin, proj: projMargin, prev: prevMargin, prevPeriod: prevPeriod.margin },
+                  { label: 'Valore venduto', actual: totalValue, proj: projValue, prev: prevValue, prevPeriod: prevPeriod.value },
+                  { label: 'Operazioni chiuse', actual: completed.length, proj: projOps, prev: prevCompleted.length, prevPeriod: prevPeriod.ops },
                 ].map(row => (
                   <tr key={row.label}>
                     <td style={{ padding: '10px 12px', fontSize: 13, color: 'var(--w)', borderBottom: '1px solid var(--bd)' }}>{row.label}</td>
@@ -323,12 +381,19 @@ export default function AdminIntelligence() {
                       {typeof row.prev === 'number' && row.label !== 'Operazioni chiuse' ? formatEur(row.prev) : row.prev}
                     </td>
                     <td style={{ padding: '10px 12px', textAlign: 'right', borderBottom: '1px solid var(--bd)' }}>
-                      <DeltaValue value={delta(row.actual as number, row.prev as number)} />
+                      <DeltaValue value={delta(row.actual as number, row.prevPeriod as number)} />
                     </td>
                   </tr>
                 ))}
               </tbody>
             </table>
+            {isCurrentYear && (
+              <p style={{ fontSize: 11, color: 'var(--g)', margin: '8px 0 0' }}>
+                * Δ YoY calcolato sul periodo omologo {selectedYear - 1} (1 gen → oggi{prevPeriod.proRata
+                  ? `): dati ${selectedYear - 1} importati in blocco, quota pro-rata ${(prevPeriod.gross / Math.max(prevGross, 1) * 100).toFixed(0)}% del totale annuo`
+                  : ', per data di incasso)'}. La colonna {selectedYear - 1} mostra l'anno intero.
+              </p>
+            )}
             {isCurrentYear && bd && (
             <div style={{ marginTop: 12 }}>
               <button
@@ -368,6 +433,60 @@ export default function AdminIntelligence() {
               )}
             </div>
             )}
+          </div>
+        </>
+      )}
+
+      {/* ── Stima chiusura per agente (stesso modello pipeline pesata) ── */}
+      {!loading && isCurrentYear && agentProjections.length > 0 && (
+        <>
+          {sectionLabel(`Stima chiusura ${selectedYear} per agente`)}
+          <div style={{ background: 'var(--s1)', borderRadius: 12, padding: 16, border: '1px solid var(--bd)', marginBottom: 20, overflowX: 'auto' }}>
+            <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+              <thead>
+                <tr>
+                  {['Agente', 'YTD lordo', 'Proposte ×90%', 'Pipeline pesata', 'Stima 31/12', 'di cui quota agente'].map((h, i) => (
+                    <th key={h} style={{
+                      textAlign: i === 0 ? 'left' : 'right', padding: '8px 12px', fontSize: 12,
+                      color: i === 4 ? 'var(--amber)' : 'var(--g)', borderBottom: '1px solid var(--bd)',
+                      whiteSpace: 'nowrap',
+                    }}>{h}</th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody>
+                {agentProjections.map(({ agent, bd: abd }) => (
+                  <tr key={agent.id}>
+                    <td style={{ padding: '10px 12px', borderBottom: '1px solid var(--bd)' }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                        <div className="avatar" style={{ backgroundColor: agent.color, width: 24, height: 24, fontSize: 9 }}>
+                          {agent.initials}
+                        </div>
+                        <span style={{ fontSize: 13, color: 'var(--w)', whiteSpace: 'nowrap' }}>{agent.full_name}</span>
+                      </div>
+                    </td>
+                    <td style={{ ...mono, padding: '10px 12px', textAlign: 'right', fontSize: 13, color: 'var(--lime)', borderBottom: '1px solid var(--bd)' }}>{formatEur(abd.ytdActual)}</td>
+                    <td style={{ ...mono, padding: '10px 12px', textAlign: 'right', fontSize: 13, color: 'var(--gl)', borderBottom: '1px solid var(--bd)' }}>{formatEur(abd.acceptedWeighted)}</td>
+                    <td style={{ ...mono, padding: '10px 12px', textAlign: 'right', fontSize: 13, color: 'var(--gl)', borderBottom: '1px solid var(--bd)' }}>{formatEur(abd.pipelineWeightedByProb)}</td>
+                    <td style={{ ...mono, padding: '10px 12px', textAlign: 'right', fontSize: 13, color: 'var(--amber)', fontWeight: 700, borderBottom: '1px solid var(--bd)' }}>{formatEur(abd.projectedTotal)}</td>
+                    <td style={{ ...mono, padding: '10px 12px', textAlign: 'right', fontSize: 13, color: 'var(--teal)', borderBottom: '1px solid var(--bd)' }}>{formatEur(abd.projectedAgent)}</td>
+                  </tr>
+                ))}
+              </tbody>
+              <tfoot>
+                <tr>
+                  <td style={{ padding: '10px 12px', fontSize: 13, fontWeight: 700, color: 'var(--w)' }}>Totale</td>
+                  <td style={{ ...mono, padding: '10px 12px', textAlign: 'right', fontSize: 13, fontWeight: 700, color: 'var(--lime)' }}>{formatEur(agentProjections.reduce((s, x) => s + x.bd.ytdActual, 0))}</td>
+                  <td style={{ ...mono, padding: '10px 12px', textAlign: 'right', fontSize: 13, fontWeight: 700, color: 'var(--gl)' }}>{formatEur(agentProjections.reduce((s, x) => s + x.bd.acceptedWeighted, 0))}</td>
+                  <td style={{ ...mono, padding: '10px 12px', textAlign: 'right', fontSize: 13, fontWeight: 700, color: 'var(--gl)' }}>{formatEur(agentProjections.reduce((s, x) => s + x.bd.pipelineWeightedByProb, 0))}</td>
+                  <td style={{ ...mono, padding: '10px 12px', textAlign: 'right', fontSize: 13, fontWeight: 700, color: 'var(--amber)' }}>{formatEur(agentProjections.reduce((s, x) => s + x.bd.projectedTotal, 0))}</td>
+                  <td style={{ ...mono, padding: '10px 12px', textAlign: 'right', fontSize: 13, fontWeight: 700, color: 'var(--teal)' }}>{formatEur(agentProjections.reduce((s, x) => s + x.bd.projectedAgent, 0))}</td>
+                </tr>
+              </tfoot>
+            </table>
+            <p style={{ fontSize: 11, color: 'var(--g)', margin: '10px 0 0' }}>
+              * Stessa formula della proiezione: YTD + proposte accettate × 90% + pipeline × probabilità × fattore tempo. Solo agenti con stima &gt; 0.
+            </p>
           </div>
         </>
       )}
