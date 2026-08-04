@@ -180,9 +180,6 @@ export default function AdminDashboard() {
           legend={<FormulaTip title="Comm. Agenti" formula={`Somma di agent_commission delle operazioni completate nel ${selectedYear}`} />} />
         <KpiCard value={formatEur(marginYear)} label="Margine Agenzia" loading={loading} color="green"
           legend={<FormulaTip title="Margine Agenzia" formula="Comm. Totali - Comm. Agenti" note={PIPELINE_FORMULAS.agencyMargin} />} />
-        <KpiCard value={formatEur(pipelineExpectedGross)} label="Comm. Stimate Pipeline" loading={loading} color="amber"
-          legend={<FormulaTip title="Comm. Stimate Pipeline" formula={PIPELINE_FORMULAS.pipelineGross}
-            note="Include modalità fissa/% e quote collaboratori." />} />
         <KpiCard value={formatEur(estimatedTotalYear)} label={`Stima Tot. ${selectedYear}`} loading={loading} color="green"
           legend={<FormulaTip title={`Stima Tot. ${selectedYear}`} formula={PIPELINE_FORMULAS.estimatedTotal}
             note="Scenario ottimistico: tutta la pipeline chiude entro l'anno." />} />
