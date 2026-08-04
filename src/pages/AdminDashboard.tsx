@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useOperations } from '../hooks/useOperations'
 import { useProfiles } from '../hooks/useProfiles'
-import { formatEur, formatDate, formatDateTime, estimatePipelineCommission, getPipelineWeight, PIPELINE_FORMULAS } from '../lib/calculations'
+import { formatEur, formatDate, formatDateTime, estimatePipelineCommission, getPipelineWeight, PIPELINE_FORMULAS, getBuyersDisplay } from '../lib/calculations'
 import { exportCsv } from '../lib/exportCsv'
 import KpiCard from '../components/KpiCard'
 import MonthlyChart from '../components/MonthlyChart'
@@ -154,7 +154,7 @@ export default function AdminDashboard() {
       o.property_name, getAgentName(o.agent_id), o.type, o.origin, o.status,
       (o.final_value || o.property_value || 0).toFixed(2),
       (o.gross_commission || 0).toFixed(2), (o.agent_commission || 0).toFixed(2),
-      o.buyer_name || '', o.sale_date || o.date_added.split('T')[0], formatDateTime(o.date_added),
+      getBuyersDisplay(o) || '', o.sale_date || o.date_added.split('T')[0], formatDateTime(o.date_added),
     ])
     exportCsv(headers, rows, `victorco-operazioni-${new Date().toISOString().split('T')[0]}.csv`)
   }
@@ -357,7 +357,7 @@ export default function AdminDashboard() {
                   <td>
                     <span className="clickable-cell" onClick={() => navigate(`/admin/agent/${op.agent_id}`)}>{getAgentName(op.agent_id)}</span>
                   </td>
-                  <td style={{ fontSize: 12, color: 'var(--gl)' }}>{op.buyer_name || '—'}</td>
+                  <td style={{ fontSize: 12, color: 'var(--gl)' }}>{getBuyersDisplay(op) || '—'}</td>
                   <td><span className="clickable-cell" onClick={() => setFType(op.type)}><span className={`badge badge-${op.type}`}>{op.type}</span></span></td>
                   <td><span className="clickable-cell" onClick={() => setFOrigin(op.origin)}><span className={`badge badge-${op.origin}`}>{op.origin}</span></span></td>
                   <td><span className="clickable-cell" onClick={() => setFStatus(op.status)}><span className={`badge badge-${op.status}`}>{op.status}</span></span></td>

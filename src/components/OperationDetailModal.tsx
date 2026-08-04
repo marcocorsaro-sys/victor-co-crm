@@ -48,7 +48,21 @@ export default function OperationDetailModal({ open, operation, onClose, onEdit,
   if (!open || !operation) return null
 
   const agent = operation.profiles as Profile | undefined
-  const buyerName = [operation.buyer_first_name, operation.buyer_last_name].filter(Boolean).join(' ') || null
+  // Multi-buyer support: prefer buyers array, fallback to legacy single buyer fields
+  const buyersList: Array<{ first_name: string; last_name: string }> = (operation.buyers && operation.buyers.length > 0)
+    ? operation.buyers
+    : ((operation.buyer_first_name || operation.buyer_last_name)
+        ? [{ first_name: operation.buyer_first_name || '', last_name: operation.buyer_last_name || '' }]
+        : [])
+  const sellersList: Array<{ first_name: string; last_name: string }> = (operation.sellers && operation.sellers.length > 0)
+    ? operation.sellers
+    : []
+  const formatPersonList = (list: Array<{ first_name: string; last_name: string }>) =>
+    list.length === 0
+      ? null
+      : list.map(p => [p.first_name, p.last_name].filter(Boolean).join(' ').trim()).filter(Boolean).join(', ')
+  const buyerName = formatPersonList(buyersList)
+  const sellerName = formatPersonList(sellersList)
   const collaboratorName = [operation.collaborator_first_name, operation.collaborator_last_name].filter(Boolean).join(' ') || operation.collaborator_name || null
   const mapsUrl = operation.address
     ? `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(operation.address)}`
@@ -106,9 +120,17 @@ export default function OperationDetailModal({ open, operation, onClose, onEdit,
           </div>
         )}
 
-        {/* Acquirente */}
-        {sectionLabel('Acquirente')}
-        {infoRow('Nome acquirente', buyerName)}
+        {/* Venditori */}
+        {sellerName && (
+          <>
+            {sectionLabel(sellersList.length > 1 ? 'Venditori' : 'Venditore')}
+            {infoRow(sellersList.length > 1 ? 'Nominativi' : 'Nome', sellerName)}
+          </>
+        )}
+
+        {/* Acquirenti */}
+        {sectionLabel(buyersList.length > 1 ? 'Acquirenti' : 'Acquirente')}
+        {infoRow(buyersList.length > 1 ? 'Nominativi' : 'Nome', buyerName)}
 
         {/* Valori */}
         {sectionLabel('Valori Immobile')}
@@ -152,15 +174,44 @@ export default function OperationDetailModal({ open, operation, onClose, onEdit,
           {infoRow('Data vendita', operation.sale_date ? formatDate(operation.sale_date) : null)}
         </div>
 
-        {/* Incasso */}
-        <div style={{ marginTop: 16 }}>
-          {sectionLabel('Incasso')}
-          {infoRow('Importo incassato vend.', operation.commission_collected_seller != null ? formatEur(operation.commission_collected_seller) : null)}
-          {infoRow('Data incasso vend.', operation.collection_date_seller ? formatDate(operation.collection_date_seller) : null)}
-          {infoRow('Importo incassato acq.', operation.commission_collected_buyer != null ? formatEur(operation.commission_collected_buyer) : null)}
-          {infoRow('Data incasso acq.', operation.collection_date_buyer ? formatDate(operation.collection_date_buyer) : null)}
-          {infoRow('Totale incassato', operation.commission_collected != null ? formatEur(operation.commission_collected) : null)}
-        </div>
+        {/* Incasso (split per venditore/acquirente) */}
+        {(() => {
+          const collectedSeller = operation.commission_collected_seller
+          const collectedBuyer = operation.commission_collected_buyer
+          const dateSeller = operation.collection_date_seller
+          const dateBuyer = operation.collection_date_buyer
+          // Fallback: legacy single field
+          const hasSplit = collectedSeller != null || collectedBuyer != null || dateSeller || dateBuyer
+          const totale = (collectedSeller || 0) + (collectedBuyer || 0) || operation.commission_collected
+          if (!hasSplit && operation.commission_collected == null && !operation.collection_date) return null
+          return (
+            <div style={{ marginTop: 16 }}>
+              {sectionLabel('Incasso')}
+              {hasSplit ? (
+                <>
+                  {(collectedSeller != null || dateSeller) && (
+                    <>
+                      {infoRow('Incassato da venditore', collectedSeller != null ? formatEur(collectedSeller) : '—')}
+                      {infoRow('Data incasso venditore', dateSeller ? formatDate(dateSeller) : '—')}
+                    </>
+                  )}
+                  {(collectedBuyer != null || dateBuyer) && (
+                    <>
+                      {infoRow('Incassato da acquirente', collectedBuyer != null ? formatEur(collectedBuyer) : '—')}
+                      {infoRow('Data incasso acquirente', dateBuyer ? formatDate(dateBuyer) : '—')}
+                    </>
+                  )}
+                  {totale != null && totale > 0 && infoRow('Totale incassato', formatEur(totale))}
+                </>
+              ) : (
+                <>
+                  {infoRow('Commissione incassata', operation.commission_collected != null ? formatEur(operation.commission_collected) : null)}
+                  {infoRow('Data incasso', operation.collection_date ? formatDate(operation.collection_date) : null)}
+                </>
+              )}
+            </div>
+          )
+        })()}
 
         {/* Note */}
         {operation.notes && (

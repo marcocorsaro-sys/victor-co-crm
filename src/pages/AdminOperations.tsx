@@ -43,9 +43,13 @@ export default function AdminOperations() {
     return operations.filter(o => {
       if (search) {
         const q = search.toLowerCase()
+        const buyersText = (o.buyers || []).map(b => `${b.first_name} ${b.last_name}`).join(' ').toLowerCase()
+        const sellersText = (o.sellers || []).map(s => `${s.first_name} ${s.last_name}`).join(' ').toLowerCase()
         const match = o.property_name.toLowerCase().includes(q) ||
           (o.address || '').toLowerCase().includes(q) ||
           (o.buyer_name || '').toLowerCase().includes(q) ||
+          buyersText.includes(q) ||
+          sellersText.includes(q) ||
           (o.profiles?.full_name || '').toLowerCase().includes(q)
         if (!match) return false
       }

@@ -42,15 +42,18 @@ export default function TopBar({ profile, onLogout, viewAsAgent, onSwitchView, o
             <NavLink to="/admin/intelligence" className={({ isActive }) => isActive ? 'active' : ''}>
               Intelligence
             </NavLink>
+            <NavLink to="/admin/weekly" className={({ isActive }) => isActive ? 'active' : ''}>
+              Settimane
+            </NavLink>
+            <NavLink to="/admin/mercato" className={({ isActive }) => isActive ? 'active' : ''}>
+              Mercato
+            </NavLink>
             <NavLink to="/admin/ai" className={({ isActive }) => isActive ? 'active' : ''} style={{ color: 'var(--lime)' }}>
               AI
             </NavLink>
             <span style={{ color: 'var(--bd)', margin: '0 2px', userSelect: 'none' }}>·</span>
             <NavLink to="/calendar" className={({ isActive }) => isActive ? 'active' : ''}>
               Calendario
-            </NavLink>
-            <NavLink to="/admin/agency" className={({ isActive }) => isActive ? 'active' : ''}>
-              Agenzia
             </NavLink>
             <NavLink to="/settings" className={({ isActive }) => isActive ? 'active' : ''}>
               Impostazioni

@@ -62,13 +62,20 @@ export default function ClientDetail() {
 
   useEffect(() => { fetchData() }, [fetchData])
 
-  // Find linked operations (buyer name match or client_id)
+  // Find linked operations (client_id match OR any buyer/seller name match)
   const linkedOps = operations.filter(o => {
     if (o.client_id === clientId) return true
     if (!client) return false
-    const buyerName = [o.buyer_first_name, o.buyer_last_name].filter(Boolean).join(' ').toLowerCase()
-    const clientName = client.name.toLowerCase()
-    return buyerName && clientName && buyerName === clientName
+    const clientName = client.name.toLowerCase().trim()
+    if (!clientName) return false
+    // Check legacy single buyer
+    const legacyBuyer = [o.buyer_first_name, o.buyer_last_name].filter(Boolean).join(' ').toLowerCase().trim()
+    if (legacyBuyer && legacyBuyer === clientName) return true
+    // Check buyers array
+    if (o.buyers?.some(b => `${b.first_name} ${b.last_name}`.toLowerCase().trim() === clientName)) return true
+    // Check sellers array
+    if (o.sellers?.some(s => `${s.first_name} ${s.last_name}`.toLowerCase().trim() === clientName)) return true
+    return false
   })
 
   const handleAddProperty = async (data: Partial<ClientProperty>) => {

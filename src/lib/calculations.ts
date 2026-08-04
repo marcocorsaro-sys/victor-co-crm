@@ -152,6 +152,43 @@ export function formatNumber(value: number): string {
   return new Intl.NumberFormat('it-IT').format(value)
 }
 
+/**
+ * Format an operation's buyers list with retro-compat fallback.
+ * Returns a comma-separated list of full names, or null if no buyer/s.
+ */
+export function getBuyersDisplay(op: {
+  buyers?: Array<{ first_name: string; last_name: string }> | null
+  buyer_first_name?: string | null
+  buyer_last_name?: string | null
+  buyer_name?: string | null
+}): string | null {
+  if (op.buyers && op.buyers.length > 0) {
+    return op.buyers
+      .map(b => [b.first_name, b.last_name].filter(Boolean).join(' ').trim())
+      .filter(Boolean)
+      .join(', ') || null
+  }
+  if (op.buyer_first_name || op.buyer_last_name) {
+    return [op.buyer_first_name, op.buyer_last_name].filter(Boolean).join(' ').trim() || null
+  }
+  return op.buyer_name || null
+}
+
+/**
+ * Format an operation's sellers list. Returns null if no sellers.
+ */
+export function getSellersDisplay(op: {
+  sellers?: Array<{ first_name: string; last_name: string }> | null
+}): string | null {
+  if (op.sellers && op.sellers.length > 0) {
+    return op.sellers
+      .map(s => [s.first_name, s.last_name].filter(Boolean).join(' ').trim())
+      .filter(Boolean)
+      .join(', ') || null
+  }
+  return null
+}
+
 /** "16/03/2026" */
 export function formatDate(iso: string): string {
   return new Date(iso).toLocaleDateString('it-IT')

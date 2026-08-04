@@ -31,8 +31,8 @@ export default function OpModal({ open, onClose, onSave, initial, agentId, agent
     sale_date: '',
     final_value: '',
     notes: '',
-    buyer_first_name: '',
-    buyer_last_name: '',
+    buyers: [{ first_name: '', last_name: '' }] as Array<{ first_name: string; last_name: string }>,
+    sellers: [{ first_name: '', last_name: '' }] as Array<{ first_name: string; last_name: string }>,
     collaborator_type: 'none' as 'none' | 'internal' | 'external',
     collaborator_id: '',
     collaborator_first_name: '',
@@ -80,8 +80,14 @@ export default function OpModal({ open, onClose, onSave, initial, agentId, agent
         sale_date: initial.sale_date || '',
         final_value: initial.final_value ? toEurInput(initial.final_value) : '',
         notes: initial.notes || '',
-        buyer_first_name: initial.buyer_first_name || '',
-        buyer_last_name: initial.buyer_last_name || '',
+        buyers: (initial.buyers && initial.buyers.length > 0)
+          ? initial.buyers
+          : (initial.buyer_first_name || initial.buyer_last_name)
+            ? [{ first_name: initial.buyer_first_name || '', last_name: initial.buyer_last_name || '' }]
+            : [{ first_name: '', last_name: '' }],
+        sellers: (initial.sellers && initial.sellers.length > 0)
+          ? initial.sellers
+          : [{ first_name: '', last_name: '' }],
         collaborator_type: hasCollab ? (initial.collaborator_id ? 'internal' : 'external') : 'none',
         collaborator_id: initial.collaborator_id || '',
         collaborator_first_name: initial.collaborator_first_name || '',
@@ -119,8 +125,8 @@ export default function OpModal({ open, onClose, onSave, initial, agentId, agent
         sale_date: '',
         final_value: '',
         notes: '',
-        buyer_first_name: '',
-        buyer_last_name: '',
+        buyers: [{ first_name: '', last_name: '' }],
+        sellers: [{ first_name: '', last_name: '' }],
         collaborator_type: 'none',
         collaborator_id: '',
         collaborator_first_name: '',
@@ -193,8 +199,16 @@ export default function OpModal({ open, onClose, onSave, initial, agentId, agent
       comm_fixed_seller: parseEurInput(form.comm_fixed_seller),
       comm_fixed_buyer: parseEurInput(form.comm_fixed_buyer),
       notes: form.notes.trim() || null,
-      buyer_first_name: form.buyer_first_name.trim() || null,
-      buyer_last_name: form.buyer_last_name.trim() || null,
+      // Multi-acquirenti / multi-venditori (filtra entry vuote)
+      buyers: form.buyers
+        .map(b => ({ first_name: b.first_name.trim(), last_name: b.last_name.trim() }))
+        .filter(b => b.first_name || b.last_name),
+      sellers: form.sellers
+        .map(s => ({ first_name: s.first_name.trim(), last_name: s.last_name.trim() }))
+        .filter(s => s.first_name || s.last_name),
+      // Legacy single buyer (per retrocompatibilità: primo della lista)
+      buyer_first_name: form.buyers[0]?.first_name.trim() || null,
+      buyer_last_name: form.buyers[0]?.last_name.trim() || null,
       collaborator_id: form.collaborator_type === 'internal' && form.collaborator_id ? form.collaborator_id : null,
       collaborator_first_name: form.collaborator_type === 'external' && form.collaborator_first_name.trim() ? form.collaborator_first_name.trim() : null,
       collaborator_last_name: form.collaborator_type === 'external' && form.collaborator_last_name.trim() ? form.collaborator_last_name.trim() : null,
@@ -233,6 +247,10 @@ export default function OpModal({ open, onClose, onSave, initial, agentId, agent
       data.collection_date_buyer = null
       data.commission_collected = null
       data.collection_date = null
+      data.commission_collected_seller = null
+      data.commission_collected_buyer = null
+      data.collection_date_seller = null
+      data.collection_date_buyer = null
     }
 
     onSave(data)
@@ -298,25 +316,82 @@ export default function OpModal({ open, onClose, onSave, initial, agentId, agent
             />
           </div>
 
-          <div className="form-row">
-            <div className="form-group">
-              <label className="form-label">Nome acquirente</label>
-              <input
-                className="form-input"
-                value={form.buyer_first_name}
-                onChange={e => set('buyer_first_name', e.target.value)}
-                placeholder="Nome"
-              />
+          {/* ─── Venditori (multi) ─── */}
+          <div className="form-group">
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 6 }}>
+              <label className="form-label" style={{ margin: 0 }}>Venditori</label>
+              <button type="button" className="btn btn-secondary btn-sm"
+                onClick={() => setForm(prev => ({ ...prev, sellers: [...prev.sellers, { first_name: '', last_name: '' }] }))}
+                style={{ fontSize: 11 }}>
+                + Aggiungi venditore
+              </button>
             </div>
-            <div className="form-group">
-              <label className="form-label">Cognome acquirente</label>
-              <input
-                className="form-input"
-                value={form.buyer_last_name}
-                onChange={e => set('buyer_last_name', e.target.value)}
-                placeholder="Cognome"
-              />
+            {form.sellers.map((s, idx) => (
+              <div key={idx} className="form-row" style={{ marginBottom: 6, alignItems: 'flex-end' }}>
+                <div className="form-group" style={{ flex: 1, marginBottom: 0 }}>
+                  <input className="form-input" value={s.first_name}
+                    onChange={e => setForm(prev => ({
+                      ...prev,
+                      sellers: prev.sellers.map((it, i) => i === idx ? { ...it, first_name: e.target.value } : it)
+                    }))}
+                    placeholder="Nome" />
+                </div>
+                <div className="form-group" style={{ flex: 1, marginBottom: 0 }}>
+                  <input className="form-input" value={s.last_name}
+                    onChange={e => setForm(prev => ({
+                      ...prev,
+                      sellers: prev.sellers.map((it, i) => i === idx ? { ...it, last_name: e.target.value } : it)
+                    }))}
+                    placeholder="Cognome" />
+                </div>
+                {form.sellers.length > 1 && (
+                  <button type="button" className="btn btn-danger btn-sm"
+                    onClick={() => setForm(prev => ({ ...prev, sellers: prev.sellers.filter((_, i) => i !== idx) }))}
+                    style={{ fontSize: 11, padding: '6px 10px' }}>
+                    ✕
+                  </button>
+                )}
+              </div>
+            ))}
+          </div>
+
+          {/* ─── Acquirenti (multi) ─── */}
+          <div className="form-group">
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 6 }}>
+              <label className="form-label" style={{ margin: 0 }}>Acquirenti</label>
+              <button type="button" className="btn btn-secondary btn-sm"
+                onClick={() => setForm(prev => ({ ...prev, buyers: [...prev.buyers, { first_name: '', last_name: '' }] }))}
+                style={{ fontSize: 11 }}>
+                + Aggiungi acquirente
+              </button>
             </div>
+            {form.buyers.map((b, idx) => (
+              <div key={idx} className="form-row" style={{ marginBottom: 6, alignItems: 'flex-end' }}>
+                <div className="form-group" style={{ flex: 1, marginBottom: 0 }}>
+                  <input className="form-input" value={b.first_name}
+                    onChange={e => setForm(prev => ({
+                      ...prev,
+                      buyers: prev.buyers.map((it, i) => i === idx ? { ...it, first_name: e.target.value } : it)
+                    }))}
+                    placeholder="Nome" />
+                </div>
+                <div className="form-group" style={{ flex: 1, marginBottom: 0 }}>
+                  <input className="form-input" value={b.last_name}
+                    onChange={e => setForm(prev => ({
+                      ...prev,
+                      buyers: prev.buyers.map((it, i) => i === idx ? { ...it, last_name: e.target.value } : it)
+                    }))}
+                    placeholder="Cognome" />
+                </div>
+                {form.buyers.length > 1 && (
+                  <button type="button" className="btn btn-danger btn-sm"
+                    onClick={() => setForm(prev => ({ ...prev, buyers: prev.buyers.filter((_, i) => i !== idx) }))}
+                    style={{ fontSize: 11, padding: '6px 10px' }}>
+                    ✕
+                  </button>
+                )}
+              </div>
+            ))}
           </div>
 
           <div className="form-row">
@@ -584,10 +659,15 @@ export default function OpModal({ open, onClose, onSave, initial, agentId, agent
                 />
               )}
 
-              {/* Provvigioni incassate */}
+              {/* Provvigioni incassate split */}
               <div style={{ ...sectionStyle, marginTop: 12 }}>
                 {sectionLabel('Provvigioni Incassate')}
               </div>
+              <div style={{ fontSize: 11, color: 'var(--g)', marginBottom: 8 }}>
+                Inserisci separatamente venditore e acquirente — possono avere date di incasso diverse.
+              </div>
+
+              {/* Venditore */}
               <div className="form-row">
                 <div className="form-group">
                   <label className="form-label">Importo incassato vend. (EUR)</label>
@@ -620,6 +700,33 @@ export default function OpModal({ open, onClose, onSave, initial, agentId, agent
                     onChange={e => set('collection_date_buyer', e.target.value)} />
                 </div>
               </div>
+
+              {/* Acquirente */}
+              <div className="form-row">
+                <div className="form-group">
+                  <label className="form-label">Incasso da acquirente (EUR)</label>
+                  <input className="form-input" type="text" inputMode="decimal"
+                    value={form.commission_collected_buyer}
+                    onChange={e => set('commission_collected_buyer', e.target.value)}
+                    onFocus={e => { const n = parseEurInput(e.target.value); if (n) e.target.value = String(n) }}
+                    onBlur={e => { const n = parseEurInput(e.target.value); set('commission_collected_buyer', n ? toEurInput(n) : '') }}
+                    placeholder="0,00" />
+                </div>
+                <div className="form-group">
+                  <label className="form-label">Data incasso acquirente</label>
+                  <input className="form-input" type="date" value={form.collection_date_buyer}
+                    onChange={e => set('collection_date_buyer', e.target.value)} />
+                </div>
+              </div>
+
+              {/* Totale calcolato */}
+              {(form.commission_collected_seller || form.commission_collected_buyer) && (
+                <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 12, color: 'var(--gl)', textAlign: 'right', marginTop: 4 }}>
+                  Totale incassato: <span style={{ color: 'var(--green)', fontWeight: 600 }}>
+                    {toEurInput((parseEurInput(form.commission_collected_seller) || 0) + (parseEurInput(form.commission_collected_buyer) || 0))} EUR
+                  </span>
+                </div>
+              )}
             </>
           )}
 

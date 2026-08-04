@@ -26,14 +26,27 @@ export default function AgentClients({ profile }: Props) {
   const loading = cLoading || oLoading
   const [search, setSearch] = useState('')
 
-  // Clients linked to this agent: via linked_agent_id or via operations (buyer match)
+  // Clients linked to this agent: via linked_agent_id or via operations (any buyer/seller match)
   const myClients = useMemo(() => {
-    const buyerNames = new Set(
-      operations.map(o => [o.buyer_first_name, o.buyer_last_name].filter(Boolean).join(' ').toLowerCase()).filter(Boolean)
-    )
+    const partyNames = new Set<string>()
+    operations.forEach(o => {
+      // Legacy single buyer
+      const legacy = [o.buyer_first_name, o.buyer_last_name].filter(Boolean).join(' ').toLowerCase().trim()
+      if (legacy) partyNames.add(legacy)
+      // Multi buyers
+      o.buyers?.forEach(b => {
+        const n = `${b.first_name} ${b.last_name}`.toLowerCase().trim()
+        if (n) partyNames.add(n)
+      })
+      // Multi sellers
+      o.sellers?.forEach(s => {
+        const n = `${s.first_name} ${s.last_name}`.toLowerCase().trim()
+        if (n) partyNames.add(n)
+      })
+    })
     return clients.filter(c => {
       if (c.linked_agent_id === profile.id) return true
-      if (buyerNames.has(c.name.toLowerCase())) return true
+      if (partyNames.has(c.name.toLowerCase().trim())) return true
       return false
     })
   }, [clients, operations, profile.id])

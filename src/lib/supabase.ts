@@ -185,10 +185,14 @@ export type Operation = {
   notes: string | null
   date_added: string
   updated_at: string
-  // Acquirente
+  // Acquirente (legacy single buyer)
   buyer_first_name: string | null
   buyer_last_name: string | null
   buyer_name: string | null
+  // Acquirenti multipli (preferred)
+  buyers: Array<{ first_name: string; last_name: string }>
+  // Venditori multipli
+  sellers: Array<{ first_name: string; last_name: string }>
   // Collaboratore
   collaborator_id: string | null
   collaborator_first_name: string | null
@@ -201,9 +205,10 @@ export type Operation = {
   comm_mode_buyer: 'pct' | 'fixed'
   comm_fixed_seller: number
   comm_fixed_buyer: number
-  // Provvigioni incassate (totale = venditore + acquirente)
+  // Provvigioni incassate (legacy totale)
   commission_collected: number | null
   collection_date: string | null
+  // Provvigioni incassate split per parte
   commission_collected_seller: number | null
   commission_collected_buyer: number | null
   collection_date_seller: string | null

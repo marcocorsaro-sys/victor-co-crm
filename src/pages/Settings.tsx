@@ -4,10 +4,11 @@ import { useGoogleIntegration } from '../hooks/useGoogleIntegration'
 import GoogleConnectButton from '../components/GoogleConnectButton'
 import AdminUsers from './AdminUsers'
 import AdminActivity from './AdminActivity'
+import AdminAgencySettings from './AdminAgencySettings'
 import PasswordChangeModal from '../components/PasswordChangeModal'
 
 const TABS_AGENT = ['Profilo', 'Google'] as const
-const TABS_ADMIN = ['Profilo', 'Google', 'Gestione Utenti', 'Log Attivita'] as const
+const TABS_ADMIN = ['Profilo', 'Google', 'Agenzia', 'Gestione Utenti', 'Log Attivita'] as const
 
 export default function Settings() {
   const { profile } = useAuth()
@@ -111,6 +112,9 @@ export default function Settings() {
           </div>
         </div>
       )}
+
+      {/* ─── Agenzia (admin only, embedded) ─── */}
+      {activeTab === 'Agenzia' && isAdmin && <AdminAgencySettings />}
 
       {/* ─── Gestione Utenti (admin only, embedded) ─── */}
       {activeTab === 'Gestione Utenti' && isAdmin && <AdminUsers />}
