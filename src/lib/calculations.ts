@@ -24,15 +24,22 @@ export interface CommissionOptions {
 export const PIPELINE_WEIGHT_FALLBACK = 0.5
 
 /**
+ * Peso delle proposte accettate nelle stime: la trattativa è chiusa,
+ * resta solo il rischio che non si arrivi al rogito.
+ */
+export const ACCEPTED_PROPOSAL_WEIGHT = 0.9
+
+/**
  * Human-readable formula text for tooltips/legends.
  * Keep in sync with getPipelineWeight + estimatePipelineCommission.
  */
 export const PIPELINE_FORMULAS = {
   weight: 'peso = sale_probability / 100 (30% / 60% / 90%); 50% se non specificata',
+  acceptedWeight: 'Proposte accettate: peso fisso 90% (resta solo il rischio rogito)',
   pipelineGross: 'Comm. lorda pipeline = somma commissioni lorde di tutte le operazioni in pipeline (non pesata)',
   pipelineWeighted: 'Comm. pipeline pesata = Σ (comm. lorda operazione × peso probabilità)',
-  estimatedTotal: 'Stima Tot. anno = Comm. chiuse nell\'anno + Comm. lorda pipeline (scenario ottimistico)',
-  estimatedWeighted: 'Stima Pesata anno = Comm. chiuse nell\'anno + Comm. pipeline pesata (scenario realistico)',
+  estimatedTotal: 'Stima Tot. anno = Comm. chiuse nell\'anno + proposte accettate + Comm. lorda pipeline (scenario ottimistico)',
+  estimatedWeighted: 'Stima Pesata anno = Comm. chiuse nell\'anno + proposte accettate × 90% + Comm. pipeline pesata (scenario realistico)',
   agentShare: 'Quota agente = Comm. lorda × (% agenzia se origine agenzia/valutazione, % agente se origine agente)',
   agencyMargin: 'Margine agenzia = Comm. lorda - Quota agente - Quota collaboratore',
 }

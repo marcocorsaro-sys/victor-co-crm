@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useOperations } from '../hooks/useOperations'
 import { useProfiles } from '../hooks/useProfiles'
-import { formatEur, formatDate, formatDateTime, estimatePipelineCommission, getPipelineWeight, PIPELINE_FORMULAS, getBuyersDisplay } from '../lib/calculations'
+import { formatEur, formatDate, formatDateTime, estimatePipelineCommission, getPipelineWeight, PIPELINE_FORMULAS, ACCEPTED_PROPOSAL_WEIGHT, getBuyersDisplay } from '../lib/calculations'
 import { exportCsv } from '../lib/exportCsv'
 import KpiCard from '../components/KpiCard'
 import MonthlyChart from '../components/MonthlyChart'
@@ -61,7 +61,7 @@ export default function AdminDashboard() {
     return { agentId: op.agent_id, gross, weight, weightedGross: gross * weight }
   })
 
-  // Proposte accettate: peso 100% (certe), separate da pipeline
+  // Proposte accettate: separate da pipeline, pesate ACCEPTED_PROPOSAL_WEIGHT nella stima realistica
   const proposteCommEstimates = proposte.map(op => {
     const agent = agents.find(a => a.id === op.agent_id)
     const r = estimatePipelineCommission(op, agent)
@@ -71,10 +71,10 @@ export default function AdminDashboard() {
   const pipelineExpectedGross = pipelineCommEstimates.reduce((s, e) => s + e.gross, 0)
   const pipelineWeightedGross = pipelineCommEstimates.reduce((s, e) => s + e.weightedGross, 0)
   const proposteGross = proposteCommEstimates.reduce((s, e) => s + e.gross, 0)
-  // Stima totale = chiuse + proposte (certe) + pipeline intera (ottimistico)
+  // Stima totale = chiuse + proposte + pipeline intera (ottimistico)
   const estimatedTotalYear = totalGrossYear + proposteGross + pipelineExpectedGross
-  // Stima pesata = chiuse + proposte (100%) + pipeline pesata (realistico)
-  const estimatedWeightedYear = totalGrossYear + proposteGross + pipelineWeightedGross
+  // Stima pesata = chiuse + proposte × 90% + pipeline pesata (realistico)
+  const estimatedWeightedYear = totalGrossYear + proposteGross * ACCEPTED_PROPOSAL_WEIGHT + pipelineWeightedGross
 
   const agentPerf = agents.filter(a => a.active).map(agent => {
     const agentOps = operations.filter(o => o.agent_id === agent.id)
@@ -97,9 +97,9 @@ export default function AdminDashboard() {
     const propostaGross = proposteCommEstimates
       .filter(e => e.agentId === agent.id)
       .reduce((s, e) => s + e.gross, 0)
-    // Include sempre proposte come "certe" (100%) + pipeline (intera o pesata)
+    // Stima tot: proposte + pipeline intera; stima pesata: proposte × 90% + pipeline pesata
     const estimatedTotal = totalComm + propostaGross + pipelineGross
-    const estimatedWeighted = totalComm + propostaGross + pipelineWeighted
+    const estimatedWeighted = totalComm + propostaGross * ACCEPTED_PROPOSAL_WEIGHT + pipelineWeighted
     return { agent, closed: agentCompletedYear.length, pipeline: agentPipeline.length, proposte: agentProposte.length, totalComm, agentComm, agencyComm, closingRate, pipelineGross, pipelineWeighted, propostaGross, estimatedTotal, estimatedWeighted }
   })
 

@@ -96,27 +96,22 @@ export default function AdminIntelligence() {
   // Projection only for current year
   const projResult = useMemo(() => {
     if (!isCurrentYear) return null
-    const filteredCompleted = fAgent ? operations.filter(o => o.status === 'incassato' && o.agent_id === fAgent) : operations.filter(o => o.status === 'incassato')
-    const filteredPipeline = fAgent ? operations.filter(o => o.status === 'pipeline' && o.agent_id === fAgent) : operations.filter(o => o.status === 'pipeline')
-    return calculateProjectedTrajectory(filteredCompleted, filteredPipeline, agents, selectedYear)
+    const filteredCompleted = operations.filter(o => o.status === 'incassato' && (!fAgent || o.agent_id === fAgent))
+    // Include proposta_accettata: pesa 90% nel modello (pipeline pesata)
+    const filteredOpen = operations.filter(o =>
+      (o.status === 'pipeline' || o.status === 'proposta_accettata') && (!fAgent || o.agent_id === fAgent))
+    return calculateProjectedTrajectory(filteredCompleted, filteredOpen, agents, selectedYear)
   }, [operations, agents, selectedYear, fAgent, isCurrentYear])
 
   const bd = projResult?.breakdown || null
   const [showFormula, setShowFormula] = useState(false)
 
-  // Projections only make sense for current year
-  const currentMonth = new Date().getMonth() + 1
-  const monthsElapsed = isCurrentYear ? currentMonth : 12
-  const monthlyAgentRate = totalAgent / Math.max(monthsElapsed, 1)
-  const monthlyMarginRate = agencyMargin / Math.max(monthsElapsed, 1)
-  const monthlyValueRate = totalValue / Math.max(monthsElapsed, 1)
-  const monthlyOpsRate = completed.length / Math.max(monthsElapsed, 1)
-
-  const projectedGross = isCurrentYear ? (projResult?.monthly[11]?.cumulativeProjected || 0) : totalGross
-  const projAgent = isCurrentYear ? totalAgent + monthlyAgentRate * (12 - currentMonth) : totalAgent
-  const projMargin = isCurrentYear ? agencyMargin + monthlyMarginRate * (12 - currentMonth) : agencyMargin
-  const projValue = isCurrentYear ? totalValue + monthlyValueRate * (12 - currentMonth) : totalValue
-  const projOps = isCurrentYear ? Math.round(completed.length + monthlyOpsRate * (12 - currentMonth)) : completed.length
+  // Proiezioni dal modello pipeline pesata (solo anno corrente)
+  const projectedGross = isCurrentYear ? (bd?.projectedTotal || 0) : totalGross
+  const projAgent = isCurrentYear ? (bd?.projectedAgent || 0) : totalAgent
+  const projMargin = isCurrentYear ? (bd?.projectedMargin || 0) : agencyMargin
+  const projValue = isCurrentYear ? (bd?.projectedValue || 0) : totalValue
+  const projOps = isCurrentYear ? Math.round(bd?.projectedOps || 0) : completed.length
 
   const delta = (curr: number, prev: number) => prev > 0 ? ((curr - prev) / prev * 100) : curr > 0 ? 100 : 0
 
@@ -345,32 +340,29 @@ export default function AdminIntelligence() {
               </button>
               {showFormula && (
                 <div style={{ marginTop: 12, padding: 14, background: 'var(--bg2)', borderRadius: 8, border: '1px solid var(--bd)', fontSize: 12, lineHeight: 1.8 }}>
-                  <div style={{ ...mono, fontSize: 11, color: 'var(--lime)', marginBottom: 8, textTransform: 'uppercase' }}>// Metodologia di proiezione</div>
+                  <div style={{ ...mono, fontSize: 11, color: 'var(--lime)', marginBottom: 8, textTransform: 'uppercase' }}>// Metodologia: pipeline pesata (nessun trend storico)</div>
                   <div style={{ color: 'var(--gl)' }}>
-                    <strong style={{ color: 'var(--w)' }}>1. Consuntivo YTD:</strong> somma commissioni lorde dei mesi completati = <span style={{ ...mono, color: 'var(--lime)' }}>{formatEur(bd.ytdActual)}</span>
+                    <strong style={{ color: 'var(--w)' }}>1. Consuntivo YTD:</strong> commissioni lorde già incassate nell'anno = <span style={{ ...mono, color: 'var(--lime)' }}>{formatEur(bd.ytdActual)}</span>
                   </div>
                   <div style={{ color: 'var(--gl)' }}>
-                    <strong style={{ color: 'var(--w)' }}>2. Media mensile:</strong> media dei {bd.monthsWithOps} mesi con operazioni = <span style={{ ...mono, color: 'var(--lime)' }}>{formatEur(bd.avgMonthly)}</span>/mese
+                    <strong style={{ color: 'var(--w)' }}>2. Proposte accettate × 90%:</strong> la trattativa è chiusa, resta solo il rischio rogito.
+                    <br />Lordo: <span style={{ ...mono, color: 'var(--g)' }}>{formatEur(bd.acceptedGross)}</span> → Pesato: <span style={{ ...mono, color: 'var(--amber)' }}>{formatEur(bd.acceptedWeighted)}</span>
                   </div>
                   <div style={{ color: 'var(--gl)' }}>
-                    <strong style={{ color: 'var(--w)' }}>3. Close rate storico:</strong> operazioni chiuse negli ultimi 12 mesi / totale = <span style={{ ...mono, color: 'var(--teal)' }}>{(bd.closeRate * 100).toFixed(0)}%</span>
-                  </div>
-                  <div style={{ color: 'var(--gl)' }}>
-                    <strong style={{ color: 'var(--w)' }}>4. Pipeline pesata per probabilità:</strong> ogni operazione in pipeline viene pesata per la sua probabilità di vendita (30%, 60%, 90%). Le operazioni senza probabilità usano il close rate storico.
+                    <strong style={{ color: 'var(--w)' }}>3. Pipeline pesata per probabilità:</strong> ogni operazione pesa per la sua probabilità di vendita (30% / 60% / 90%, 50% se non indicata) e per la probabilità di chiudere entro il 31/12 (lead mediano storico: {bd.medianLeadDays.toFixed(0)} gg{bd.discountedOpsCount > 0 ? `; ${bd.discountedOpsCount} operazioni scontate perché troppo recenti` : ''}).
                     <br />Pipeline lorda totale: <span style={{ ...mono, color: 'var(--g)' }}>{formatEur(bd.pipelineGrossTotal)}</span> → Pesata: <span style={{ ...mono, color: 'var(--amber)' }}>{formatEur(bd.pipelineWeightedByProb)}</span>
                   </div>
-                  <div style={{ color: 'var(--gl)', marginTop: 4 }}>
-                    <strong style={{ color: 'var(--w)' }}>5. Formula mese futuro:</strong>
-                  </div>
-                  <div style={{ ...mono, color: 'var(--lime)', padding: '6px 12px', background: 'var(--s1)', borderRadius: 6, margin: '4px 0', fontSize: 11 }}>
-                    proiezione_mese = (media_mensile × 50%) + (pipeline_pesata ÷ mesi_rimanenti × 50%)
+                  <div style={{ ...mono, color: 'var(--lime)', padding: '6px 12px', background: 'var(--s1)', borderRadius: 6, margin: '8px 0', fontSize: 11 }}>
+                    stima_31/12 = YTD + proposte_accettate × 90% + Σ (pipeline × probabilità × fattore_tempo)
                   </div>
                   <div style={{ color: 'var(--gl)' }}>
-                    = ({formatEur(bd.avgMonthly)} × 50%) + ({formatEur(bd.pipelineWeightedByProb)} ÷ {bd.remainingMonths} × 50%)
-                    = <span style={{ ...mono, color: 'var(--amber)' }}>{formatEur(bd.trendComponent + bd.pipelineComponent)}</span>/mese
+                    <strong style={{ color: 'var(--w)' }}>4. Totale proiettato 31/12:</strong> {formatEur(bd.ytdActual)} + {formatEur(bd.acceptedWeighted)} + {formatEur(bd.pipelineWeightedByProb)} = <span style={{ ...mono, color: 'var(--amber)', fontWeight: 700 }}>{formatEur(bd.projectedTotal)}</span>
                   </div>
-                  <div style={{ color: 'var(--gl)', marginTop: 4 }}>
-                    <strong style={{ color: 'var(--w)' }}>6. Totale proiettato 31/12:</strong> {formatEur(bd.ytdActual)} + {bd.remainingMonths} mesi × {formatEur(bd.trendComponent + bd.pipelineComponent)} = <span style={{ ...mono, color: 'var(--amber)', fontWeight: 700 }}>{formatEur(bd.projectedTotal)}</span>
+                  <div style={{ color: 'var(--gl)', marginTop: 8, paddingTop: 8, borderTop: '1px solid var(--bd)' }}>
+                    <strong style={{ color: 'var(--w)' }}>Scenari:</strong>{' '}
+                    Prudente (solo prob. ≥ 60%): <span style={{ ...mono, color: 'var(--teal)' }}>{formatEur(bd.projectedPrudente)}</span>
+                    {' · '}Realistico: <span style={{ ...mono, color: 'var(--amber)' }}>{formatEur(bd.projectedTotal)}</span>
+                    {' · '}Ottimistico (tutto al lordo): <span style={{ ...mono, color: 'var(--g)' }}>{formatEur(bd.projectedOttimista)}</span>
                   </div>
                 </div>
               )}
