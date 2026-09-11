@@ -263,7 +263,7 @@ export default function OpModal({ open, onClose, onSave, initial, agentId, agent
 
   const sectionStyle = { borderTop: '1px solid var(--bd)', margin: '16px 0', paddingTop: 16 }
   const sectionLabel = (text: string) => (
-    <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 11, color: 'var(--ld)', textTransform: 'uppercase' as const, marginBottom: 12, letterSpacing: '0.5px' }}>
+    <div style={{ fontFamily: "'Montserrat', sans-serif", fontSize: 11, color: 'var(--ld)', textTransform: 'uppercase' as const, marginBottom: 12, letterSpacing: '0.5px' }}>
       // {text}
     </div>
   )
@@ -441,7 +441,7 @@ export default function OpModal({ open, onClose, onSave, initial, agentId, agent
                         ? p === '30' ? 'var(--red)' : p === '60' ? 'var(--amber)' : 'var(--green)'
                         : 'var(--bd)'}`,
                       background: form.sale_probability === p
-                        ? p === '30' ? 'rgba(239,68,68,0.15)' : p === '60' ? 'rgba(245,158,11,0.15)' : 'rgba(34,197,94,0.15)'
+                        ? p === '30' ? 'rgba(192,57,43,0.15)' : p === '60' ? 'rgba(183,121,31,0.15)' : 'rgba(29,143,95,0.15)'
                         : 'var(--bg2)',
                       color: form.sale_probability === p
                         ? p === '30' ? 'var(--red)' : p === '60' ? 'var(--amber)' : 'var(--green)'
@@ -721,7 +721,7 @@ export default function OpModal({ open, onClose, onSave, initial, agentId, agent
 
               {/* Totale calcolato */}
               {(form.commission_collected_seller || form.commission_collected_buyer) && (
-                <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 12, color: 'var(--gl)', textAlign: 'right', marginTop: 4 }}>
+                <div style={{ fontFamily: "'Montserrat', sans-serif", fontSize: 12, color: 'var(--gl)', textAlign: 'right', marginTop: 4 }}>
                   Totale incassato: <span style={{ color: 'var(--green)', fontWeight: 600 }}>
                     {toEurInput((parseEurInput(form.commission_collected_seller) || 0) + (parseEurInput(form.commission_collected_buyer) || 0))} EUR
                   </span>

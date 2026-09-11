@@ -23,6 +23,7 @@ import AdminMercato from './pages/AdminMercato'
 import AdminAgencySettings from './pages/AdminAgencySettings'
 import CalendarPage from './pages/CalendarPage'
 import Settings from './pages/Settings'
+import Vademecum from './pages/Vademecum'
 import type { Profile } from './lib/supabase'
 
 function App() {
@@ -40,7 +41,7 @@ function App() {
         background: 'var(--bg)',
       }}>
         <div style={{
-          fontFamily: "'JetBrains Mono', monospace",
+          fontFamily: "'Montserrat', sans-serif",
           color: 'var(--lime)',
           fontSize: 16,
         }}>
@@ -72,7 +73,7 @@ function App() {
         {/* Impersonate banner */}
         {isViewingAsAgent && (
           <div style={{
-            background: 'rgba(245,158,11,0.15)',
+            background: 'rgba(183,121,31,0.15)',
             border: '1px solid var(--amber)',
             borderRadius: 8,
             padding: '8px 16px',
@@ -110,6 +111,7 @@ function App() {
               <Route path="/admin/agency" element={<AdminAgencySettings />} />
               <Route path="/calendar" element={<CalendarPage />} />
               <Route path="/settings" element={<Settings />} />
+              <Route path="/vademecum" element={<Vademecum />} />
               <Route path="*" element={<Navigate to="/dashboard" replace />} />
             </>
           ) : (
@@ -120,6 +122,7 @@ function App() {
               <Route path="/admin/client/:clientId" element={<ClientDetail />} />
               <Route path="/calendar" element={<CalendarPage />} />
               <Route path="/settings" element={<Settings />} />
+              <Route path="/vademecum" element={<Vademecum />} />
               <Route path="*" element={<Navigate to="/agent" replace />} />
             </>
           )}

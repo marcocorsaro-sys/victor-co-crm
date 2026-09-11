@@ -11,7 +11,7 @@ type Props = {
 
 const sectionLabel = (text: string) => (
   <div style={{
-    fontFamily: "'JetBrains Mono', monospace",
+    fontFamily: "'Montserrat', sans-serif",
     fontSize: 11,
     color: 'var(--ld)',
     textTransform: 'uppercase',

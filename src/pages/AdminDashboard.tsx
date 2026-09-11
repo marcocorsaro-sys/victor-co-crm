@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, Link } from 'react-router-dom'
 import { useOperations } from '../hooks/useOperations'
 import { useProfiles } from '../hooks/useProfiles'
 import { formatEur, formatDate, formatDateTime, estimatePipelineCommission, getPipelineWeight, PIPELINE_FORMULAS, ACCEPTED_PROPOSAL_WEIGHT, getBuyersDisplay } from '../lib/calculations'
@@ -162,6 +162,7 @@ export default function AdminDashboard() {
   return (
     <div>
       {/* Year selector + KPI heading */}
+      <VademecumBanner />
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
         <div className="section-heading" style={{ margin: 0 }}>KPI Globali</div>
         <select className="filter-select" value={selectedYear}
@@ -227,26 +228,26 @@ export default function AdminDashboard() {
                       </div>
                     </td>
                     <td>{p.closed}</td><td>{p.pipeline}</td>
-                    <td style={{ fontFamily: "'JetBrains Mono', monospace" }}>{formatEur(p.totalComm)}</td>
-                    <td style={{ fontFamily: "'JetBrains Mono', monospace", color: 'var(--teal)' }}>{formatEur(p.agentComm)}</td>
-                    <td style={{ fontFamily: "'JetBrains Mono', monospace", color: 'var(--amber)' }}>{formatEur(p.agencyComm)}</td>
-                    <td style={{ fontFamily: "'JetBrains Mono', monospace", color: 'var(--amber)' }}>{formatEur(p.pipelineGross)}</td>
-                    <td style={{ fontFamily: "'JetBrains Mono', monospace", color: 'var(--amber)' }}>{formatEur(p.pipelineWeighted)}</td>
-                    <td style={{ fontFamily: "'JetBrains Mono', monospace", color: 'var(--green)', fontWeight: 600 }}>{formatEur(p.estimatedTotal)}</td>
-                    <td style={{ fontFamily: "'JetBrains Mono', monospace", color: 'var(--teal)', fontWeight: 600 }}>{formatEur(p.estimatedWeighted)}</td>
+                    <td style={{ fontFamily: "'Montserrat', sans-serif" }}>{formatEur(p.totalComm)}</td>
+                    <td style={{ fontFamily: "'Montserrat', sans-serif", color: 'var(--teal)' }}>{formatEur(p.agentComm)}</td>
+                    <td style={{ fontFamily: "'Montserrat', sans-serif", color: 'var(--amber)' }}>{formatEur(p.agencyComm)}</td>
+                    <td style={{ fontFamily: "'Montserrat', sans-serif", color: 'var(--amber)' }}>{formatEur(p.pipelineGross)}</td>
+                    <td style={{ fontFamily: "'Montserrat', sans-serif", color: 'var(--amber)' }}>{formatEur(p.pipelineWeighted)}</td>
+                    <td style={{ fontFamily: "'Montserrat', sans-serif", color: 'var(--green)', fontWeight: 600 }}>{formatEur(p.estimatedTotal)}</td>
+                    <td style={{ fontFamily: "'Montserrat', sans-serif", color: 'var(--teal)', fontWeight: 600 }}>{formatEur(p.estimatedWeighted)}</td>
                     <td>{p.closingRate.toFixed(0)}%</td>
                   </tr>
                 ))}
                 <tr className="total-row">
                   <td>Totale</td>
                   <td>{perfTotals.closed}</td><td>{perfTotals.pipeline}</td>
-                  <td style={{ fontFamily: "'JetBrains Mono', monospace" }}>{formatEur(perfTotals.totalComm)}</td>
-                  <td style={{ fontFamily: "'JetBrains Mono', monospace", color: 'var(--teal)' }}>{formatEur(perfTotals.agentComm)}</td>
-                  <td style={{ fontFamily: "'JetBrains Mono', monospace", color: 'var(--amber)' }}>{formatEur(perfTotals.agencyComm)}</td>
-                  <td style={{ fontFamily: "'JetBrains Mono', monospace", color: 'var(--amber)' }}>{formatEur(perfTotals.pipelineGross)}</td>
-                  <td style={{ fontFamily: "'JetBrains Mono', monospace", color: 'var(--amber)' }}>{formatEur(perfTotals.pipelineWeighted)}</td>
-                  <td style={{ fontFamily: "'JetBrains Mono', monospace", color: 'var(--green)', fontWeight: 600 }}>{formatEur(perfTotals.estimatedTotal)}</td>
-                  <td style={{ fontFamily: "'JetBrains Mono', monospace", color: 'var(--teal)', fontWeight: 600 }}>{formatEur(perfTotals.estimatedWeighted)}</td>
+                  <td style={{ fontFamily: "'Montserrat', sans-serif" }}>{formatEur(perfTotals.totalComm)}</td>
+                  <td style={{ fontFamily: "'Montserrat', sans-serif", color: 'var(--teal)' }}>{formatEur(perfTotals.agentComm)}</td>
+                  <td style={{ fontFamily: "'Montserrat', sans-serif", color: 'var(--amber)' }}>{formatEur(perfTotals.agencyComm)}</td>
+                  <td style={{ fontFamily: "'Montserrat', sans-serif", color: 'var(--amber)' }}>{formatEur(perfTotals.pipelineGross)}</td>
+                  <td style={{ fontFamily: "'Montserrat', sans-serif", color: 'var(--amber)' }}>{formatEur(perfTotals.pipelineWeighted)}</td>
+                  <td style={{ fontFamily: "'Montserrat', sans-serif", color: 'var(--green)', fontWeight: 600 }}>{formatEur(perfTotals.estimatedTotal)}</td>
+                  <td style={{ fontFamily: "'Montserrat', sans-serif", color: 'var(--teal)', fontWeight: 600 }}>{formatEur(perfTotals.estimatedWeighted)}</td>
                   <td>—</td>
                 </tr>
               </>
@@ -358,13 +359,13 @@ export default function AdminDashboard() {
                   <td><span className="clickable-cell" onClick={() => setFType(op.type)}><span className={`badge badge-${op.type}`}>{op.type}</span></span></td>
                   <td><span className="clickable-cell" onClick={() => setFOrigin(op.origin)}><span className={`badge badge-${op.origin}`}>{op.origin}</span></span></td>
                   <td><span className="clickable-cell" onClick={() => setFStatus(op.status)}><span className={`badge badge-${op.status}`}>{op.status}</span></span></td>
-                  <td style={{ fontFamily: "'JetBrains Mono', monospace" }}>
+                  <td style={{ fontFamily: "'Montserrat', sans-serif" }}>
                     {formatEur(op.final_value || op.property_value || 0)}
                   </td>
-                  <td style={{ fontFamily: "'JetBrains Mono', monospace" }}>
+                  <td style={{ fontFamily: "'Montserrat', sans-serif" }}>
                     {op.gross_commission ? formatEur(op.gross_commission) : '—'}
                   </td>
-                  <td style={{ fontFamily: "'JetBrains Mono', monospace", color: 'var(--teal)' }}>
+                  <td style={{ fontFamily: "'Montserrat', sans-serif", color: 'var(--teal)' }}>
                     {op.agent_commission ? formatEur(op.agent_commission) : '—'}
                   </td>
                   <td style={{ fontSize: 12, color: 'var(--gl)' }}>
@@ -401,6 +402,21 @@ export default function AdminDashboard() {
         operations={operations}
         onClose={() => setDetailAgent(null)}
       />
+    </div>
+  )
+}
+
+function VademecumBanner() {
+  return (
+    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 16, flexWrap: 'wrap', background: 'var(--navy)', color: '#fff', borderRadius: 10, padding: '12px 18px', marginBottom: 20 }}>
+      <div>
+        <div style={{ fontFamily: "'Montserrat', sans-serif", fontSize: 11, letterSpacing: 1.5, textTransform: 'uppercase', color: '#b9ccd6' }}>Nuovo · uso interno</div>
+        <div style={{ fontWeight: 600 }}>Vademecum Reels & Open House — v1 · come comunicare da intermediari, sempre</div>
+      </div>
+      <div style={{ display: 'flex', gap: 8 }}>
+        <Link to="/vademecum" className="btn btn-sm" style={{ background: '#fff', color: 'var(--navy)', border: 'none' }}>Apri</Link>
+        <a href="/docs/vademecum-reels-v1.pdf" download="VictorCo_Vademecum_Reels_OpenHouse_v1.pdf" className="btn btn-sm" style={{ background: 'transparent', color: '#fff', border: '1px solid rgba(255,255,255,0.5)' }}>Scarica PDF</a>
+      </div>
     </div>
   )
 }

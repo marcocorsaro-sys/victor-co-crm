@@ -18,9 +18,9 @@ type Props = { operation: OperationWithAgent }
 const statusBadge = (status: string) => {
   const map: Record<string, { color: string; bg: string; label: string }> = {
     missing: { color: 'var(--g)', bg: 'rgba(120,120,120,0.15)', label: 'Mancante' },
-    draft: { color: 'var(--amber)', bg: 'rgba(245,158,11,0.15)', label: 'Bozza' },
-    generated: { color: 'var(--teal)', bg: 'rgba(20,184,166,0.15)', label: 'Generato' },
-    signed: { color: 'var(--green)', bg: 'rgba(34,197,94,0.15)', label: '✓ Firmato' },
+    draft: { color: 'var(--amber)', bg: 'rgba(183,121,31,0.15)', label: 'Bozza' },
+    generated: { color: 'var(--teal)', bg: 'rgba(31,111,139,0.15)', label: 'Generato' },
+    signed: { color: 'var(--green)', bg: 'rgba(29,143,95,0.15)', label: '✓ Firmato' },
     archived: { color: 'var(--g)', bg: 'rgba(120,120,120,0.1)', label: 'Archiviato' },
   }
   const cfg = map[status] || map.missing
@@ -256,12 +256,12 @@ export default function DocumentsTab({ operation }: Props) {
             </div>
           )}
           {doc?.generated_at && (
-            <div style={{ fontSize: 10, color: 'var(--teal)', marginTop: 2, fontFamily: "'JetBrains Mono', monospace" }}>
+            <div style={{ fontSize: 10, color: 'var(--teal)', marginTop: 2, fontFamily: "'Montserrat', sans-serif" }}>
               Generato il {formatDate(doc.generated_at)}
             </div>
           )}
           {doc?.signed_at && (
-            <div style={{ fontSize: 10, color: 'var(--green)', marginTop: 2, fontFamily: "'JetBrains Mono', monospace" }}>
+            <div style={{ fontSize: 10, color: 'var(--green)', marginTop: 2, fontFamily: "'Montserrat', sans-serif" }}>
               Firmato il {formatDate(doc.signed_at)}
             </div>
           )}
@@ -297,7 +297,7 @@ export default function DocumentsTab({ operation }: Props) {
 
       {sellerTemplates.length > 0 && (
         <div style={{ marginBottom: 16, background: 'var(--s2)', borderRadius: 8, border: '1px solid var(--bd)' }}>
-          <div style={{ padding: '8px 12px', fontFamily: "'JetBrains Mono', monospace", fontSize: 11, color: 'var(--ld)', textTransform: 'uppercase', letterSpacing: '0.5px', borderBottom: '1px solid var(--bd)' }}>
+          <div style={{ padding: '8px 12px', fontFamily: "'Montserrat', sans-serif", fontSize: 11, color: 'var(--ld)', textTransform: 'uppercase', letterSpacing: '0.5px', borderBottom: '1px solid var(--bd)' }}>
             // Documenti Venditore {!hasSeller && <span style={{ color: 'var(--amber)', textTransform: 'none', marginLeft: 6 }}>(cliente venditore non collegato — i campi dovranno essere inseriti a mano)</span>}
           </div>
           {sellerTemplates.map(renderRow)}
@@ -305,7 +305,7 @@ export default function DocumentsTab({ operation }: Props) {
       )}
 
       <div style={{ marginBottom: 16, background: 'var(--s2)', borderRadius: 8, border: '1px solid var(--bd)' }}>
-        <div style={{ padding: '8px 12px', fontFamily: "'JetBrains Mono', monospace", fontSize: 11, color: 'var(--ld)', textTransform: 'uppercase', letterSpacing: '0.5px', borderBottom: '1px solid var(--bd)' }}>
+        <div style={{ padding: '8px 12px', fontFamily: "'Montserrat', sans-serif", fontSize: 11, color: 'var(--ld)', textTransform: 'uppercase', letterSpacing: '0.5px', borderBottom: '1px solid var(--bd)' }}>
           // Documenti Acquirente {!hasBuyer && <span style={{ color: 'var(--amber)', textTransform: 'none', marginLeft: 6 }}>(acquirente non ancora associato)</span>}
         </div>
         {buyerTemplates.map(renderRow)}

@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import type { Profile } from '../lib/supabase'
 
-const COLOR_PRESETS = ['#3b82f6', '#8b5cf6', '#f97316', '#ef4444', '#10b981', '#f59e0b']
+const COLOR_PRESETS = ['#3b82f6', '#8b5cf6', '#f97316', '#ef4444', '#10b981', 'var(--amber)']
 
 type SaveData = {
   first_name: string
@@ -131,7 +131,7 @@ export default function UserModal({ open, onClose, onSave, initial }: Props) {
     if (errors[key]) setErrors(prev => ({ ...prev, [key]: '' }))
   }
 
-  const mono = { fontFamily: "'JetBrains Mono', monospace" }
+  const mono = { fontFamily: "'Montserrat', sans-serif" }
   const roleLabel = isAgent ? 'Agente' : 'Amministratore'
 
   const sectionLabel = (text: string) => (
@@ -177,7 +177,7 @@ export default function UserModal({ open, onClose, onSave, initial }: Props) {
                 <div style={{ display: 'flex', gap: 6, alignItems: 'center', marginTop: 2 }}>
                   <span className={`role-badge ${initial.role}`}>{initial.role === 'admin' ? 'ADMIN' : 'AGENT'}</span>
                   <span className={`badge ${initial.active ? 'badge-completata' : ''}`}
-                    style={!initial.active ? { background: 'rgba(239,68,68,0.15)', color: 'var(--red)' } : {}}>
+                    style={!initial.active ? { background: 'rgba(192,57,43,0.15)', color: 'var(--red)' } : {}}>
                     {initial.active ? 'ATTIVO' : 'DISATTIVATO'}
                   </span>
                 </div>
@@ -209,7 +209,7 @@ export default function UserModal({ open, onClose, onSave, initial }: Props) {
                   <button key={r} type="button" onClick={() => set('role', r)} style={{
                     flex: 1, padding: '8px 0', borderRadius: 8,
                     border: `2px solid ${form.role === r ? 'var(--lime)' : 'var(--bd)'}`,
-                    background: form.role === r ? 'rgba(190,227,39,0.1)' : 'var(--bg2)',
+                    background: form.role === r ? 'rgba(13,52,71,0.1)' : 'var(--bg2)',
                     color: form.role === r ? 'var(--lime)' : 'var(--g)',
                     cursor: 'pointer', fontWeight: form.role === r ? 700 : 400, fontSize: 13, transition: 'all 0.15s',
                   }}>

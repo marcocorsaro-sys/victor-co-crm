@@ -33,7 +33,7 @@ export default function OpCard({ op, expectedCommission, onClose, onEdit, onDele
             padding: '2px 8px',
             borderRadius: 6,
             color: op.sale_probability <= 30 ? 'var(--red)' : op.sale_probability <= 60 ? 'var(--amber)' : 'var(--green)',
-            background: op.sale_probability <= 30 ? 'rgba(239,68,68,0.15)' : op.sale_probability <= 60 ? 'rgba(245,158,11,0.15)' : 'rgba(34,197,94,0.15)',
+            background: op.sale_probability <= 30 ? 'rgba(192,57,43,0.15)' : op.sale_probability <= 60 ? 'rgba(183,121,31,0.15)' : 'rgba(29,143,95,0.15)',
           }}>
             {op.sale_probability}%
           </span>

@@ -75,7 +75,7 @@ export default function AdminAI() {
     }
   }
 
-  const mono = { fontFamily: "'JetBrains Mono', monospace" } as const
+  const mono = { fontFamily: "'Montserrat', sans-serif" } as const
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', height: 'calc(100vh - 80px)' }}>
@@ -132,8 +132,8 @@ export default function AdminAI() {
                   maxWidth: '80%',
                   padding: '10px 14px',
                   borderRadius: 12,
-                  background: msg.role === 'user' ? 'rgba(200,230,74,0.15)' : 'var(--bg2)',
-                  border: `1px solid ${msg.role === 'user' ? 'rgba(200,230,74,0.3)' : 'var(--bd)'}`,
+                  background: msg.role === 'user' ? 'rgba(13,52,71,0.15)' : 'var(--bg2)',
+                  border: `1px solid ${msg.role === 'user' ? 'rgba(13,52,71,0.3)' : 'var(--bd)'}`,
                 }}>
                   {msg.role === 'assistant' && (
                     <div style={{ ...mono, fontSize: 10, color: 'var(--lime)', marginBottom: 6 }}>// Victor AI</div>
@@ -190,7 +190,7 @@ export default function AdminAI() {
             flex: 1, resize: 'none',
             background: 'transparent', border: 'none', outline: 'none',
             color: 'var(--w)', fontSize: 14, padding: '8px 12px',
-            fontFamily: 'Inter, sans-serif',
+            fontFamily: 'Poppins, sans-serif',
           }}
         />
         <button

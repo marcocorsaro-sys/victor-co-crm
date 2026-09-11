@@ -83,7 +83,7 @@ export default function BudgetSection({ agents, operations }: Props) {
     <div className="budget-section">
       <div className="budget-header">
         <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-          <span className="forecast-label" style={{ background: 'rgba(16,185,129,0.15)', color: 'var(--green)' }}>BUDGET</span>
+          <span className="forecast-label" style={{ background: 'rgba(29,143,95,0.15)', color: 'var(--green)' }}>BUDGET</span>
           <span className="section-heading" style={{ margin: 0 }}>Obiettivo Annuale</span>
         </div>
         <select
@@ -128,7 +128,7 @@ export default function BudgetSection({ agents, operations }: Props) {
                         const val = parseEurStr(e.target.value)
                         setTargetInput(toEurStr(val))
                       }}
-                      style={{ width: 160, padding: '4px 8px', fontSize: 13, fontFamily: "'JetBrains Mono', monospace", textAlign: 'right' }}
+                      style={{ width: 160, padding: '4px 8px', fontSize: 13, fontFamily: "'Montserrat', sans-serif", textAlign: 'right' }}
                       autoFocus
                       onKeyDown={e => e.key === 'Enter' && handleSaveTarget()}
                       placeholder="0,00"
@@ -144,7 +144,7 @@ export default function BudgetSection({ agents, operations }: Props) {
                   </div>
                 ) : (
                   <span
-                    style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 13, cursor: 'pointer', color: 'var(--lime)' }}
+                    style={{ fontFamily: "'Montserrat', sans-serif", fontSize: 13, cursor: 'pointer', color: 'var(--lime)' }}
                     onClick={() => setEditingTarget(true)}
                     title="Clicca per modificare"
                   >
@@ -153,7 +153,7 @@ export default function BudgetSection({ agents, operations }: Props) {
                 )}
                 {!editingTarget && (
                   <span style={{
-                    fontFamily: "'JetBrains Mono', monospace",
+                    fontFamily: "'Montserrat', sans-serif",
                     fontSize: 12,
                     fontWeight: 600,
                     color: totalActual >= totalTarget && totalTarget > 0 ? 'var(--green)' : 'var(--w)',
@@ -189,7 +189,7 @@ export default function BudgetSection({ agents, operations }: Props) {
                       {agent.initials}
                     </div>
                     <span style={{ fontSize: 13 }}>{agent.full_name}</span>
-                    <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 11, color: 'var(--gl)' }}>
+                    <span style={{ fontFamily: "'Montserrat', sans-serif", fontSize: 11, color: 'var(--gl)' }}>
                       {formatEur(actual)}
                     </span>
                   </div>
@@ -207,15 +207,15 @@ export default function BudgetSection({ agents, operations }: Props) {
                         handleSaveAllocation(agent.id, toEurStr(eurVal))
                       }}
                       onKeyDown={e => { if (e.key === 'Enter') (e.target as HTMLInputElement).blur() }}
-                      style={{ width: 70, padding: '2px 6px', fontSize: 12, fontFamily: "'JetBrains Mono', monospace", textAlign: 'right' }}
+                      style={{ width: 70, padding: '2px 6px', fontSize: 12, fontFamily: "'Montserrat', sans-serif", textAlign: 'right' }}
                       placeholder="0"
                     />
                     <span style={{ fontSize: 11, color: 'var(--g)' }}>%</span>
-                    <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 11, color: 'var(--gl)', minWidth: 80, textAlign: 'right' }}>
+                    <span style={{ fontFamily: "'Montserrat', sans-serif", fontSize: 11, color: 'var(--gl)', minWidth: 80, textAlign: 'right' }}>
                       {target > 0 ? formatEur(target) : '—'}
                     </span>
                     <span style={{
-                      fontFamily: "'JetBrains Mono', monospace",
+                      fontFamily: "'Montserrat', sans-serif",
                       fontSize: 11, fontWeight: 600, minWidth: 36, textAlign: 'right',
                       color: exceeded ? 'var(--green)' : 'var(--g)',
                     }}>
@@ -242,7 +242,7 @@ export default function BudgetSection({ agents, operations }: Props) {
             const allocPctTotal = totalTarget > 0 ? ((allocTotal / totalTarget) * 100).toFixed(0) : '0'
             const diff = totalTarget - allocTotal
             return diff !== 0 ? (
-              <div style={{ fontSize: 11, color: 'var(--amber)', marginTop: 8, fontFamily: "'JetBrains Mono', monospace" }}>
+              <div style={{ fontSize: 11, color: 'var(--amber)', marginTop: 8, fontFamily: "'Montserrat', sans-serif" }}>
                 Allocato: {allocPctTotal}% ({formatEur(allocTotal)} / {formatEur(totalTarget)}) — {diff > 0 ? `mancano ${formatEur(diff)}` : `eccedenza ${formatEur(-diff)}`}
               </div>
             ) : null

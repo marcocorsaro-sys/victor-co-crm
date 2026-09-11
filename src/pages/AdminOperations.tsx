@@ -231,35 +231,35 @@ export default function AdminOperations() {
           <div style={{ background: 'var(--s1)', borderRadius: 12, padding: 16, border: '1px solid var(--bd)' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 12 }}>
               <span className="badge badge-pipeline">pipeline</span>
-              <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 11, color: 'var(--g)' }}>
+              <span style={{ fontFamily: "'Montserrat', sans-serif", fontSize: 11, color: 'var(--g)' }}>
                 {pipelineTotals.count} immobili
               </span>
             </div>
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8, fontSize: 12 }}>
               <div>
                 <div style={{ color: 'var(--g)', marginBottom: 2 }}>Valore immobili</div>
-                <div style={{ fontFamily: "'JetBrains Mono', monospace", color: 'var(--w)', fontWeight: 600 }}>{formatEur(pipelineTotals.value)}</div>
+                <div style={{ fontFamily: "'Montserrat', sans-serif", color: 'var(--w)', fontWeight: 600 }}>{formatEur(pipelineTotals.value)}</div>
               </div>
               <div>
                 <div style={{ color: 'var(--g)', marginBottom: 2, display: 'inline-flex', alignItems: 'center' }}>
                   <span>Comm. lorde stimate</span>
                   <FormulaTip title="Comm. lorde stimate" formula={PIPELINE_FORMULAS.pipelineGross} />
                 </div>
-                <div style={{ fontFamily: "'JetBrains Mono', monospace", color: 'var(--amber)', fontWeight: 600 }}>{formatEur(pipelineTotals.gross)}</div>
+                <div style={{ fontFamily: "'Montserrat', sans-serif", color: 'var(--amber)', fontWeight: 600 }}>{formatEur(pipelineTotals.gross)}</div>
               </div>
               <div>
                 <div style={{ color: 'var(--g)', marginBottom: 2, display: 'inline-flex', alignItems: 'center' }}>
                   <span>Quota agenti stimata</span>
                   <FormulaTip title="Quota agenti stimata" formula={PIPELINE_FORMULAS.agentShare} />
                 </div>
-                <div style={{ fontFamily: "'JetBrains Mono', monospace", color: 'var(--teal)', fontWeight: 600 }}>{formatEur(pipelineTotals.agentComm)}</div>
+                <div style={{ fontFamily: "'Montserrat', sans-serif", color: 'var(--teal)', fontWeight: 600 }}>{formatEur(pipelineTotals.agentComm)}</div>
               </div>
               <div>
                 <div style={{ color: 'var(--g)', marginBottom: 2, display: 'inline-flex', alignItems: 'center' }}>
                   <span>Margine agenzia stimato</span>
                   <FormulaTip title="Margine agenzia stimato" formula={PIPELINE_FORMULAS.agencyMargin} />
                 </div>
-                <div style={{ fontFamily: "'JetBrains Mono', monospace", color: 'var(--green)', fontWeight: 600 }}>{formatEur(pipelineTotals.agencyRev)}</div>
+                <div style={{ fontFamily: "'Montserrat', sans-serif", color: 'var(--green)', fontWeight: 600 }}>{formatEur(pipelineTotals.agencyRev)}</div>
               </div>
             </div>
             {pipelineTotals.weightedGross !== pipelineTotals.gross && (
@@ -273,15 +273,15 @@ export default function AdminOperations() {
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 8, fontSize: 12 }}>
                   <div>
                     <div style={{ color: 'var(--g)', marginBottom: 2 }}>Comm. lorde</div>
-                    <div style={{ fontFamily: "'JetBrains Mono', monospace", color: 'var(--amber)', fontWeight: 600 }}>{formatEur(pipelineTotals.weightedGross)}</div>
+                    <div style={{ fontFamily: "'Montserrat', sans-serif", color: 'var(--amber)', fontWeight: 600 }}>{formatEur(pipelineTotals.weightedGross)}</div>
                   </div>
                   <div>
                     <div style={{ color: 'var(--g)', marginBottom: 2 }}>Quota agenti</div>
-                    <div style={{ fontFamily: "'JetBrains Mono', monospace", color: 'var(--teal)', fontWeight: 600 }}>{formatEur(pipelineTotals.weightedAgentComm)}</div>
+                    <div style={{ fontFamily: "'Montserrat', sans-serif", color: 'var(--teal)', fontWeight: 600 }}>{formatEur(pipelineTotals.weightedAgentComm)}</div>
                   </div>
                   <div>
                     <div style={{ color: 'var(--g)', marginBottom: 2 }}>Margine agenzia</div>
-                    <div style={{ fontFamily: "'JetBrains Mono', monospace", color: 'var(--green)', fontWeight: 600 }}>{formatEur(pipelineTotals.weightedAgencyRev)}</div>
+                    <div style={{ fontFamily: "'Montserrat', sans-serif", color: 'var(--green)', fontWeight: 600 }}>{formatEur(pipelineTotals.weightedAgencyRev)}</div>
                   </div>
                 </div>
               </div>
@@ -291,26 +291,26 @@ export default function AdminOperations() {
           <div style={{ background: 'var(--s1)', borderRadius: 12, padding: 16, border: '1px solid var(--bd)' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 12 }}>
               <span className="badge badge-completata">completata</span>
-              <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 11, color: 'var(--g)' }}>
+              <span style={{ fontFamily: "'Montserrat', sans-serif", fontSize: 11, color: 'var(--g)' }}>
                 {completedTotals.count} immobili
               </span>
             </div>
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8, fontSize: 12 }}>
               <div>
                 <div style={{ color: 'var(--g)', marginBottom: 2 }}>Valore immobili</div>
-                <div style={{ fontFamily: "'JetBrains Mono', monospace", color: 'var(--w)', fontWeight: 600 }}>{formatEur(completedTotals.value)}</div>
+                <div style={{ fontFamily: "'Montserrat', sans-serif", color: 'var(--w)', fontWeight: 600 }}>{formatEur(completedTotals.value)}</div>
               </div>
               <div>
                 <div style={{ color: 'var(--g)', marginBottom: 2 }}>Comm. lorde</div>
-                <div style={{ fontFamily: "'JetBrains Mono', monospace", color: 'var(--amber)', fontWeight: 600 }}>{formatEur(completedTotals.gross)}</div>
+                <div style={{ fontFamily: "'Montserrat', sans-serif", color: 'var(--amber)', fontWeight: 600 }}>{formatEur(completedTotals.gross)}</div>
               </div>
               <div>
                 <div style={{ color: 'var(--g)', marginBottom: 2 }}>Quota agenti</div>
-                <div style={{ fontFamily: "'JetBrains Mono', monospace", color: 'var(--teal)', fontWeight: 600 }}>{formatEur(completedTotals.agentComm)}</div>
+                <div style={{ fontFamily: "'Montserrat', sans-serif", color: 'var(--teal)', fontWeight: 600 }}>{formatEur(completedTotals.agentComm)}</div>
               </div>
               <div>
                 <div style={{ color: 'var(--g)', marginBottom: 2 }}>Margine agenzia</div>
-                <div style={{ fontFamily: "'JetBrains Mono', monospace", color: 'var(--green)', fontWeight: 600 }}>{formatEur(completedTotals.agencyRev)}</div>
+                <div style={{ fontFamily: "'Montserrat', sans-serif", color: 'var(--green)', fontWeight: 600 }}>{formatEur(completedTotals.agencyRev)}</div>
               </div>
             </div>
           </div>
@@ -356,29 +356,29 @@ export default function AdminOperations() {
                       <span style={{
                         fontSize: 11, fontWeight: 700, padding: '2px 6px', borderRadius: 6,
                         color: op.sale_probability <= 30 ? 'var(--red)' : op.sale_probability <= 60 ? 'var(--amber)' : 'var(--green)',
-                        background: op.sale_probability <= 30 ? 'rgba(239,68,68,0.15)' : op.sale_probability <= 60 ? 'rgba(245,158,11,0.15)' : 'rgba(34,197,94,0.15)',
+                        background: op.sale_probability <= 30 ? 'rgba(192,57,43,0.15)' : op.sale_probability <= 60 ? 'rgba(183,121,31,0.15)' : 'rgba(29,143,95,0.15)',
                       }}>{op.sale_probability}%</span>
                     ) : op.status === 'pipeline' ? (
                       <span style={{ fontSize: 11, color: 'var(--g)' }}>—</span>
                     ) : null}
                   </td>
-                  <td style={{ fontFamily: "'JetBrains Mono', monospace" }}>{formatEur(op.final_value || op.property_value || 0)}</td>
+                  <td style={{ fontFamily: "'Montserrat', sans-serif" }}>{formatEur(op.final_value || op.property_value || 0)}</td>
                   {(() => {
                     if (op.status === 'incassato') {
                       return (
                         <>
-                          <td style={{ fontFamily: "'JetBrains Mono', monospace" }}>{op.gross_commission ? formatEur(op.gross_commission) : '—'}</td>
-                          <td style={{ fontFamily: "'JetBrains Mono', monospace", color: 'var(--teal)' }}>{op.agent_commission ? formatEur(op.agent_commission) : '—'}</td>
+                          <td style={{ fontFamily: "'Montserrat', sans-serif" }}>{op.gross_commission ? formatEur(op.gross_commission) : '—'}</td>
+                          <td style={{ fontFamily: "'Montserrat', sans-serif", color: 'var(--teal)' }}>{op.agent_commission ? formatEur(op.agent_commission) : '—'}</td>
                         </>
                       )
                     }
                     const est = getEstimated(op)
                     return (
                       <>
-                        <td style={{ fontFamily: "'JetBrains Mono', monospace", color: 'var(--amber)', fontStyle: 'italic' }} title="Stima">
+                        <td style={{ fontFamily: "'Montserrat', sans-serif", color: 'var(--amber)', fontStyle: 'italic' }} title="Stima">
                           {est ? `~${formatEur(est.grossCommission)}` : '—'}
                         </td>
-                        <td style={{ fontFamily: "'JetBrains Mono', monospace", color: 'var(--teal)', fontStyle: 'italic' }} title="Stima">
+                        <td style={{ fontFamily: "'Montserrat', sans-serif", color: 'var(--teal)', fontStyle: 'italic' }} title="Stima">
                           {est ? `~${formatEur(est.agentCommission)}` : '—'}
                         </td>
                       </>

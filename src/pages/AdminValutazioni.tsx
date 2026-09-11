@@ -13,8 +13,8 @@ const PROB_LABELS: Record<string, string> = {
 }
 
 const PROB_COLORS: Record<string, { color: string; bg: string }> = {
-  '15_giorni': { color: 'var(--lime)', bg: 'rgba(190,227,39,0.15)' },
-  '3_mesi': { color: 'var(--teal)', bg: 'rgba(45,212,191,0.15)' },
+  '15_giorni': { color: 'var(--lime)', bg: 'rgba(13,52,71,0.15)' },
+  '3_mesi': { color: 'var(--teal)', bg: 'rgba(31,111,139,0.15)' },
   '6_mesi': { color: 'var(--g)', bg: 'rgba(128,128,128,0.2)' },
 }
 
@@ -66,7 +66,7 @@ export default function AdminValutazioni() {
       })
     : valutazioni
 
-  const mono = { fontFamily: "'JetBrains Mono', monospace" } as const
+  const mono = { fontFamily: "'Montserrat', sans-serif" } as const
 
   return (
     <div>
@@ -209,11 +209,11 @@ export default function AdminValutazioni() {
                     <td style={{ fontSize: 12, color: 'var(--gl)' }}>{formatDate(v.valuation_date)}</td>
                     <td>
                       {v.incarico_preso ? (
-                        <span style={{ fontSize: 11, fontWeight: 700, padding: '2px 8px', borderRadius: 6, color: 'var(--green)', background: 'rgba(34,197,94,0.15)' }}>
+                        <span style={{ fontSize: 11, fontWeight: 700, padding: '2px 8px', borderRadius: 6, color: 'var(--green)', background: 'rgba(29,143,95,0.15)' }}>
                           INCARICO ✓
                         </span>
                       ) : (
-                        <span style={{ fontSize: 11, padding: '2px 8px', borderRadius: 6, color: 'var(--amber)', background: 'rgba(245,158,11,0.15)' }}>
+                        <span style={{ fontSize: 11, padding: '2px 8px', borderRadius: 6, color: 'var(--amber)', background: 'rgba(183,121,31,0.15)' }}>
                           In attesa
                         </span>
                       )}

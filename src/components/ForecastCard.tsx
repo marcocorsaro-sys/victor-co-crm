@@ -91,7 +91,7 @@ export default function ForecastCard({ operations, agents }: Props) {
         display: 'grid', gridTemplateColumns: '1fr 1fr',
         gap: 8, marginBottom: 12,
         padding: '10px 14px', background: 'var(--s3)', borderRadius: 8,
-        fontFamily: "'JetBrains Mono', monospace", fontSize: 12,
+        fontFamily: "'Montserrat', sans-serif", fontSize: 12,
       }}>
         <div>Comm. agenti stimate</div>
         <div style={{ textAlign: 'right', color: 'var(--teal)' }}>{formatEur(totalExpectedAgent)}</div>
@@ -103,7 +103,7 @@ export default function ForecastCard({ operations, agents }: Props) {
           display: 'grid', gridTemplateColumns: 'auto 1fr 1fr 1fr',
           gap: 8, marginBottom: 20,
           padding: '10px 14px', background: 'var(--s2)', borderRadius: 8,
-          fontFamily: "'JetBrains Mono', monospace", fontSize: 12,
+          fontFamily: "'Montserrat', sans-serif", fontSize: 12,
         }}>
           <div style={{ color: 'var(--g)', alignSelf: 'center', display: 'inline-flex', alignItems: 'center' }}>
             <span>Pesato prob.</span>
@@ -137,7 +137,7 @@ export default function ForecastCard({ operations, agents }: Props) {
                   }}
                 />
               </div>
-              <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 12, color: 'var(--gl)', minWidth: 90, textAlign: 'right' }}>
+              <span style={{ fontFamily: "'Montserrat', sans-serif", fontSize: 12, color: 'var(--gl)', minWidth: 90, textAlign: 'right' }}>
                 {formatEur(d.estimatedGross)}
               </span>
             </div>

@@ -43,23 +43,23 @@ export default function MonthlyAvgPriceChart({ operations, year }: Props) {
           {
             label: 'Prezzo Medio',
             data: monthData.map(d => d.avgPrice || null),
-            borderColor: '#c8e64a',
-            backgroundColor: 'rgba(200,230,74,0.08)',
+            borderColor: '#0d3447',
+            backgroundColor: 'rgba(13,52,71,0.08)',
             fill: true,
             tension: 0.3,
             pointRadius: 4,
-            pointBackgroundColor: '#c8e64a',
+            pointBackgroundColor: '#0d3447',
             spanGaps: true,
           },
           {
             label: 'Comm. Media',
             data: monthData.map(d => d.avgComm || null),
-            borderColor: '#2dd4bf',
-            backgroundColor: 'rgba(45,212,191,0.08)',
+            borderColor: '#1f6f8b',
+            backgroundColor: 'rgba(31,111,139,0.08)',
             fill: true,
             tension: 0.3,
             pointRadius: 4,
-            pointBackgroundColor: '#2dd4bf',
+            pointBackgroundColor: '#1f6f8b',
             yAxisID: 'y1',
             spanGaps: true,
           },
@@ -72,11 +72,11 @@ export default function MonthlyAvgPriceChart({ operations, year }: Props) {
         plugins: {
           legend: {
             position: 'top',
-            labels: { color: '#9ca3af', font: { family: "'JetBrains Mono', monospace", size: 11 }, padding: 16, usePointStyle: true, pointStyleWidth: 12 },
+            labels: { color: '#4f5560', font: { family: "'Montserrat', sans-serif", size: 11 }, padding: 16, usePointStyle: true, pointStyleWidth: 12 },
           },
           tooltip: {
-            backgroundColor: '#161920', titleColor: '#f0f2f5', bodyColor: '#9ca3af',
-            borderColor: '#1e2233', borderWidth: 1, padding: 10,
+            backgroundColor: '#ffffff', titleColor: '#181a20', bodyColor: '#4f5560',
+            borderColor: '#dddddd', borderWidth: 1, padding: 10,
             callbacks: {
               label: (ctx: any) =>
                 `${ctx.dataset.label}: ${new Intl.NumberFormat('it-IT', { style: 'currency', currency: 'EUR' }).format(ctx.parsed.y)}`,
@@ -84,19 +84,19 @@ export default function MonthlyAvgPriceChart({ operations, year }: Props) {
           },
         },
         scales: {
-          x: { ticks: { color: '#6b7280', font: { family: "'JetBrains Mono', monospace", size: 10 } }, grid: { color: 'rgba(30,34,51,0.5)' } },
+          x: { ticks: { color: '#717171', font: { family: "'Montserrat', sans-serif", size: 10 } }, grid: { color: 'rgba(13,52,71,0.06)' } },
           y: {
             position: 'left',
             ticks: {
-              color: '#6b7280', font: { family: "'JetBrains Mono', monospace", size: 10 },
+              color: '#717171', font: { family: "'Montserrat', sans-serif", size: 10 },
               callback: (v: string | number) => Number(v) >= 1000 ? `${(Number(v) / 1000).toFixed(0)}k` : v,
             },
-            grid: { color: 'rgba(30,34,51,0.5)' },
+            grid: { color: 'rgba(13,52,71,0.06)' },
           },
           y1: {
             position: 'right',
             ticks: {
-              color: '#6b7280', font: { family: "'JetBrains Mono', monospace", size: 10 },
+              color: '#717171', font: { family: "'Montserrat', sans-serif", size: 10 },
               callback: (v: string | number) => Number(v) >= 1000 ? `${(Number(v) / 1000).toFixed(0)}k` : v,
             },
             grid: { display: false },

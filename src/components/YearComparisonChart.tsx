@@ -43,7 +43,7 @@ export default function YearComparisonChart({ operations, selectedYear, referenc
           {
             label: `${selectedYear} Commissioni`,
             data: current,
-            backgroundColor: 'rgba(200, 230, 74, 0.85)',
+            backgroundColor: 'rgba(13,52,71,0.85)',
             borderRadius: 4,
             barPercentage: 0.4,
             categoryPercentage: 0.7,
@@ -51,7 +51,7 @@ export default function YearComparisonChart({ operations, selectedYear, referenc
           {
             label: `${referenceYear} Commissioni`,
             data: reference,
-            backgroundColor: 'rgba(45, 212, 191, 0.45)',
+            backgroundColor: 'rgba(31,111,139,0.45)',
             borderRadius: 4,
             barPercentage: 0.4,
             categoryPercentage: 0.7,
@@ -62,7 +62,7 @@ export default function YearComparisonChart({ operations, selectedYear, referenc
         responsive: true,
         maintainAspectRatio: false,
         plugins: {
-          legend: { labels: { color: '#9ca3af', font: { size: 11 } } },
+          legend: { labels: { color: '#4f5560', font: { size: 11 } } },
           tooltip: {
             callbacks: {
               label: (ctx) => {
@@ -84,13 +84,13 @@ export default function YearComparisonChart({ operations, selectedYear, referenc
           },
         },
         scales: {
-          x: { ticks: { color: '#6b7280' }, grid: { color: 'rgba(30,34,51,0.5)' } },
+          x: { ticks: { color: '#717171' }, grid: { color: 'rgba(13,52,71,0.06)' } },
           y: {
             ticks: {
-              color: '#6b7280',
+              color: '#717171',
               callback: (v) => Number(v) >= 1000 ? `${(Number(v) / 1000).toFixed(0)}k` : String(v),
             },
-            grid: { color: 'rgba(30,34,51,0.5)' },
+            grid: { color: 'rgba(13,52,71,0.06)' },
           },
         },
       },

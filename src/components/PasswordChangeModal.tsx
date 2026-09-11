@@ -136,7 +136,7 @@ export default function PasswordChangeModal({ open, onClose }: Props) {
 
             {error && (
               <div style={{
-                background: 'rgba(239,68,68,0.12)',
+                background: 'rgba(192,57,43,0.12)',
                 color: 'var(--red)',
                 padding: '8px 12px',
                 borderRadius: 8,

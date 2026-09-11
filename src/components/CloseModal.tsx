@@ -231,7 +231,7 @@ export default function CloseModal({ open, onClose, onConfirm, operation, agentP
 
           {/* Provvigioni incassate */}
           <div style={{ borderTop: '1px solid var(--bd)', margin: '16px 0', paddingTop: 16 }}>
-            <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 11, color: 'var(--ld)', textTransform: 'uppercase', marginBottom: 12, letterSpacing: '0.5px' }}>
+            <div style={{ fontFamily: "'Montserrat', sans-serif", fontSize: 11, color: 'var(--ld)', textTransform: 'uppercase', marginBottom: 12, letterSpacing: '0.5px' }}>
               // Provvigioni Incassate
             </div>
           </div>

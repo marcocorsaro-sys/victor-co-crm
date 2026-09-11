@@ -136,7 +136,7 @@ export default function ClientModal({ open, onClose, onSave, initial, agents }: 
     else setErrors(prev => ({ ...prev, codice_fiscale: 'Codice fiscale non valido' }))
   }
 
-  const mono = { fontFamily: "'JetBrains Mono', monospace" }
+  const mono = { fontFamily: "'Montserrat', sans-serif" }
   const sectionLabel = (text: string) => (
     <div style={{ ...mono, fontSize: 11, color: 'var(--ld)', textTransform: 'uppercase' as const, letterSpacing: '0.5px', marginBottom: 12, marginTop: 16, paddingTop: 12, borderTop: '1px solid var(--bd)' }}>
       // {text}
@@ -206,7 +206,7 @@ export default function ClientModal({ open, onClose, onSave, initial, agents }: 
                 value={form.codice_fiscale}
                 onChange={e => set('codice_fiscale', e.target.value.toUpperCase())}
                 placeholder="RSSMRA85M01H501Z" maxLength={16}
-                style={{ flex: 1, fontFamily: "'JetBrains Mono', monospace", textTransform: 'uppercase' }} />
+                style={{ flex: 1, fontFamily: "'Montserrat', sans-serif", textTransform: 'uppercase' }} />
               <button type="button" className="btn btn-secondary btn-sm"
                 onClick={deriveBirthDate} disabled={form.codice_fiscale.trim().length !== 16}
                 title="Compila la data di nascita dal codice fiscale"
@@ -224,7 +224,7 @@ export default function ClientModal({ open, onClose, onSave, initial, agents }: 
                 <button key={t} type="button" onClick={() => set('type', t)} style={{
                   flex: 1, padding: '8px 0', borderRadius: 8,
                   border: `2px solid ${form.type === t ? 'var(--lime)' : 'var(--bd)'}`,
-                  background: form.type === t ? 'rgba(190,227,39,0.1)' : 'var(--bg2)',
+                  background: form.type === t ? 'rgba(13,52,71,0.1)' : 'var(--bg2)',
                   color: form.type === t ? 'var(--lime)' : 'var(--g)',
                   cursor: 'pointer', fontWeight: form.type === t ? 700 : 400, fontSize: 13, transition: 'all 0.15s',
                 }}>{TYPE_LABELS[t]}</button>
@@ -293,7 +293,7 @@ export default function ClientModal({ open, onClose, onSave, initial, agents }: 
                   <button key={t} type="button" onClick={() => set('tier', form.tier === t ? '' : t)} style={{
                     flex: 1, padding: '8px 0', borderRadius: 8,
                     border: `2px solid ${form.tier === t ? 'var(--lime)' : 'var(--bd)'}`,
-                    background: form.tier === t ? 'rgba(190,227,39,0.1)' : 'var(--bg2)',
+                    background: form.tier === t ? 'rgba(13,52,71,0.1)' : 'var(--bg2)',
                     color: form.tier === t ? 'var(--lime)' : 'var(--g)',
                     cursor: 'pointer', fontWeight: form.tier === t ? 700 : 400, fontSize: 13, transition: 'all 0.15s',
                   }}>{t}</button>
@@ -318,7 +318,7 @@ export default function ClientModal({ open, onClose, onSave, initial, agents }: 
               <input className="form-input" type="number" min={1} max={60}
                 value={form.contact_cadence_months}
                 onChange={e => set('contact_cadence_months', e.target.value)}
-                style={{ fontFamily: "'JetBrains Mono', monospace" }} />
+                style={{ fontFamily: "'Montserrat', sans-serif" }} />
             </div>
           </div>
 

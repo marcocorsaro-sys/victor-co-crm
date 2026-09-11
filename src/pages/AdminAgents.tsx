@@ -52,7 +52,7 @@ export default function AdminAgents() {
     }).sort((a, b) => b.grossYear - a.grossYear)
   }, [agents, operations, currentYear])
 
-  const mono = { fontFamily: "'JetBrains Mono', monospace" } as const
+  const mono = { fontFamily: "'Montserrat', sans-serif" } as const
 
   return (
     <div>
@@ -132,7 +132,7 @@ function StatItem({ label, value, color, mono: isMono }: { label: string; value:
         fontSize: 14,
         fontWeight: 600,
         color: color || 'var(--w)',
-        ...(isMono ? { fontFamily: "'JetBrains Mono', monospace" } : {}),
+        ...(isMono ? { fontFamily: "'Montserrat', sans-serif" } : {}),
       }}>{value}</div>
     </div>
   )

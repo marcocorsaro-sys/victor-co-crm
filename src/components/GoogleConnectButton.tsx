@@ -46,12 +46,12 @@ export default function GoogleConnectButton({ integration, onStatusChange }: Pro
         <>
           <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
             {integration?.gmail_connected && (
-              <span style={{ background: 'rgba(16,185,129,0.15)', color: 'var(--green)', padding: '4px 10px', borderRadius: 6, fontSize: 11, fontWeight: 600 }}>
+              <span style={{ background: 'rgba(29,143,95,0.15)', color: 'var(--green)', padding: '4px 10px', borderRadius: 6, fontSize: 11, fontWeight: 600 }}>
                 ✓ Gmail
               </span>
             )}
             {integration?.calendar_connected && (
-              <span style={{ background: 'rgba(16,185,129,0.15)', color: 'var(--green)', padding: '4px 10px', borderRadius: 6, fontSize: 11, fontWeight: 600 }}>
+              <span style={{ background: 'rgba(29,143,95,0.15)', color: 'var(--green)', padding: '4px 10px', borderRadius: 6, fontSize: 11, fontWeight: 600 }}>
                 ✓ Calendar
               </span>
             )}

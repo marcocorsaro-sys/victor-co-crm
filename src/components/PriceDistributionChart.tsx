@@ -49,7 +49,7 @@ export default function PriceDistributionChart({ operations }: Props) {
           {
             label: 'N. Operazioni',
             data: counts,
-            backgroundColor: '#c8e64a',
+            backgroundColor: '#0d3447',
             borderRadius: 4,
             order: 2,
           },
@@ -57,12 +57,12 @@ export default function PriceDistributionChart({ operations }: Props) {
             label: 'Comm. Media',
             data: avgComm,
             type: 'line',
-            borderColor: '#2dd4bf',
-            backgroundColor: 'rgba(45,212,191,0.1)',
+            borderColor: '#1f6f8b',
+            backgroundColor: 'rgba(31,111,139,0.1)',
             yAxisID: 'y1',
             tension: 0.3,
             pointRadius: 4,
-            pointBackgroundColor: '#2dd4bf',
+            pointBackgroundColor: '#1f6f8b',
             order: 1,
           },
         ],
@@ -74,13 +74,13 @@ export default function PriceDistributionChart({ operations }: Props) {
         plugins: {
           legend: {
             position: 'top',
-            labels: { color: '#9ca3af', font: { family: "'JetBrains Mono', monospace", size: 11 }, padding: 16, usePointStyle: true, pointStyleWidth: 12 },
+            labels: { color: '#4f5560', font: { family: "'Montserrat', sans-serif", size: 11 }, padding: 16, usePointStyle: true, pointStyleWidth: 12 },
           },
           tooltip: {
-            backgroundColor: '#161920', titleColor: '#f0f2f5', bodyColor: '#9ca3af',
-            borderColor: '#1e2233', borderWidth: 1, padding: 10,
-            titleFont: { family: "'JetBrains Mono', monospace", size: 12 },
-            bodyFont: { family: "'Inter', sans-serif", size: 12 },
+            backgroundColor: '#ffffff', titleColor: '#181a20', bodyColor: '#4f5560',
+            borderColor: '#dddddd', borderWidth: 1, padding: 10,
+            titleFont: { family: "'Montserrat', sans-serif", size: 12 },
+            bodyFont: { family: "'Poppins', sans-serif", size: 12 },
             callbacks: {
               label: (ctx: any) => {
                 if (ctx.dataset.yAxisID === 'y1')
@@ -91,12 +91,12 @@ export default function PriceDistributionChart({ operations }: Props) {
           },
         },
         scales: {
-          x: { ticks: { color: '#6b7280', font: { family: "'JetBrains Mono', monospace", size: 10 } }, grid: { color: 'rgba(30,34,51,0.5)' } },
-          y: { position: 'left', ticks: { color: '#6b7280', font: { family: "'JetBrains Mono', monospace", size: 10 }, stepSize: 1 }, grid: { color: 'rgba(30,34,51,0.5)' } },
+          x: { ticks: { color: '#717171', font: { family: "'Montserrat', sans-serif", size: 10 } }, grid: { color: 'rgba(13,52,71,0.06)' } },
+          y: { position: 'left', ticks: { color: '#717171', font: { family: "'Montserrat', sans-serif", size: 10 }, stepSize: 1 }, grid: { color: 'rgba(13,52,71,0.06)' } },
           y1: {
             position: 'right',
             ticks: {
-              color: '#6b7280', font: { family: "'JetBrains Mono', monospace", size: 10 },
+              color: '#717171', font: { family: "'Montserrat', sans-serif", size: 10 },
               callback: (v: string | number) => Number(v) >= 1000 ? `${(Number(v) / 1000).toFixed(0)}k` : v,
             },
             grid: { display: false },

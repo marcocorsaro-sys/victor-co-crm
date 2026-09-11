@@ -186,15 +186,15 @@ export default function AdminUsers() {
       <td>
         <span
           className={`badge ${user.active ? 'badge-completata' : ''}`}
-          style={!user.active ? { background: 'rgba(239,68,68,0.15)', color: 'var(--red)' } : {}}
+          style={!user.active ? { background: 'rgba(192,57,43,0.15)', color: 'var(--red)' } : {}}
         >
           {user.active ? 'ATTIVO' : 'DISATTIVATO'}
         </span>
       </td>
-      <td style={{ fontFamily: "'JetBrains Mono', monospace" }}>
+      <td style={{ fontFamily: "'Montserrat', sans-serif" }}>
         {user.role === 'agent' ? `${user.comm_pct_agency}%` : '—'}
       </td>
-      <td style={{ fontFamily: "'JetBrains Mono', monospace" }}>
+      <td style={{ fontFamily: "'Montserrat', sans-serif" }}>
         {user.role === 'agent' ? `${user.comm_pct_agent}%` : '—'}
       </td>
       <td>
@@ -231,7 +231,7 @@ export default function AdminUsers() {
       </div>
 
       {/* ─── Administrators ─── */}
-      <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 11, color: 'var(--ld)', textTransform: 'uppercase', marginBottom: 10, letterSpacing: '0.5px' }}>
+      <div style={{ fontFamily: "'Montserrat', sans-serif", fontSize: 11, color: 'var(--ld)', textTransform: 'uppercase', marginBottom: 10, letterSpacing: '0.5px' }}>
         // Amministratori ({admins.length})
       </div>
       <div className="table-wrap" style={{ marginBottom: 32 }}>
@@ -259,7 +259,7 @@ export default function AdminUsers() {
       </div>
 
       {/* ─── Agents ─── */}
-      <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 11, color: 'var(--ld)', textTransform: 'uppercase', marginBottom: 10, letterSpacing: '0.5px' }}>
+      <div style={{ fontFamily: "'Montserrat', sans-serif", fontSize: 11, color: 'var(--ld)', textTransform: 'uppercase', marginBottom: 10, letterSpacing: '0.5px' }}>
         // Agenti ({agents.length})
       </div>
       <div className="table-wrap">
@@ -338,7 +338,7 @@ export default function AdminUsers() {
                 background: 'var(--s1)',
                 borderRadius: 8,
                 padding: '10px 14px',
-                fontFamily: "'JetBrains Mono', monospace",
+                fontFamily: "'Montserrat', sans-serif",
                 fontSize: 14,
                 color: 'var(--ld)',
                 marginBottom: 16,

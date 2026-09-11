@@ -109,11 +109,11 @@ export default function CalendarView({ events, onDateClick, onEventClick }: Prop
       {/* Legend */}
       <div style={{ display: 'flex', gap: 16, marginTop: 12, fontSize: 11, color: 'var(--g)' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
-          <div style={{ width: 10, height: 10, borderRadius: 2, background: 'rgba(45,212,191,0.7)' }} />
+          <div style={{ width: 10, height: 10, borderRadius: 2, background: 'rgba(31,111,139,0.7)' }} />
           Google Calendar
         </div>
         <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
-          <div style={{ width: 10, height: 10, borderRadius: 2, background: 'rgba(245,158,11,0.7)' }} />
+          <div style={{ width: 10, height: 10, borderRadius: 2, background: 'rgba(183,121,31,0.7)' }} />
           Open House
         </div>
       </div>

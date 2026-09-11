@@ -13,8 +13,8 @@ const PROB_LABELS: Record<string, string> = {
 }
 
 const PROB_COLORS: Record<string, { color: string; bg: string }> = {
-  '15_giorni': { color: 'var(--lime)', bg: 'rgba(190,227,39,0.15)' },
-  '3_mesi': { color: 'var(--teal)', bg: 'rgba(45,212,191,0.15)' },
+  '15_giorni': { color: 'var(--lime)', bg: 'rgba(13,52,71,0.15)' },
+  '3_mesi': { color: 'var(--teal)', bg: 'rgba(31,111,139,0.15)' },
   '6_mesi': { color: 'var(--g)', bg: 'rgba(128,128,128,0.2)' },
 }
 
@@ -87,7 +87,7 @@ export default function AgentValuations({ profile }: Props) {
     }
   }
 
-  const mono = { fontFamily: "'JetBrains Mono', monospace" } as const
+  const mono = { fontFamily: "'Montserrat', sans-serif" } as const
 
   return (
     <div>
@@ -163,7 +163,7 @@ export default function AgentValuations({ profile }: Props) {
                   </span>
                 )}
                 {v.valuation_delivered && (
-                  <span style={{ display: 'inline-block', fontSize: 10, fontWeight: 600, padding: '2px 6px', borderRadius: 6, color: 'var(--teal)', background: 'rgba(45,212,191,0.15)' }}>
+                  <span style={{ display: 'inline-block', fontSize: 10, fontWeight: 600, padding: '2px 6px', borderRadius: 6, color: 'var(--teal)', background: 'rgba(31,111,139,0.15)' }}>
                     Consegnata ✓
                   </span>
                 )}
@@ -171,7 +171,7 @@ export default function AgentValuations({ profile }: Props) {
                   <span style={{
                     display: 'inline-block', fontSize: 11, fontWeight: 700,
                     padding: '2px 8px', borderRadius: 6,
-                    color: 'var(--green)', background: 'rgba(34,197,94,0.15)',
+                    color: 'var(--green)', background: 'rgba(29,143,95,0.15)',
                   }}>
                     INCARICO ✓
                   </span>
@@ -255,7 +255,7 @@ function ValuationModal({ initial, agentId, onClose, onSave }: {
   })
   const [errors, setErrors] = useState<Record<string, string>>({})
 
-  const mono = { fontFamily: "'JetBrains Mono', monospace" }
+  const mono = { fontFamily: "'Montserrat', sans-serif" }
 
   const set = (key: string, val: string) => {
     setForm(prev => ({ ...prev, [key]: val }))
@@ -314,7 +314,7 @@ function ValuationModal({ initial, agentId, onClose, onSave }: {
                   style={{
                     flex: 1, padding: '8px 0', borderRadius: 8,
                     border: `2px solid ${form.origin === o ? 'var(--lime)' : 'var(--bd)'}`,
-                    background: form.origin === o ? 'rgba(190,227,39,0.1)' : 'var(--bg2)',
+                    background: form.origin === o ? 'rgba(13,52,71,0.1)' : 'var(--bg2)',
                     color: form.origin === o ? 'var(--lime)' : 'var(--g)',
                     cursor: 'pointer', fontWeight: form.origin === o ? 700 : 400, fontSize: 13, transition: 'all 0.15s',
                   }}>
@@ -346,8 +346,8 @@ function ValuationModal({ initial, agentId, onClose, onSave }: {
             <label className="form-label">Probabilità acquisizione</label>
             <div style={{ display: 'flex', gap: 8 }}>
               {[
-                { value: '15_giorni', label: '15 giorni', color: 'var(--lime)', bg: 'rgba(190,227,39,0.15)' },
-                { value: '3_mesi', label: '3 mesi', color: 'var(--teal)', bg: 'rgba(45,212,191,0.15)' },
+                { value: '15_giorni', label: '15 giorni', color: 'var(--lime)', bg: 'rgba(13,52,71,0.15)' },
+                { value: '3_mesi', label: '3 mesi', color: 'var(--teal)', bg: 'rgba(31,111,139,0.15)' },
                 { value: '6_mesi', label: '6 mesi', color: 'var(--g)', bg: 'rgba(128,128,128,0.2)' },
               ].map(opt => (
                 <button key={opt.value} type="button"

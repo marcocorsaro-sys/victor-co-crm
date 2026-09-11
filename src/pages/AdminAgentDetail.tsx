@@ -262,7 +262,7 @@ export default function AdminAgentDetail() {
     )
   }
 
-  const mono = { fontFamily: "'JetBrains Mono', monospace" }
+  const mono = { fontFamily: "'Montserrat', sans-serif" }
 
   return (
     <div>
@@ -666,7 +666,7 @@ export default function AdminAgentDetail() {
                         <span style={{
                           fontSize: 11, fontWeight: 700, padding: '2px 6px', borderRadius: 6,
                           color: op.sale_probability <= 30 ? 'var(--red)' : op.sale_probability <= 60 ? 'var(--amber)' : 'var(--green)',
-                          background: op.sale_probability <= 30 ? 'rgba(239,68,68,0.15)' : op.sale_probability <= 60 ? 'rgba(245,158,11,0.15)' : 'rgba(34,197,94,0.15)',
+                          background: op.sale_probability <= 30 ? 'rgba(192,57,43,0.15)' : op.sale_probability <= 60 ? 'rgba(183,121,31,0.15)' : 'rgba(29,143,95,0.15)',
                         }}>{op.sale_probability}%</span>
                       ) : op.status === 'pipeline' ? (
                         <span style={{ fontSize: 11, color: 'var(--g)' }}>—</span>
@@ -707,7 +707,7 @@ export default function AdminAgentDetail() {
                     <td style={{ fontSize: 11, color: 'var(--g)' }}>{formatDateTime(op.date_added)}</td>
                     <td>
                       {op.publish_to_website ? (
-                        <span style={{ fontSize: 10, padding: '2px 6px', borderRadius: 4, background: 'rgba(34,197,94,0.15)', color: 'var(--green)', fontWeight: 600 }}>SÌ</span>
+                        <span style={{ fontSize: 10, padding: '2px 6px', borderRadius: 4, background: 'rgba(29,143,95,0.15)', color: 'var(--green)', fontWeight: 600 }}>SÌ</span>
                       ) : (
                         <span style={{ fontSize: 10, color: 'var(--g)' }}>—</span>
                       )}

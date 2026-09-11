@@ -96,13 +96,13 @@ export default function OperationsTotalsFooter({ operations, resolveAgent, yearL
     alignItems: 'center',
   }
   const valueStyle: React.CSSProperties = {
-    fontFamily: "'JetBrains Mono', monospace",
+    fontFamily: "'Montserrat', sans-serif",
     fontSize: 16,
     fontWeight: 700,
   }
 
   const completedLbl = completedLabel ?? `Tot. Completate ${year}`
-  const countStyle: React.CSSProperties = { fontSize: 10, color: 'var(--g)', marginTop: 2, fontFamily: "'JetBrains Mono', monospace" }
+  const countStyle: React.CSSProperties = { fontSize: 10, color: 'var(--g)', marginTop: 2, fontFamily: "'Montserrat', sans-serif" }
 
   return (
     <div style={{

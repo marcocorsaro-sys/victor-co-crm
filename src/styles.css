@@ -1,18 +1,21 @@
 :root {
-  --bg: #0e1015;
-  --s1: #161920;
-  --s2: #1d2030;
-  --s3: #252838;
-  --bd: #1e2233;
-  --lime: #c8e64a;
-  --ld: #8ba832;
-  --teal: #2dd4bf;
-  --amber: #f59e0b;
-  --green: #10b981;
-  --red: #ef4444;
-  --w: #f0f2f5;
-  --g: #6b7280;
-  --gl: #9ca3af;
+  /* Victor&Co Real Estate identity — victorcorealestate.it */
+  --navy: #0d3447;
+  --navy2: #164a63;
+  --bg: #ffffff;
+  --s1: #f7f7f7;
+  --s2: #eef1f4;
+  --s3: #e2e7eb;
+  --bd: #dddddd;
+  --lime: #0d3447;   /* primario (ex lime) */
+  --ld: #164a63;     /* primario secondario */
+  --teal: #1f6f8b;
+  --amber: #b7791f;
+  --green: #1d8f5f;
+  --red: #c0392b;
+  --w: #181a20;      /* testo principale */
+  --g: #717171;      /* testo secondario */
+  --gl: #4f5560;     /* testo secondario più scuro (era light gray) */
 }
 
 /* ─── Clickable elements ─── */
@@ -44,7 +47,7 @@ html, body, #root {
 }
 
 body {
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  font-family: 'Poppins', -apple-system, BlinkMacSystemFont, sans-serif;
   background: var(--bg);
   color: var(--w);
   font-size: 14px;
@@ -53,7 +56,7 @@ body {
 }
 
 .mono {
-  font-family: 'JetBrains Mono', monospace;
+  font-family: 'Montserrat', sans-serif; font-variant-numeric: tabular-nums;
 }
 
 /* Scrollbar */
@@ -74,14 +77,15 @@ body {
   align-items: center;
   justify-content: space-between;
   padding: 0 24px;
-  height: 56px;
-  background: var(--s1);
-  border-bottom: 1px solid var(--bd);
+  height: 60px;
+  background: var(--navy);
+  border-bottom: 1px solid var(--navy);
   flex-shrink: 0;
 }
+.topbar-logo img { height: 34px; display: block; }
 
 .topbar-logo {
-  font-family: 'JetBrains Mono', monospace;
+  font-family: 'Montserrat', sans-serif; font-variant-numeric: tabular-nums;
   font-weight: 700;
   font-size: 15px;
   color: var(--lime);
@@ -94,30 +98,42 @@ body {
 }
 
 .topbar-nav a {
-  color: var(--gl);
+  color: rgba(255,255,255,0.72);
   text-decoration: none;
-  font-size: 13px;
+  font-size: 12.5px;
   font-weight: 500;
-  padding: 6px 12px;
+  padding: 6px 9px;
+  white-space: nowrap;
   border-radius: 6px;
   transition: all 0.15s;
 }
 
 .topbar-nav a:hover,
 .topbar-nav a.active {
-  color: var(--w);
-  background: var(--s2);
+  color: #ffffff;
+  background: rgba(255,255,255,0.12);
 }
 
 .topbar-nav a.active {
-  color: var(--lime);
+  color: #ffffff;
+  font-weight: 600;
 }
+.topbar .user-info .name { color: #ffffff; }
+.topbar .role-badge.admin { background: rgba(255,255,255,0.15); color: #ffffff; }
+.topbar .role-badge.agent { background: rgba(255,255,255,0.12); color: rgba(255,255,255,0.85); }
+.topbar .btn-logout { border-color: rgba(255,255,255,0.3); color: rgba(255,255,255,0.85); }
+.topbar .btn-logout:hover { border-color: #fff; color: #fff; }
+.topbar select, .topbar .topbar-right select { background: rgba(255,255,255,0.1); color: #fff; border-color: rgba(255,255,255,0.3); }
 
 .topbar-right {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 10px;
+  flex-shrink: 0;
+  margin-left: 12px;
 }
+.topbar .user-info .name { white-space: nowrap; }
+a.btn, a.btn:hover { text-decoration: none; }
 
 .avatar {
   width: 32px;
@@ -126,7 +142,7 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  font-family: 'JetBrains Mono', monospace;
+  font-family: 'Montserrat', sans-serif; font-variant-numeric: tabular-nums;
   font-size: 11px;
   font-weight: 700;
   color: var(--bg);
@@ -146,7 +162,7 @@ body {
 }
 
 .role-badge {
-  font-family: 'JetBrains Mono', monospace;
+  font-family: 'Montserrat', sans-serif; font-variant-numeric: tabular-nums;
   font-size: 10px;
   font-weight: 700;
   text-transform: uppercase;
@@ -156,7 +172,7 @@ body {
 }
 
 .role-badge.admin {
-  background: rgba(200, 230, 74, 0.15);
+  background: rgba(13, 52, 71, 0.15);
   color: var(--lime);
 }
 
@@ -190,7 +206,7 @@ body {
 
 /* Section headings */
 .section-heading {
-  font-family: 'JetBrains Mono', monospace;
+  font-family: 'Montserrat', sans-serif; font-variant-numeric: tabular-nums;
   font-size: 13px;
   font-weight: 700;
   text-transform: uppercase;
@@ -224,7 +240,7 @@ body {
   font-weight: 800;
   color: var(--lime);
   line-height: 1.2;
-  font-family: 'JetBrains Mono', monospace;
+  font-family: 'Montserrat', sans-serif; font-variant-numeric: tabular-nums;
 }
 
 .kpi-value.teal { color: var(--teal); }
@@ -244,7 +260,7 @@ body {
 /* Badges */
 .badge {
   display: inline-block;
-  font-family: 'JetBrains Mono', monospace;
+  font-family: 'Montserrat', sans-serif; font-variant-numeric: tabular-nums;
   font-size: 0.65em;
   font-weight: 700;
   text-transform: uppercase;
@@ -254,22 +270,22 @@ body {
 }
 
 .badge-vendita {
-  background: rgba(200, 230, 74, 0.15);
+  background: rgba(13, 52, 71, 0.15);
   color: var(--lime);
 }
 
 .badge-locazione {
-  background: rgba(45, 212, 191, 0.15);
+  background: rgba(31, 111, 139, 0.12);
   color: var(--teal);
 }
 
 .badge-agente {
-  background: rgba(200, 230, 74, 0.15);
+  background: rgba(13, 52, 71, 0.15);
   color: var(--lime);
 }
 
 .badge-agenzia {
-  background: rgba(245, 158, 11, 0.15);
+  background: rgba(183, 121, 31, 0.12);
   color: var(--amber);
 }
 
@@ -280,12 +296,12 @@ body {
 
 .badge-completata,
 .badge-incassato {
-  background: rgba(16, 185, 129, 0.15);
+  background: rgba(29, 143, 95, 0.12);
   color: var(--green);
 }
 
 .badge-proposta_accettata {
-  background: rgba(245, 158, 11, 0.15);
+  background: rgba(183, 121, 31, 0.12);
   color: var(--amber);
 }
 
@@ -371,7 +387,7 @@ body {
 }
 
 .op-card-value {
-  font-family: 'JetBrains Mono', monospace;
+  font-family: 'Montserrat', sans-serif; font-variant-numeric: tabular-nums;
   font-size: 16px;
   font-weight: 700;
   color: var(--w);
@@ -430,7 +446,7 @@ body {
 }
 
 .btn-danger {
-  background: rgba(239, 68, 68, 0.15);
+  background: rgba(192, 57, 43, 0.10);
   color: var(--red);
   border: 1px solid transparent;
 }
@@ -440,7 +456,7 @@ body {
 }
 
 .btn-success {
-  background: rgba(16, 185, 129, 0.15);
+  background: rgba(29, 143, 95, 0.12);
   color: var(--green);
   border: 1px solid transparent;
 }
@@ -470,7 +486,7 @@ table {
 thead th {
   background: var(--s1);
   color: var(--lime);
-  font-family: 'JetBrains Mono', monospace;
+  font-family: 'Montserrat', sans-serif; font-variant-numeric: tabular-nums;
   font-size: 11px;
   font-weight: 700;
   text-transform: uppercase;
@@ -512,7 +528,7 @@ tbody tr.total-row {
 .modal-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.6);
+  background: rgba(13, 52, 71, 0.45);
   backdrop-filter: blur(4px);
   display: flex;
   align-items: center;
@@ -533,7 +549,7 @@ tbody tr.total-row {
 }
 
 .modal-title {
-  font-family: 'JetBrains Mono', monospace;
+  font-family: 'Montserrat', sans-serif; font-variant-numeric: tabular-nums;
   font-size: 15px;
   font-weight: 700;
   color: var(--lime);
@@ -570,7 +586,7 @@ tbody tr.total-row {
   padding: 8px 12px;
   color: var(--w);
   font-size: 14px;
-  font-family: 'Inter', sans-serif;
+  font-family: 'Poppins', sans-serif;
   outline: none;
   transition: border-color 0.15s;
 }
@@ -637,7 +653,7 @@ tbody tr.total-row {
 }
 
 .commission-summary .value {
-  font-family: 'JetBrains Mono', monospace;
+  font-family: 'Montserrat', sans-serif; font-variant-numeric: tabular-nums;
   font-size: 14px;
   font-weight: 700;
   color: var(--w);
@@ -753,13 +769,13 @@ tbody tr.total-row {
 
 .forecast-label {
   display: inline-block;
-  font-family: 'JetBrains Mono', monospace;
+  font-family: 'Montserrat', sans-serif; font-variant-numeric: tabular-nums;
   font-size: 10px;
   font-weight: 700;
   text-transform: uppercase;
   padding: 2px 8px;
   border-radius: 4px;
-  background: rgba(245, 158, 11, 0.15);
+  background: rgba(183, 121, 31, 0.12);
   color: var(--amber);
   margin-bottom: 12px;
   letter-spacing: 0.5px;
@@ -841,7 +857,7 @@ tbody tr.total-row {
   display: flex;
   align-items: center;
   gap: 8px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+  box-shadow: 0 4px 16px rgba(13,52,71,0.15);
   animation: slideIn 0.2s ease;
   min-width: 200px;
 }
@@ -897,7 +913,7 @@ tbody tr.total-row {
 }
 
 .login-logo {
-  font-family: 'JetBrains Mono', monospace;
+  font-family: 'Montserrat', sans-serif; font-variant-numeric: tabular-nums;
   font-weight: 700;
   font-size: 20px;
   color: var(--lime);

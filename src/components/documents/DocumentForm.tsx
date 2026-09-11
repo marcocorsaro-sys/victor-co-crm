@@ -72,14 +72,14 @@ export default function DocumentForm({ template, ctx, initialOverrides, onCancel
         <span>{field.label}</span>
         {field.required && <span style={{ color: 'var(--red)' }}>*</span>}
         {isAutoFilled && (
-          <span style={{ fontSize: 9, padding: '1px 5px', borderRadius: 4, background: 'rgba(20,184,166,0.15)', color: 'var(--teal)' }}
+          <span style={{ fontSize: 9, padding: '1px 5px', borderRadius: 4, background: 'rgba(31,111,139,0.15)', color: 'var(--teal)' }}
             title={describeFieldSource(field.source)}>auto</span>
         )}
         {isOverridden && (
-          <span style={{ fontSize: 9, padding: '1px 5px', borderRadius: 4, background: 'rgba(245,158,11,0.15)', color: 'var(--amber)' }}>override</span>
+          <span style={{ fontSize: 9, padding: '1px 5px', borderRadius: 4, background: 'rgba(183,121,31,0.15)', color: 'var(--amber)' }}>override</span>
         )}
         {isMissing && (
-          <span style={{ fontSize: 9, padding: '1px 5px', borderRadius: 4, background: 'rgba(239,68,68,0.15)', color: 'var(--red)' }}>mancante</span>
+          <span style={{ fontSize: 9, padding: '1px 5px', borderRadius: 4, background: 'rgba(192,57,43,0.15)', color: 'var(--red)' }}>mancante</span>
         )}
       </div>
     )
@@ -168,7 +168,7 @@ export default function DocumentForm({ template, ctx, initialOverrides, onCancel
       {sections.map(([sec, fields]) => (
         <div key={sec} style={{ marginBottom: 16 }}>
           <div style={{
-            fontFamily: "'JetBrains Mono', monospace", fontSize: 10, color: 'var(--ld)',
+            fontFamily: "'Montserrat', sans-serif", fontSize: 10, color: 'var(--ld)',
             textTransform: 'uppercase', letterSpacing: '0.5px', marginBottom: 8,
           }}>
             // {sec}

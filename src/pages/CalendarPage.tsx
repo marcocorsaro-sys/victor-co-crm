@@ -45,7 +45,7 @@ export default function CalendarPage() {
         title: oh.title,
         start: oh.start_datetime,
         end: oh.end_datetime,
-        color: oh.status === 'completed' ? 'rgba(16,185,129,0.7)' : 'rgba(245,158,11,0.7)',
+        color: oh.status === 'completed' ? 'rgba(29,143,95,0.7)' : 'rgba(183,121,31,0.7)',
         type: 'open_house' as const,
       }))
   }, [openHouses])
@@ -105,7 +105,7 @@ export default function CalendarPage() {
       {selectedDate && (
         <div style={{ marginTop: 16, background: 'var(--s1)', borderRadius: 12, padding: 16, border: '1px solid var(--bd)' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 }}>
-            <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 11, color: 'var(--ld)', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
+            <div style={{ fontFamily: "'Montserrat', sans-serif", fontSize: 11, color: 'var(--ld)', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
               // {new Date(selectedDate + 'T00:00').toLocaleDateString('it-IT', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })}
             </div>
             <button className="btn btn-secondary btn-sm" onClick={() => setSelectedDate(null)}>
@@ -128,7 +128,7 @@ export default function CalendarPage() {
                   </div>
                   <div style={{ marginTop: 4 }}>
                     <span className={`badge ${oh.status === 'completed' ? 'badge-completata' : oh.status === 'cancelled' ? '' : 'badge-pipeline'}`}
-                      style={oh.status === 'cancelled' ? { background: 'rgba(239,68,68,0.15)', color: 'var(--red)' } : {}}>
+                      style={oh.status === 'cancelled' ? { background: 'rgba(192,57,43,0.15)', color: 'var(--red)' } : {}}>
                       {STATUS_LABELS[oh.status]}
                     </span>
                   </div>

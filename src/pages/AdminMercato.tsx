@@ -154,7 +154,7 @@ export default function AdminMercato() {
     }
   }, [agencies, listings, listingsMap, todayWeek, omi])
 
-  const mono = { fontFamily: "'JetBrains Mono', monospace" } as const
+  const mono = { fontFamily: "'Montserrat', sans-serif" } as const
 
   // T0 = 2026-W19 (settimana di partenza tracciamento mercato)
   const T0_YEAR = 2026
@@ -236,7 +236,7 @@ export default function AdminMercato() {
                   textAlign: 'center', minWidth: 56,
                   color: w === todayWeek ? 'var(--lime)' : 'var(--g)',
                   fontWeight: w === todayWeek ? 700 : 500,
-                  background: w === todayWeek ? 'rgba(200,230,74,0.1)' : undefined,
+                  background: w === todayWeek ? 'rgba(13,52,71,0.1)' : undefined,
                 }}>W{w}</th>
               ))}
             </tr>
@@ -250,9 +250,9 @@ export default function AdminMercato() {
               agencies.map(a => {
                 const isVictor = a.name.toLowerCase().includes('victor')
                 return (
-                  <tr key={a.id} style={isVictor ? { background: 'rgba(200,230,74,0.05)' } : undefined}>
+                  <tr key={a.id} style={isVictor ? { background: 'rgba(13,52,71,0.05)' } : undefined}>
                     <td style={{
-                      position: 'sticky', left: 0, background: isVictor ? 'rgba(200,230,74,0.05)' : 'var(--bg)',
+                      position: 'sticky', left: 0, background: isVictor ? 'rgba(13,52,71,0.05)' : 'var(--bg)',
                       fontWeight: 600, fontSize: 13, color: isVictor ? 'var(--lime)' : 'var(--w)',
                       borderRight: '1px solid var(--bd)',
                     }}>
@@ -270,7 +270,7 @@ export default function AdminMercato() {
                       return (
                         <td key={w} style={{
                           textAlign: 'center', minWidth: 56,
-                          background: isCurrent ? 'rgba(200,230,74,0.04)' : undefined,
+                          background: isCurrent ? 'rgba(13,52,71,0.04)' : undefined,
                           padding: 4,
                           cursor: isEditing ? 'text' : 'pointer',
                           opacity: isFuture ? 0.4 : 1,

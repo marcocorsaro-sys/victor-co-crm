@@ -26,7 +26,7 @@ function DeltaCard({ label, current, reference, format }: { label: string; curre
       flex: 1, minWidth: 160,
     }}>
       <div style={{ fontSize: 11, color: 'var(--g)', textTransform: 'uppercase', letterSpacing: '0.5px', marginBottom: 6 }}>{label}</div>
-      <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 18, color: 'var(--w)', fontWeight: 700 }}>
+      <div style={{ fontFamily: "'Montserrat', sans-serif", fontSize: 18, color: 'var(--w)', fontWeight: 700 }}>
         {format(current)}
       </div>
       <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginTop: 6 }}>

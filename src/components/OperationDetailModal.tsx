@@ -20,7 +20,7 @@ type Props = {
 
 const sectionLabel = (text: string) => (
   <div style={{
-    fontFamily: "'JetBrains Mono', monospace",
+    fontFamily: "'Montserrat', sans-serif",
     fontSize: 11,
     color: 'var(--ld)',
     textTransform: 'uppercase',
@@ -252,7 +252,7 @@ export default function OperationDetailModal({ open, operation, onClose, onEdit,
                   onDelete(operation.id)
                 }
               }}
-              style={{ background: 'rgba(239,68,68,0.15)', color: 'var(--red)', border: '1px solid var(--red)' }}
+              style={{ background: 'rgba(192,57,43,0.15)', color: 'var(--red)', border: '1px solid var(--red)' }}
               title="Elimina permanentemente dal DB (admin only)"
             >
               🗑 Elimina permanente
@@ -264,7 +264,7 @@ export default function OperationDetailModal({ open, operation, onClose, onEdit,
             <button
               className="btn btn-secondary"
               onClick={() => onChangeStatus(operation, 'proposta_accettata')}
-              style={{ background: 'rgba(245,158,11,0.15)', color: 'var(--amber)' }}
+              style={{ background: 'rgba(183,121,31,0.15)', color: 'var(--amber)' }}
               title="Soldi attesi ma non ancora incassati"
             >
               Proposta accettata

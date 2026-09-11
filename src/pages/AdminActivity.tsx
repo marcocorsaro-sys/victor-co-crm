@@ -36,7 +36,7 @@ export default function AdminActivity() {
 
   const agents = profiles.filter(p => p.role === 'agent')
   const getAgentName = (id: string) => profiles.find(p => p.id === id)?.full_name || 'Sconosciuto'
-  const getAgentColor = (id: string) => profiles.find(p => p.id === id)?.color || '#6b7280'
+  const getAgentColor = (id: string) => profiles.find(p => p.id === id)?.color || 'var(--g)'
   const getAgentInitials = (id: string) => profiles.find(p => p.id === id)?.initials || '??'
 
   const filteredLogs = logs.filter((l: ActivityLog) => {
@@ -71,7 +71,7 @@ export default function AdminActivity() {
       </div>
 
       {/* Agent overview table */}
-      <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 11, color: 'var(--ld)', textTransform: 'uppercase', marginBottom: 10, letterSpacing: '0.5px' }}>
+      <div style={{ fontFamily: "'Montserrat', sans-serif", fontSize: 11, color: 'var(--ld)', textTransform: 'uppercase', marginBottom: 10, letterSpacing: '0.5px' }}>
         // Riepilogo Agenti
       </div>
       <div className="table-wrap" style={{ marginBottom: 32 }}>
@@ -100,11 +100,11 @@ export default function AdminActivity() {
                       {agent.full_name}
                     </div>
                   </td>
-                  <td style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 12 }}>
+                  <td style={{ fontFamily: "'Montserrat', sans-serif", fontSize: 12 }}>
                     {s?.last_login ? formatDateTime(s.last_login) : '—'}
                   </td>
-                  <td style={{ fontFamily: "'JetBrains Mono', monospace" }}>{s?.actions_7d || 0}</td>
-                  <td style={{ fontFamily: "'JetBrains Mono', monospace" }}>{s?.actions_30d || 0}</td>
+                  <td style={{ fontFamily: "'Montserrat', sans-serif" }}>{s?.actions_7d || 0}</td>
+                  <td style={{ fontFamily: "'Montserrat', sans-serif" }}>{s?.actions_30d || 0}</td>
                   <td style={{ fontSize: 12 }}>
                     {s?.last_action_type ? (
                       <span style={{ color: ACTION_COLORS[s.last_action_type] || 'var(--g)' }}>
@@ -120,7 +120,7 @@ export default function AdminActivity() {
       </div>
 
       {/* Recent activity log */}
-      <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 11, color: 'var(--ld)', textTransform: 'uppercase', marginBottom: 10, letterSpacing: '0.5px' }}>
+      <div style={{ fontFamily: "'Montserrat', sans-serif", fontSize: 11, color: 'var(--ld)', textTransform: 'uppercase', marginBottom: 10, letterSpacing: '0.5px' }}>
         // Log Attivita Recenti
       </div>
 
@@ -154,7 +154,7 @@ export default function AdminActivity() {
               <tr><td colSpan={4} style={{ textAlign: 'center', color: 'var(--g)', padding: 24 }}>Nessuna attivita registrata</td></tr>
             ) : filteredLogs.map((log: ActivityLog) => (
               <tr key={log.id}>
-                <td style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 12, whiteSpace: 'nowrap' }}>
+                <td style={{ fontFamily: "'Montserrat', sans-serif", fontSize: 12, whiteSpace: 'nowrap' }}>
                   {formatDateTime(log.created_at)}
                 </td>
                 <td>

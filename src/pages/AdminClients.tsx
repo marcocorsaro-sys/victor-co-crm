@@ -131,7 +131,7 @@ export default function AdminClients() {
       {/* Birthday panel */}
       {upcomingBirthdays.length > 0 && (
         <div style={{ background: 'var(--s1)', borderRadius: 12, padding: 16, border: '1px solid var(--bd)', marginBottom: 16 }}>
-          <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 11, color: 'var(--ld)', textTransform: 'uppercase', letterSpacing: '0.5px', marginBottom: 10 }}>
+          <div style={{ fontFamily: "'Montserrat', sans-serif", fontSize: 11, color: 'var(--ld)', textTransform: 'uppercase', letterSpacing: '0.5px', marginBottom: 10 }}>
             // Compleanni in arrivo (30 giorni)
           </div>
           <div style={{ display: 'flex', gap: 10, overflowX: 'auto', paddingBottom: 4 }}>
@@ -147,7 +147,7 @@ export default function AdminClients() {
                   {formatDate(b.client.birth_date!)} · {b.age} anni
                 </div>
                 <div style={{
-                  fontFamily: "'JetBrains Mono', monospace", fontSize: 12, fontWeight: 700,
+                  fontFamily: "'Montserrat', sans-serif", fontSize: 12, fontWeight: 700,
                   color: b.daysUntil === 0 ? 'var(--green)' : b.daysUntil <= 7 ? 'var(--amber)' : 'var(--teal)',
                 }}>
                   {b.daysUntil === 0 ? 'OGGI!' : b.daysUntil === 1 ? 'Domani' : `Tra ${b.daysUntil} giorni`}
@@ -199,7 +199,7 @@ export default function AdminClients() {
                       )}
                     </div>
                   </td>
-                  <td style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 12 }}>
+                  <td style={{ fontFamily: "'Montserrat', sans-serif", fontSize: 12 }}>
                     {c.phone ? <a href={`tel:${c.phone}`} style={{ color: 'var(--w)', textDecoration: 'none' }}>{c.phone}</a> : '—'}
                   </td>
                   <td style={{ fontSize: 12 }}>
@@ -231,7 +231,7 @@ export default function AdminClients() {
       {totalPages > 1 && (
         <div style={{ display: 'flex', justifyContent: 'center', gap: 8, marginTop: 16 }}>
           <button className="btn btn-secondary btn-sm" disabled={page === 0} onClick={() => setPage(p => p - 1)}>← Precedente</button>
-          <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 12, color: 'var(--g)', lineHeight: '30px' }}>{page + 1} / {totalPages}</span>
+          <span style={{ fontFamily: "'Montserrat', sans-serif", fontSize: 12, color: 'var(--g)', lineHeight: '30px' }}>{page + 1} / {totalPages}</span>
           <button className="btn btn-secondary btn-sm" disabled={page >= totalPages - 1} onClick={() => setPage(p => p + 1)}>Successiva →</button>
         </div>
       )}

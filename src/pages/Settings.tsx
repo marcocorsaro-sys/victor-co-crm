@@ -18,7 +18,7 @@ export default function Settings() {
   const { integration, loading: gLoading, refetch } = useGoogleIntegration()
   const [showPwModal, setShowPwModal] = useState(false)
 
-  const mono = { fontFamily: "'JetBrains Mono', monospace" } as const
+  const mono = { fontFamily: "'Montserrat', sans-serif" } as const
 
   return (
     <div>

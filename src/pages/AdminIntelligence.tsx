@@ -299,7 +299,7 @@ export default function AdminIntelligence() {
   const marginWithCollab = withCollab.length > 0 ? withCollab.reduce((s, o) => s + ((o.gross_commission || 0) - (o.agent_commission || 0)), 0) / withCollab.length : 0
   const marginWithoutCollab = withoutCollab.length > 0 ? withoutCollab.reduce((s, o) => s + ((o.gross_commission || 0) - (o.agent_commission || 0)), 0) / withoutCollab.length : 0
 
-  const mono = { fontFamily: "'JetBrains Mono', monospace" } as const
+  const mono = { fontFamily: "'Montserrat', sans-serif" } as const
 
   const sectionLabel = (text: string) => (
     <div style={{ ...mono, fontSize: 11, color: 'var(--ld)', textTransform: 'uppercase', letterSpacing: '0.5px', marginBottom: 12, marginTop: 24 }}>

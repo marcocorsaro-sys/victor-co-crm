@@ -19,10 +19,10 @@ const STATUS_LABELS: Record<ClientProperty['status'], string> = {
 }
 
 const STATUS_COLORS: Record<ClientProperty['status'], { color: string; bg: string }> = {
-  venduto_nostra: { color: 'var(--green)', bg: 'rgba(34,197,94,0.15)' },
+  venduto_nostra: { color: 'var(--green)', bg: 'rgba(29,143,95,0.15)' },
   venduto_altri: { color: 'var(--g)', bg: 'rgba(128,128,128,0.15)' },
-  in_vendita_altri: { color: 'var(--amber)', bg: 'rgba(245,158,11,0.15)' },
-  non_in_vendita: { color: 'var(--teal)', bg: 'rgba(45,212,191,0.15)' },
+  in_vendita_altri: { color: 'var(--amber)', bg: 'rgba(183,121,31,0.15)' },
+  non_in_vendita: { color: 'var(--teal)', bg: 'rgba(31,111,139,0.15)' },
   tracciato: { color: 'var(--ld)', bg: 'rgba(160,160,160,0.15)' },
 }
 
@@ -95,7 +95,7 @@ export default function ClientDetail() {
     fetchData()
   }
 
-  const mono = { fontFamily: "'JetBrains Mono', monospace" } as const
+  const mono = { fontFamily: "'Montserrat', sans-serif" } as const
 
   if (loading) {
     return <div style={{ padding: 40 }}><div className="skeleton skeleton-row" style={{ height: 200 }} /></div>
@@ -159,7 +159,7 @@ export default function ClientDetail() {
           <button className="btn btn-secondary btn-sm" onClick={() => navigate(-1)} style={{ flexShrink: 0 }}>←</button>
           <div style={{
             width: 52, height: 52, borderRadius: '50%', flexShrink: 0,
-            background: 'linear-gradient(135deg, rgba(200,230,74,0.18), rgba(45,212,191,0.12))',
+            background: 'linear-gradient(135deg, rgba(13,52,71,0.18), rgba(31,111,139,0.12))',
             border: '1px solid var(--bd)', display: 'flex', alignItems: 'center', justifyContent: 'center',
             ...mono, fontWeight: 700, fontSize: 18, color: 'var(--lime)',
           }}>{initials}</div>
@@ -394,7 +394,7 @@ export default function ClientDetail() {
 
 /* ─── Sub-components ─── */
 
-const monoFont = { fontFamily: "'JetBrains Mono', monospace" } as const
+const monoFont = { fontFamily: "'Montserrat', sans-serif" } as const
 
 function Card({ title, children }: { title: string; children: React.ReactNode }) {
   return (
@@ -464,7 +464,7 @@ function PropertyModal({ initial, onClose, onSave }: {
   })
 
   const set = (key: string, val: string) => setForm(prev => ({ ...prev, [key]: val }))
-  const mono = { fontFamily: "'JetBrains Mono', monospace" }
+  const mono = { fontFamily: "'Montserrat', sans-serif" }
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()

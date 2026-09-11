@@ -223,7 +223,7 @@ export default function AdminWeekly() {
   const today = new Date()
   const todayWeek = today.getFullYear() === selectedYear ? getISOWeek(today).week : -1
 
-  const mono = { fontFamily: "'JetBrains Mono', monospace" } as const
+  const mono = { fontFamily: "'Montserrat', sans-serif" } as const
 
   const formatRange = (r: { start: Date; end: Date }) =>
     `${formatDate(r.start.toISOString())} — ${formatDate(r.end.toISOString())}`
@@ -293,7 +293,7 @@ export default function AdminWeekly() {
                       style={{
                         cursor: 'pointer',
                         opacity: isFuture ? 0.4 : 1,
-                        background: isCurrent ? 'rgba(200,230,74,0.08)' : isExpanded ? 'rgba(45,212,191,0.05)' : undefined,
+                        background: isCurrent ? 'rgba(13,52,71,0.08)' : isExpanded ? 'rgba(31,111,139,0.05)' : undefined,
                         borderLeft: isCurrent ? '3px solid var(--lime)' : '3px solid transparent',
                       }}
                     >
@@ -350,7 +350,7 @@ function WeekDetail({
   }
   profileMap: Map<string, Profile>
 }) {
-  const mono = { fontFamily: "'JetBrains Mono', monospace" } as const
+  const mono = { fontFamily: "'Montserrat', sans-serif" } as const
 
   return (
     <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16 }}>
@@ -408,7 +408,7 @@ function WeekDetail({
               {week.closed.map(op => {
                 const agent = profileMap.get(op.agent_id)
                 return (
-                  <div key={op.id} style={{ background: 'rgba(34,197,94,0.06)', padding: 10, borderRadius: 8, border: '1px solid rgba(34,197,94,0.2)', fontSize: 12 }}>
+                  <div key={op.id} style={{ background: 'rgba(29,143,95,0.06)', padding: 10, borderRadius: 8, border: '1px solid rgba(29,143,95,0.2)', fontSize: 12 }}>
                     <div style={{ fontWeight: 600, color: 'var(--w)' }}>{op.property_name}</div>
                     <div style={{ display: 'flex', gap: 12, marginTop: 4, fontSize: 11 }}>
                       {agent && <span style={{ color: 'var(--gl)' }}>{agent.full_name}</span>}

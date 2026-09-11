@@ -19,7 +19,7 @@ export default function TopBar({ profile, onLogout, viewAsAgent, onSwitchView, o
 
   return (
     <div className="topbar" style={isImpersonating ? { borderBottom: '2px solid var(--amber)' } : undefined}>
-      <span className="topbar-logo">// VICTOR&CO · CRM</span>
+      <span className="topbar-logo"><img src="/brand/logo-white.png" alt="Victor&Co Real Estate" /></span>
 
       <nav className="topbar-nav">
         {isAdmin ? (
@@ -48,10 +48,13 @@ export default function TopBar({ profile, onLogout, viewAsAgent, onSwitchView, o
             <NavLink to="/admin/mercato" className={({ isActive }) => isActive ? 'active' : ''}>
               Mercato
             </NavLink>
-            <NavLink to="/admin/ai" className={({ isActive }) => isActive ? 'active' : ''} style={{ color: 'var(--lime)' }}>
+            <NavLink to="/admin/ai" className={({ isActive }) => isActive ? 'active' : ''}>
               AI
             </NavLink>
-            <span style={{ color: 'var(--bd)', margin: '0 2px', userSelect: 'none' }}>·</span>
+            <NavLink to="/vademecum" className={({ isActive }) => isActive ? 'active' : ''}>
+              Vademecum
+            </NavLink>
+            <span style={{ color: 'rgba(255,255,255,0.35)', margin: '0 2px', userSelect: 'none' }}>·</span>
             <NavLink to="/calendar" className={({ isActive }) => isActive ? 'active' : ''}>
               Calendario
             </NavLink>
@@ -69,6 +72,9 @@ export default function TopBar({ profile, onLogout, viewAsAgent, onSwitchView, o
             </NavLink>
             <NavLink to="/agent/clients" className={({ isActive }) => isActive ? 'active' : ''}>
               Clienti
+            </NavLink>
+            <NavLink to="/vademecum" className={({ isActive }) => isActive ? 'active' : ''}>
+              Vademecum
             </NavLink>
             <NavLink to="/calendar" className={({ isActive }) => isActive ? 'active' : ''}>
               Calendario
