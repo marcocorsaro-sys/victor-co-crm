@@ -28,7 +28,7 @@ export default function Login({ onLogin }: Props) {
   return (
     <div className="login-page">
       <div className="login-box">
-        <div className="login-logo">// VICTOR&CO</div>
+        <div className="login-logo"><img src="/brand/logo-navy.png" alt="Victor&Co Real Estate" style={{ height: 72, display: "block", margin: "0 auto" }} /></div>
         <div className="login-subtitle">CRM Immobiliare</div>
 
         <form onSubmit={handleSubmit}>
