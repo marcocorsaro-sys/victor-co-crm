@@ -14,7 +14,6 @@ type Section = { id: string; title: string; questions: Q[] }
 
 const o = (...items: string[]): Opt[] => items.map(s => ({ v: s, l: s }))
 
-const DOC_OPTS = o('Te lo mando oggi', 'Te lo mando in settimana', 'Non ce l’ho', 'Aiutami a capire cosa serve')
 const RISK_OPTS: Opt[] = [
   { v: 'nulla', l: 'Non succede niente' },
   { v: 'ritardi', l: 'Si accumulano ritardi, ma si recupera' },
@@ -24,18 +23,6 @@ const RISK_OPTS: Opt[] = [
 const risk = (id: string, what: string): Q => ({ id, t: 'one', label: `${what}: se per una settimana nessuno lo facesse, cosa succede?`, opts: RISK_OPTS })
 
 const SECTIONS: Section[] = [
-  {
-    id: 'doc', title: 'Cosa ci serve da te',
-    questions: [
-      { id: 'doc_estratti', t: 'one', label: 'Estratti conto di 1-2 mesi, conto e carta', hint: 'Anche con i nomi oscurati. Una foto su WhatsApp va bene.', opts: DOC_OPTS },
-      { id: 'doc_proforma', t: 'one', label: 'Un esempio di proforma che mandi oggi ai clienti', opts: DOC_OPTS },
-      { id: 'doc_fattura', t: 'one', label: 'Un esempio di fattura emessa, e il nome del programma con cui la fai', opts: DOC_OPTS },
-      { id: 'doc_pratica', t: 'one', label: 'Una pratica completa, carta e digitale, dalla proposta al rogito', opts: DOC_OPTS },
-      { id: 'doc_mail', t: 'one', label: '3-4 mail vere dei portali (Immobiliare.it, Casa.it), inoltrate a Marco', opts: DOC_OPTS },
-      { id: 'doc_comm', t: 'one', label: 'Nome, mail e telefono del commercialista', opts: DOC_OPTS },
-      { id: 'doc_fissi', t: 'one', label: 'Elenco dei pagamenti fissi (portali, affitto, abbonamenti, utenze) con gli importi', opts: DOC_OPTS },
-    ],
-  },
   {
     id: 'peso', title: 'Quanto pesa oggi',
     questions: [
