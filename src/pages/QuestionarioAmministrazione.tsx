@@ -30,7 +30,7 @@ const SECTIONS: Section[] = [
       { id: 'n_pag', t: 'num', label: 'Pagamenti che disponi in un mese normale', unit: 'al mese' },
       { id: 'n_prof', t: 'num', label: 'Proforma emesse in un mese normale', unit: 'al mese' },
       { id: 'n_ritardo', t: 'one', label: 'Quante proforma vengono pagate oltre i 7 giorni?', opts: o('Quasi nessuna', 'Circa un quarto', 'Circa la metà', 'Quasi tutte') },
-      { id: 'n_portali', t: 'num', label: 'Richieste dai portali a settimana', unit: 'a settimana' },
+      { id: 'n_portali', t: 'num', label: 'Richieste a settimana da portali, Instagram e sito', unit: 'a settimana' },
       { id: 'n_ore', t: 'num', label: 'Ore a settimana che dedichi tu oggi all’amministrazione', unit: 'ore/sett' },
     ],
   },
