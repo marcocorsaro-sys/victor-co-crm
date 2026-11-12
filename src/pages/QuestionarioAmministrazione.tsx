@@ -48,7 +48,6 @@ const SECTIONS: Section[] = [
   {
     id: 'regole', title: 'Le tue regole',
     questions: [
-      { id: 'g_soglia', t: 'num', label: 'Sopra quale importo approvi tu ogni pagamento?', hint: 'Sotto questa soglia può procedere l’impiegata.', unit: '€' },
       { id: 'g_open', t: 'one', label: 'Colleghiamo il conto al CRM in sola lettura, per vedere i movimenti senza poter pagare?', opts: o('Sì', 'No', 'Da valutare con il commercialista') },
       { id: 'g_aml', t: 'text', label: 'Chi è il responsabile antiriciclaggio dell’agenzia?' },
       { id: 'g_firma', t: 'one', label: 'Come far firmare i moduli antiriciclaggio?', opts: o('Firma digitale via link', 'Firma con codice SMS', 'Con SPID', 'Cartacea come oggi', 'Non so, consigliami') },
@@ -60,7 +59,6 @@ const SECTIONS: Section[] = [
     id: 'persona', title: 'La persona che assumi',
     questions: [
       { id: 'p_impegno', t: 'one', label: 'Impegno che hai in mente', opts: o('Part-time mattina', 'Part-time pomeriggio', 'Tempo pieno', 'Non lo so ancora') },
-      { id: 'p_mai', t: 'long', label: 'Cosa non deve mai fare senza il tuo ok?' },
       { id: 'p_ruba', t: 'long', label: 'Cosa oggi ti ruba più tempo o ti dà più fastidio?' },
     ],
   },
