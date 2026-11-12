@@ -11,6 +11,7 @@ import DocumentiPratiche from '../components/amministrazione/DocumentiPratiche'
 import Contabilita from '../components/amministrazione/Contabilita'
 import RichiestePortali from '../components/amministrazione/RichiestePortali'
 import ProformaIncassi from '../components/amministrazione/ProformaIncassi'
+import GuidaDocumenti from '../components/amministrazione/GuidaDocumenti'
 
 const TABS = [
   { key: 'panoramica', label: 'Panoramica' },
@@ -20,6 +21,7 @@ const TABS = [
   { key: 'contabilita', label: 'Contabilita' },
   { key: 'portali', label: 'Richieste portali' },
   { key: 'proforma', label: 'Proforma e incassi' },
+  { key: 'guida', label: 'Analisi e job description' },
 ] as const
 
 /**
@@ -52,6 +54,7 @@ export default function AdminAmministrazione() {
       {tab === 'documenti' && <DocumentiPratiche operations={operations} toast={addToast} />}
       {tab === 'contabilita' && <Contabilita toast={addToast} />}
       {tab === 'portali' && <RichiestePortali agents={agents} toast={addToast} />}
+      {tab === 'guida' && <GuidaDocumenti />}
       {tab === 'proforma' && <ProformaIncassi operations={operations} clients={clients} agents={agents} toast={addToast} />}
     </div>
   )

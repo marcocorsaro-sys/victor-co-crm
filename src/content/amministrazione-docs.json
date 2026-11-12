@@ -1,0 +1,131 @@
+{
+  "analisi": {
+    "title": "Analisi amministrazione e migliorie con la tecnologia",
+    "subtitle": "Questionario amministrazione compilato da Victor Sponton il 12 novembre 2026 (18 risposte)",
+    "pdf": "/docs/Victor-Co_Analisi-amministrazione.pdf",
+    "sections": [
+      {
+        "h": "Sintesi",
+        "blocks": [
+          { "type": "p", "text": "L'amministrazione di Victor&Co dipende oggi da Victor: 8 ore a settimana, lavoro fatto a strappi e tre compiti che, se si fermano, causano danni economici o sanzioni. La tecnologia può togliere gran parte dell'inseguimento di scadenze e solleciti; resta necessaria una persona che controlli e decida." }
+        ]
+      },
+      {
+        "h": "Il carico oggi",
+        "blocks": [
+          { "type": "p", "text": "Victor gestisce circa 40 operazioni al mese più un flusso continuo di richieste dai portali, in circa 35 ore al mese." },
+          {
+            "type": "table",
+            "head": ["Attività", "Volume dichiarato"],
+            "rows": [
+              ["Preliminari e locazioni da registrare", "4 al mese"],
+              ["Pagamenti disposti", "20 al mese"],
+              ["Proforma emesse", "16 al mese"],
+              ["Proforma pagate oltre i 7 giorni", "circa la metà (stima: 8 al mese)"],
+              ["Richieste da portali, Instagram e sito", "25 a settimana (stima: circa 100 al mese)"],
+              ["Ore dedicate da Victor", "8 a settimana"]
+            ]
+          },
+          { "type": "p", "text": "Le stime mensili sono calcoli a partire dalle risposte, non numeri dichiarati da Victor. Nel testo libero Victor scrive che la contabilità si fa a strappi e che il commercialista chiede i dati con preavviso quasi nullo." }
+        ]
+      },
+      {
+        "h": "Rischi e regole decise",
+        "blocks": [
+          { "type": "p", "text": "Tre compiti, se nessuno li fa per una settimana, causano danno economico o sanzioni: le registrazioni all'Agenzia delle Entrate, i pagamenti, il controllo documenti e antiriciclaggio. Richieste dai portali e proforma/solleciti causano problemi seri con clienti, agenti o commercialista. I rapporti con il commercialista causano ritardi che si recuperano." },
+          { "type": "p", "text": "Le regole scelte da Victor:" },
+          {
+            "type": "ul",
+            "items": [
+              "Responsabile antiriciclaggio: lui stesso, Victor Emanuel Sponton.",
+              "Firma dei moduli antiriciclaggio: cartacea, come oggi.",
+              "Cliente che non paga dopo i solleciti: lo chiama l'agente.",
+              "Provvigioni soggette a IVA al 22%: sì; da far confermare dal commercialista."
+            ]
+          }
+        ]
+      },
+      {
+        "h": "Migliorie con la tecnologia",
+        "blocks": [
+          { "type": "p", "text": "Ogni riga parte da un problema emerso dal questionario e dice cosa cambierebbe in pratica e chi se ne occuperebbe. Sono proposte da valutare con Victor, in ordine di importanza: le prime evitano sanzioni." },
+          {
+            "type": "table",
+            "head": ["Problema oggi", "Cosa farebbe la tecnologia", "Chi lo farà a tendere", "Cosa cambia per Victor"],
+            "rows": [
+              ["Registrazioni e pagamenti: se saltano, sanzioni", "Un calendario con le scadenze di ogni pratica e un avviso alla persona incaricata qualche giorno prima", "La persona in amministrazione; Victor controlla il calendario", "Nessuna scadenza dimenticata, e si vede subito chi se ne occupa"],
+              ["Antiriciclaggio: solo Victor, firma su carta", "Un elenco di controlli da spuntare per ogni pratica, i documenti salvati nella pratica e la firma sul telefono del cliente", "La persona in amministrazione prepara e controlla; Victor resta responsabile finché non nomina un sostituto", "Meno carta e meno attese, e un sostituto quando Victor non c'è"],
+              ["Metà delle proforma pagate in ritardo", "Un promemoria automatico al cliente al settimo giorno e un avviso all'agente se deve telefonare", "La persona in amministrazione segue i solleciti; l'agente telefona al cliente", "Victor non deve ricordarsi a mano chi non ha pagato"],
+              ["Circa 25 richieste a settimana da portali, Instagram e sito", "Una casella unica dove arrivano tutte, assegnate a un agente e segnalate in rosso se restano senza risposta", "Valentina, aiutata dall'AI per monitorare le richieste e preparare risposte rapide; poi l'agente assegnato", "Nessuna richiesta persa e tempi di risposta più brevi"],
+              ["Il commercialista chiede i dati all'ultimo", "Un riepilogo mensile di pagamenti, proforma e documenti, pronto da inviare o già condiviso", "La persona in amministrazione; Victor per le decisioni", "Niente corsa quando arriva la richiesta"]
+            ]
+          },
+          { "type": "p", "text": "La tecnologia toglie il lavoro ripetitivo e i dimenticati, ma non sostituisce la persona assunta: controlla, decide e telefona. Conviene partire dal calendario delle scadenze e dai solleciti, che risolvono i problemi più costosi con meno lavoro. Le assegnazioni sono una proposta da confermare." }
+        ]
+      }
+    ]
+  },
+  "jobdesc": {
+    "title": "Job description: addetta amministrativa",
+    "subtitle": "Bozza basata sulle risposte del questionario amministrazione",
+    "pdf": "/docs/Victor-Co_Job-description.pdf",
+    "sections": [
+      {
+        "h": "Il ruolo",
+        "blocks": [
+          { "type": "p", "text": "Victor&Co cerca una addetta amministrativa part-time, al mattino, che prenda in carico scadenze, pagamenti, proforma e richieste dai portali, lavorando a fianco di Victor, degli agenti e del commercialista. Oggi queste attività le svolge Victor in circa 8 ore a settimana, a strappi." }
+        ]
+      },
+      {
+        "h": "Cosa farà",
+        "blocks": [
+          { "type": "p", "text": "I volumi sono quelli dichiarati da Victor nel questionario." },
+          {
+            "type": "ul",
+            "items": [
+              "Preparare e seguire le registrazioni di preliminari e locazioni all'Agenzia delle Entrate (circa 4 al mese), rispettando le scadenze.",
+              "Disporre i pagamenti (circa 20 al mese) e tenerne traccia.",
+              "Emettere le proforma (circa 16 al mese), controllare chi non ha pagato entro 7 giorni (oggi circa la metà) e inviare i solleciti; quando serve una telefonata, avvisare l'agente.",
+              "Raccogliere e controllare i documenti di ogni pratica e compilare la parte antiriciclaggio.",
+              "Smistare le richieste da portali, Instagram e sito (circa 25 a settimana), assegnarle agli agenti e verificare che ricevano risposta.",
+              "Preparare con regolarità dati e documenti per il commercialista, senza aspettare le sue richieste.",
+              "Usare e tenere in ordine il CRM, segnalando ciò che non funziona."
+            ]
+          }
+        ]
+      },
+      {
+        "h": "La candidata ideale",
+        "blocks": [
+          {
+            "type": "ul",
+            "items": [
+              "Esperienza amministrativa in agenzia immobiliare, studio professionale o altro contesto con pratiche e scadenze fiscali; conoscenza di registrazioni, locazioni e fatturazione con IVA.",
+              "Conoscenza delle regole antiriciclaggio, o disponibilità a formarsi in fretta.",
+              "Precisione sulle scadenze: tre dei suoi compiti, se saltati, causano danni economici o sanzioni.",
+              "Fermezza e cortesia nel sollecitare agenti e clienti in ritardo.",
+              "Autonomia: segnala i problemi prima della scadenza, senza aspettare che Victor se ne accorga.",
+              "Buon uso di strumenti digitali (gestionale, firma digitale, posta); l'esperienza con un CRM è un vantaggio.",
+              "Disponibilità al part-time al mattino."
+            ]
+          }
+        ]
+      },
+      {
+        "h": "Da definire con Victor",
+        "blocks": [
+          { "type": "p", "text": "Il questionario non copre questi punti, quindi non sono stati inventati." },
+          {
+            "type": "ul",
+            "items": [
+              "Giorni e ore esatti: 8 ore a settimana è quanto dedica Victor oggi, ma un part-time al mattino ne coprirebbe di più.",
+              "Tipo di contratto, retribuzione e sede di lavoro.",
+              "Se la candidata gestirà anche gli incassi o solo controlli e solleciti.",
+              "Chi sarà il responsabile antiriciclaggio: oggi è Victor Emanuel Sponton."
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}
