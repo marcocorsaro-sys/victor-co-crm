@@ -984,7 +984,31 @@ tbody tr.total-row {
     padding: 0 12px;
   }
 
+  /* menu scorrevole su una seconda riga, cosi' tutte le sezioni restano raggiungibili da telefono */
+  .topbar {
+    flex-wrap: wrap;
+    height: auto;
+    padding-top: 8px;
+    padding-bottom: 6px;
+    row-gap: 6px;
+  }
+
   .topbar-nav {
+    order: 3;
+    width: 100%;
+    display: flex;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    padding-bottom: 2px;
+  }
+
+  .topbar-nav::-webkit-scrollbar {
+    display: none;
+  }
+
+  .topbar .user-info .name,
+  .topbar .role-badge {
     display: none;
   }
 

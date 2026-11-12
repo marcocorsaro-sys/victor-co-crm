@@ -21,6 +21,7 @@ import AdminAI from './pages/AdminAI'
 import AdminWeekly from './pages/AdminWeekly'
 import AdminMercato from './pages/AdminMercato'
 import AdminAgencySettings from './pages/AdminAgencySettings'
+import AdminAmministrazione from './pages/AdminAmministrazione'
 import CalendarPage from './pages/CalendarPage'
 import Settings from './pages/Settings'
 import Vademecum from './pages/Vademecum'
@@ -109,6 +110,7 @@ function App() {
               <Route path="/admin/mercato" element={<AdminMercato />} />
               <Route path="/admin/ai" element={<AdminAI />} />
               <Route path="/admin/agency" element={<AdminAgencySettings />} />
+              <Route path="/admin/amministrazione" element={<AdminAmministrazione />} />
               <Route path="/calendar" element={<CalendarPage />} />
               <Route path="/settings" element={<Settings />} />
               <Route path="/vademecum" element={<Vademecum />} />
