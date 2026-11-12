@@ -9,179 +9,80 @@ type Q =
   | { id: string; t: 'text'; label: string; hint?: string }
   | { id: string; t: 'long'; label: string; hint?: string }
   | { id: string; t: 'one'; label: string; hint?: string; opts: Opt[] }
-  | { id: string; t: 'multi'; label: string; hint?: string; opts: Opt[] }
-  | { id: string; t: 'risk'; label: string }
 
-type Section = { id: string; title: string; intro?: string; questions: Q[]; crm?: boolean }
+type Section = { id: string; title: string; questions: Q[] }
 
 const o = (...items: string[]): Opt[] => items.map(s => ({ v: s, l: s }))
 
+const DOC_OPTS = o('Te lo mando oggi', 'Te lo mando in settimana', 'Non ce l’ho', 'Aiutami a capire cosa serve')
 const RISK_OPTS: Opt[] = [
   { v: 'nulla', l: 'Non succede niente' },
   { v: 'ritardi', l: 'Si accumulano ritardi, ma si recupera' },
-  { v: 'problemi', l: 'Problemi seri (clienti, agenti, commercialista)' },
+  { v: 'problemi', l: 'Problemi seri con clienti, agenti o commercialista' },
   { v: 'danno', l: 'Danno economico o sanzioni' },
 ]
+const risk = (id: string, what: string): Q => ({ id, t: 'one', label: `${what}: se per una settimana nessuno lo facesse, cosa succede?`, opts: RISK_OPTS })
 
 const SECTIONS: Section[] = [
   {
-    id: 'a1', title: '1. registrazioni all’agenzia delle entrate',
-    intro: 'Preliminari e contratti di locazione da registrare sul portale.',
+    id: 'doc', title: 'Cosa ci serve da te',
     questions: [
-      { id: 'a1_prelim', t: 'num', label: 'Preliminari da registrare in un mese normale', unit: 'al mese' },
-      { id: 'a1_loc', t: 'num', label: 'Contratti di locazione da registrare in un mese normale', unit: 'al mese' },
-      { id: 'a1_chi', t: 'one', label: 'Chi li registra oggi?', opts: o('Io', 'Un agente', 'Il notaio', 'Il commercialista', 'Altro') },
-      { id: 'a1_ritardi', t: 'one', label: 'Ti è mai successo di registrare fuori termine?', opts: o('Mai', 'Qualche volta', 'Spesso') },
-      { id: 'a1_ore', t: 'num', label: 'Quante ore a settimana ci va?', unit: 'ore/sett' },
-      { id: 'a1_risk', t: 'risk', label: 'Se per una settimana nessuno lo facesse, cosa succede?' },
+      { id: 'doc_estratti', t: 'one', label: 'Estratti conto di 1-2 mesi, conto e carta', hint: 'Anche con i nomi oscurati. Una foto su WhatsApp va bene.', opts: DOC_OPTS },
+      { id: 'doc_proforma', t: 'one', label: 'Un esempio di proforma che mandi oggi ai clienti', opts: DOC_OPTS },
+      { id: 'doc_fattura', t: 'one', label: 'Un esempio di fattura emessa, e il nome del programma con cui la fai', opts: DOC_OPTS },
+      { id: 'doc_pratica', t: 'one', label: 'Una pratica completa, carta e digitale, dalla proposta al rogito', opts: DOC_OPTS },
+      { id: 'doc_mail', t: 'one', label: '3-4 mail vere dei portali (Immobiliare.it, Casa.it), inoltrate a Marco', opts: DOC_OPTS },
+      { id: 'doc_comm', t: 'one', label: 'Nome, mail e telefono del commercialista', opts: DOC_OPTS },
+      { id: 'doc_fissi', t: 'one', label: 'Elenco dei pagamenti fissi (portali, affitto, abbonamenti, utenze) con gli importi', opts: DOC_OPTS },
     ],
   },
   {
-    id: 'a2', title: '2. pagamenti',
-    intro: 'Tutto quello che l’agenzia paga: fornitori, portali, collaboratori, imposte.',
+    id: 'peso', title: 'Quanto pesa oggi',
     questions: [
-      { id: 'a2_num', t: 'num', label: 'Quanti pagamenti in un mese normale', unit: 'al mese' },
-      { id: 'a2_ricorrenti', t: 'num', label: 'Di questi, quanti sono sempre uguali (abbonamenti, affitti, utenze)', unit: 'al mese' },
-      { id: 'a2_tot', t: 'num', label: 'Importo totale pagato in un mese normale', unit: '€', hint: 'Anche a occhio.' },
-      { id: 'a2_tipi', t: 'multi', label: 'Cosa si paga', opts: o('Portali immobiliari', 'Fornitori e servizi', 'Collaboratori e agenti', 'Imposte e F24', 'Affitto sede e utenze', 'Marketing e pubblicità', 'Altro') },
-      { id: 'a2_come', t: 'multi', label: 'Come si paga', opts: o('Bonifico da home banking', 'Carta aziendale', 'Addebito diretto', 'F24 tramite commercialista', 'Contanti') },
-      { id: 'a2_chi', t: 'one', label: 'Chi dispone oggi i pagamenti in banca?', opts: o('Solo io', 'Io e un collaboratore', 'Il commercialista', 'Altro') },
-      { id: 'a2_soglia', t: 'num', label: 'Sopra quale importo vuoi approvare tu ogni pagamento?', unit: '€', hint: 'Sotto questa soglia può procedere l’impiegata.' },
-      { id: 'a2_banca', t: 'text', label: 'Con quale banca lavori?' },
-      { id: 'a2_open', t: 'one', label: 'Se tecnicamente si può, collegheresti il conto al CRM in sola lettura (per vedere i movimenti senza pagare)?', opts: o('Sì', 'No', 'Da valutare con il commercialista') },
-      { id: 'a2_ore', t: 'num', label: 'Quante ore a settimana ci va?', unit: 'ore/sett' },
-      { id: 'a2_risk', t: 'risk', label: 'Se per una settimana nessuno lo facesse, cosa succede?' },
+      { id: 'n_reg', t: 'num', label: 'Preliminari e locazioni da registrare in un mese normale', unit: 'al mese' },
+      { id: 'n_pag', t: 'num', label: 'Pagamenti che disponi in un mese normale', unit: 'al mese' },
+      { id: 'n_prof', t: 'num', label: 'Proforma emesse in un mese normale', unit: 'al mese' },
+      { id: 'n_ritardo', t: 'one', label: 'Quante proforma vengono pagate oltre i 7 giorni?', opts: o('Quasi nessuna', 'Circa un quarto', 'Circa la metà', 'Quasi tutte') },
+      { id: 'n_portali', t: 'num', label: 'Richieste dai portali a settimana', unit: 'a settimana' },
+      { id: 'n_ore', t: 'num', label: 'Ore a settimana che dedichi tu oggi all’amministrazione', unit: 'ore/sett' },
     ],
   },
   {
-    id: 'a3', title: '3. documenti delle pratiche e antiriciclaggio',
-    intro: 'Controllo che ogni pratica abbia i documenti giusti prima di andare avanti.',
+    id: 'risk', title: 'Se nessuno lo fa per una settimana',
     questions: [
-      { id: 'a3_pratiche', t: 'num', label: 'Quante pratiche in corso contemporaneamente, in media', unit: 'pratiche' },
-      { id: 'a3_dove', t: 'multi', label: 'Dove stanno oggi i documenti', opts: o('Google Drive', 'Cartaceo in agenzia', 'Gestionale AGIM', 'Mail e WhatsApp degli agenti', 'Non c’è un posto unico') },
-      { id: 'a3_chi', t: 'one', label: 'Chi controlla oggi che i documenti siano completi?', opts: o('Io', 'Gli agenti da soli', 'Una persona dedicata', 'Nessuno in modo sistematico') },
-      { id: 'a3_manca', t: 'one', label: 'Quante volte arrivi al rogito o al preliminare con documenti mancanti?', opts: o('Mai', 'Raramente', 'Spesso') },
-      { id: 'a3_aml_resp', t: 'text', label: 'Chi è il responsabile antiriciclaggio dell’agenzia?', hint: 'Nome e cognome.' },
-      { id: 'a3_aml_quando', t: 'one', label: 'Quando si fa oggi l’adeguata verifica del cliente?', opts: o('Alla firma dell’incarico', 'Alla proposta', 'Al preliminare', 'Non in modo sistematico') },
-      { id: 'a3_firma', t: 'one', label: 'Come vuoi far firmare i moduli antiriciclaggio?', opts: o('Firma digitale semplice via link', 'Firma avanzata con codice SMS', 'Con SPID', 'Cartacea come oggi', 'Non so, consigliami') },
-      { id: 'a3_ore', t: 'num', label: 'Quante ore a settimana ci va?', unit: 'ore/sett' },
-      { id: 'a3_risk', t: 'risk', label: 'Se per una settimana nessuno lo facesse, cosa succede?' },
+      risk('r_reg', 'Registrazioni all’Agenzia delle Entrate'),
+      risk('r_pag', 'Pagamenti'),
+      risk('r_doc', 'Controllo documenti e antiriciclaggio'),
+      risk('r_comm', 'Rapporti con il commercialista'),
+      risk('r_portali', 'Richieste dai portali agli agenti'),
+      risk('r_proforma', 'Proforma, fatture e solleciti'),
     ],
   },
   {
-    id: 'a4', title: '4. rapporti con il commercialista',
-    intro: 'Quello che devi passargli ogni mese e quello che ti chiede.',
+    id: 'regole', title: 'Le tue regole',
     questions: [
-      { id: 'a4_studio', t: 'text', label: 'Nome dello studio e referente', hint: 'Meglio con mail e telefono.' },
-      { id: 'a4_volte', t: 'num', label: 'Quante volte al mese ti chiede qualcosa', unit: 'al mese' },
-      { id: 'a4_cosa', t: 'multi', label: 'Cosa ti chiede di solito', opts: o('Estratti conto', 'Fatture emesse e ricevute', 'Scontrini e ricevute', 'Chiarimenti su movimenti', 'Documenti dei collaboratori', 'Altro') },
-      { id: 'a4_scad', t: 'text', label: 'Scadenze fisse (esempio: chiusura mese entro il 10)' },
-      { id: 'a4_sw', t: 'text', label: 'Che programma usa per la contabilità?', hint: 'Se non lo sai, va bene così.' },
-      { id: 'a4_ore', t: 'num', label: 'Quante ore a settimana ci va?', unit: 'ore/sett' },
-      { id: 'a4_risk', t: 'risk', label: 'Se per una settimana nessuno lo facesse, cosa succede?' },
+      { id: 'g_soglia', t: 'num', label: 'Sopra quale importo approvi tu ogni pagamento?', hint: 'Sotto questa soglia può procedere l’impiegata.', unit: '€' },
+      { id: 'g_open', t: 'one', label: 'Colleghiamo il conto al CRM in sola lettura, per vedere i movimenti senza poter pagare?', opts: o('Sì', 'No', 'Da valutare con il commercialista') },
+      { id: 'g_aml', t: 'text', label: 'Chi è il responsabile antiriciclaggio dell’agenzia?' },
+      { id: 'g_firma', t: 'one', label: 'Come far firmare i moduli antiriciclaggio?', opts: o('Firma digitale via link', 'Firma con codice SMS', 'Con SPID', 'Cartacea come oggi', 'Non so, consigliami') },
+      { id: 'g_moroso', t: 'one', label: 'Chi telefona al cliente che non paga dopo i solleciti?', opts: o('Io', 'L’agente', 'L’impiegata', 'Nessuno') },
+      { id: 'g_iva', t: 'one', label: 'Le provvigioni sono soggette a IVA al 22%?', opts: o('Sì', 'No', 'Dipende dal caso') },
     ],
   },
   {
-    id: 'a5', title: '5. richieste dai portali agli agenti',
-    intro: 'Le mail di Immobiliare.it, Casa.it e simili da girare all’agente giusto.',
+    id: 'persona', title: 'La persona che assumi',
     questions: [
-      { id: 'a5_portali', t: 'multi', label: 'Da quali canali arrivano', opts: o('Immobiliare.it', 'Casa.it', 'Idealista', 'Sito Victor&Co', 'Telefono', 'Altro') },
-      { id: 'a5_sett', t: 'num', label: 'Quante richieste arrivano a settimana', unit: 'a settimana' },
-      { id: 'a5_dove', t: 'one', label: 'A quale indirizzo arrivano?', opts: o('Una casella unica dell’agenzia', 'La tua mail personale', 'Direttamente agli agenti', 'Altro') },
-      { id: 'a5_criterio', t: 'long', label: 'Come decidi a quale agente va una richiesta?', hint: 'Per immobile, per zona, a rotazione, altro.' },
-      { id: 'a5_tempo', t: 'one', label: 'Entro quanto tempo deve ricevere risposta una richiesta?', opts: o('Entro 1 ora', 'Entro la giornata', 'Entro 24 ore', 'Non c’è una regola') },
-      { id: 'a5_perse', t: 'one', label: 'Quante richieste restano senza risposta?', opts: o('Quasi nessuna', 'Qualcuna', 'Molte', 'Non lo so') },
-      { id: 'a5_ore', t: 'num', label: 'Quante ore a settimana ci va?', unit: 'ore/sett' },
-      { id: 'a5_risk', t: 'risk', label: 'Se per una settimana nessuno lo facesse, cosa succede?' },
-    ],
-  },
-  {
-    id: 'a6', title: '6. proforma, fatture e incassi',
-    intro: 'Note proforma agli acquirenti e ai venditori, fatture elettroniche, solleciti.',
-    questions: [
-      { id: 'a6_proforma', t: 'num', label: 'Proforma emesse in un mese normale', unit: 'al mese' },
-      { id: 'a6_fatture', t: 'num', label: 'Fatture elettroniche emesse in un mese normale', unit: 'al mese' },
-      { id: 'a6_sw', t: 'text', label: 'Con che programma emetti le fatture oggi?' },
-      { id: 'a6_iva', t: 'one', label: 'Le provvigioni sono soggette a IVA al 22%?', opts: o('Sì', 'No', 'Dipende dal caso') },
-      { id: 'a6_ritardo', t: 'one', label: 'Quante proforma vengono pagate oltre i 7 giorni?', opts: o('Quasi nessuna', 'Circa un quarto', 'Circa la metà', 'Quasi tutte') },
-      { id: 'a6_chi', t: 'one', label: 'Chi sollecita oggi i pagamenti in ritardo?', opts: o('Io', 'L’agente della pratica', 'Nessuno, aspettiamo', 'Altro') },
-      { id: 'a6_giorni', t: 'text', label: 'Dopo quanti giorni parte il primo sollecito, e dopo quanti il secondo?', hint: 'Anche solo come lo faresti.' },
-      { id: 'a6_ore', t: 'num', label: 'Quante ore a settimana ci va?', unit: 'ore/sett' },
-      { id: 'a6_risk', t: 'risk', label: 'Se per una settimana nessuno lo facesse, cosa succede?' },
-    ],
-  },
-  {
-    id: 'dec', title: '7. le tue regole',
-    intro: 'Le scelte che solo tu puoi fare, così il CRM le applica da solo.',
-    questions: [
-      { id: 'd_agenti', t: 'multi', label: 'Cosa deve vedere ogni agente delle sue pratiche', opts: o('Le sue proforma', 'Lo stato degli incassi', 'I documenti mancanti', 'Le sue provvigioni maturate', 'Niente di tutto questo') },
-      { id: 'd_incassi', t: 'one', label: 'Quando riconosci la provvigione all’agente?', opts: o('Alla firma del preliminare', 'Quando incassiamo', 'Al rogito', 'Altro') },
-      { id: 'd_telefono', t: 'one', label: 'Chi telefona al cliente che non paga dopo i solleciti?', opts: o('Io', 'L’agente', 'L’impiegata', 'Nessuno') },
-      { id: 'd_urgenze', t: 'long', label: 'Cosa deve arrivarti subito, anche di sera o nel weekend?', hint: 'Esempio: un cliente che non paga da 30 giorni, un documento antiriciclaggio mancante.' },
-    ],
-  },
-  {
-    id: 'imp', title: '8. la persona che assumi',
-    questions: [
-      { id: 'i_ore', t: 'one', label: 'Impegno che hai in mente', opts: o('Part-time mattina', 'Part-time pomeriggio', 'Tempo pieno', 'Non lo so ancora') },
-      { id: 'i_tempo', t: 'num', label: 'Quante ore a settimana dedichi tu oggi all’amministrazione?', unit: 'ore/sett' },
-      { id: 'i_mai', t: 'long', label: 'Cosa non vuoi che faccia mai, senza il tuo ok?' },
-      { id: 'i_ruba', t: 'long', label: 'Cosa oggi ti ruba più tempo o ti dà più fastidio?' },
-      { id: 'i_finalmente', t: 'long', label: 'Cosa dovrebbe succedere perché tra tre mesi tu dica “finalmente”?' },
-    ],
-  },
-  {
-    id: 'mat', title: '9. cosa mandare a Marco',
-    intro: 'Segna cosa gli mandi e come: lo trovi su WhatsApp, basta una foto o un PDF.',
-    questions: [
-      { id: 'm_lista', t: 'multi', label: 'Ti preparo e mando', opts: o('Estratti conto di 1-2 mesi (anche con i nomi oscurati)', 'Un esempio di proforma', 'Un esempio di fattura', 'Una pratica completa (carta e digitale)', '3-4 mail vere dei portali', 'Contatto del commercialista') },
-      { id: 'm_note', t: 'long', label: 'Altro che vuoi dire a Marco', hint: 'Dubbi, paure, cose che non abbiamo considerato.' },
+      { id: 'p_impegno', t: 'one', label: 'Impegno che hai in mente', opts: o('Part-time mattina', 'Part-time pomeriggio', 'Tempo pieno', 'Non lo so ancora') },
+      { id: 'p_mai', t: 'long', label: 'Cosa non deve mai fare senza il tuo ok?' },
+      { id: 'p_ruba', t: 'long', label: 'Cosa oggi ti ruba più tempo o ti dà più fastidio?' },
     ],
   },
 ]
 
-/* ───────────────────────── dati dal CRM da battezzare ───────────────────────── */
-
-type Facts = {
-  vendite_chiuse_6m: number
-  locazioni_chiuse_6m: number
-  vendite_in_pipeline: number
-  proposte_accettate: number
-  mandati_attivi: number
-  mandati_in_scadenza_60gg: number
-  provvigioni_maturate_12m: number
-  provvigioni_incassate_12m: number
-  operazioni_con_incasso_parziale: number
-  richieste_portali_90gg: number
-  contatti_sito_90gg: number
-  agenti_attivi: number
-  operazioni_per_mese: { mese: string; vendite: number; locazioni: number }[]
-}
-
-type CrmItem = { id: string; text: string; fix: string; unit?: string }
-
-function crmItems(f: Facts): CrmItem[] {
-  const eur = (n: number) => n.toLocaleString('it-IT') + ' €'
-  const n = f.operazioni_per_mese.length || 6
-  return [
-    { id: 'c_vendite', text: `Negli ultimi 6 mesi hai chiuso ${f.vendite_chiuse_6m} vendite, circa ${(f.vendite_chiuse_6m / n).toFixed(1).replace('.', ',')} al mese.`, fix: 'Quante sono in realtà al mese?', unit: 'al mese' },
-    { id: 'c_loc', text: `E ${f.locazioni_chiuse_6m} locazioni nello stesso periodo.`, fix: 'Quante sono in realtà al mese?', unit: 'al mese' },
-    { id: 'c_pipeline', text: `Hai ${f.vendite_in_pipeline} vendite in pipeline e ${f.proposte_accettate} proposte accettate, cioè prossime a preliminare.`, fix: 'Cosa non torna?' },
-    { id: 'c_mandati', text: `Risultano ${f.mandati_attivi} mandati attivi, ${f.mandati_in_scadenza_60gg} in scadenza entro 60 giorni.`, fix: 'Quanti sono in realtà?', unit: 'mandati' },
-    { id: 'c_prov', text: `Negli ultimi 12 mesi le provvigioni maturate sono ${eur(f.provvigioni_maturate_12m)} e quelle incassate ${eur(f.provvigioni_incassate_12m)}, con ${f.operazioni_con_incasso_parziale} operazioni non ancora incassate per intero.`, fix: 'Cosa non torna?' },
-    { id: 'c_portali', text: `Nel CRM ci sono ${f.richieste_portali_90gg} richieste dai portali e ${f.contatti_sito_90gg} contatti dal sito negli ultimi 90 giorni, ma il CRM le registra solo da poco.`, fix: 'Quante ne arrivano davvero a settimana?', unit: 'a settimana' },
-    { id: 'c_agenti', text: `Gli agenti attivi sono ${f.agenti_attivi}.`, fix: 'Quanti sono, contando anche chi collabora a progetto?', unit: 'agenti' },
-  ]
-}
-
-/* ───────────────────────── pagina ───────────────────────── */
-
 type Answers = Record<string, string | string[]>
-type Loaded = { title: string; recipient: string | null; answers: Answers; status: 'aperto' | 'inviato'; submitted_at: string | null; crm: Facts }
+type Loaded = { title: string; recipient: string | null; answers: Answers; status: 'aperto' | 'inviato'; submitted_at: string | null }
 
-type Step =
-  | { kind: 'crm'; item: CrmItem; section: string }
-  | { kind: 'q'; q: Q; section: string; intro?: string }
+type Step = { q: Q; section: string }
 
 const CSS = `
 .qa{min-height:100dvh;background:#0d3447;color:#fff;font-family:'Montserrat',system-ui,sans-serif;display:flex;flex-direction:column}
@@ -274,13 +175,11 @@ export default function QuestionarioAmministrazione({ token }: { token: string }
 
   const steps: Step[] = useMemo(() => {
     if (!data) return []
-    const crm: Step[] = crmItems(data.crm).map(item => ({ kind: 'crm', item, section: 'I numeri che ho già dal CRM' }))
-    const qs: Step[] = SECTIONS.flatMap(sec => sec.questions.map(q => ({ kind: 'q' as const, q, section: sec.title, intro: sec.intro })))
-    return [...crm, ...qs]
+    return SECTIONS.flatMap(sec => sec.questions.map(q => ({ q, section: sec.title })))
   }, [data])
 
   const n = steps.length
-  const minutes = Math.max(5, Math.round((n * 9) / 60))
+  const minutes = Math.max(3, Math.round((n * 10) / 60))
 
   const goto = (p: number) => {
     const clamped = Math.max(-1, Math.min(n, p))
@@ -290,7 +189,7 @@ export default function QuestionarioAmministrazione({ token }: { token: string }
     window.scrollTo({ top: 0 })
   }
 
-  const answeredCount = steps.filter(st => st.kind === 'crm' ? hasValue(answers[st.item.id + '_ok']) : hasValue(answers[st.q.id])).length
+  const answeredCount = steps.filter(st => hasValue(answers[st.q.id])).length
 
   const submit = async () => {
     setSending(true)
@@ -362,10 +261,8 @@ export default function QuestionarioAmministrazione({ token }: { token: string }
   const st = steps[pos]
   const next = () => goto(pos + 1)
   const back = () => goto(pos - 1)
-  const valueKey = st.kind === 'crm' ? st.item.id + '_ok' : st.q.id
-  const answered = st.kind === 'crm'
-    ? hasValue(answers[st.item.id + '_ok'])
-    : hasValue(answers[st.q.id])
+  const q = st.q
+  const answered = hasValue(answers[q.id])
   const onEnter = (e: React.KeyboardEvent) => { if (e.key === 'Enter' && !(e.target instanceof HTMLTextAreaElement)) { e.preventDefault(); next() } }
   const pick = (id: string, v: string) => { set(id, v); window.setTimeout(() => goto(pos + 1), 220) }
 
@@ -376,55 +273,24 @@ export default function QuestionarioAmministrazione({ token }: { token: string }
         <div className="qa-meta"><span>{pos + 1} di {n}</span><span>{err ? 'Non salvato' : savedAt ? `Salvato ${savedAt}` : ''}</span></div>
       </div>
 
-      <div className="qa-main" key={valueKey}>
+      <div className="qa-main" key={q.id}>
         <div className="qa-chip">{st.section}</div>
-
-        {st.kind === 'crm' ? (
-          <>
-            <div className="qa-q" style={{ fontWeight: 600 }}>{st.item.text}</div>
-            <div className="qa-opts">
-              <button className={'qa-opt' + (answers[st.item.id + '_ok'] === 'si' ? ' on' : '')} onClick={() => pick(st.item.id + '_ok', 'si')}>Giusto</button>
-              <button className={'qa-opt' + (answers[st.item.id + '_ok'] === 'no' ? ' on' : '')} onClick={() => set(st.item.id + '_ok', 'no')}>Non torna</button>
-            </div>
-            {answers[st.item.id + '_ok'] === 'no' && (
-              <>
-                <div className="qa-h" style={{ marginTop: 16, marginBottom: 0 }}>{st.item.fix} Una stima va bene.</div>
-                <div className="qa-row">
-                  <input className="qa-in" autoFocus value={(answers[st.item.id + '_fix'] as string) || ''} onChange={e => set(st.item.id + '_fix', e.target.value)} />
-                  {st.item.unit && <span className="qa-unit">{st.item.unit}</span>}
-                </div>
-              </>
-            )}
-          </>
-        ) : (
-          <>
-            <div className="qa-q">{st.q.label}</div>
-            {'hint' in st.q && st.q.hint && <div className="qa-h">{st.q.hint}</div>}
-            {st.q.t === 'num' && (
-              <div className="qa-row">
-                <input className="qa-in" autoFocus inputMode="decimal" placeholder="una stima va bene" value={(answers[st.q.id] as string) || ''} onChange={e => set(st.q.id, e.target.value)} />
-                {st.q.unit && <span className="qa-unit">{st.q.unit}</span>}
-              </div>
-            )}
-            {st.q.t === 'text' && <input className="qa-in" autoFocus value={(answers[st.q.id] as string) || ''} onChange={e => set(st.q.id, e.target.value)} />}
-            {st.q.t === 'long' && <textarea className="qa-in" autoFocus value={(answers[st.q.id] as string) || ''} onChange={e => set(st.q.id, e.target.value)} />}
-            {(st.q.t === 'one' || st.q.t === 'risk') && (
-              <div className="qa-opts">
-                {(st.q.t === 'risk' ? RISK_OPTS : st.q.opts).map(op => (
-                  <button key={op.v} className={'qa-opt' + (answers[st.q.id] === op.v ? ' on' : '')} onClick={() => pick((st.q as Q).id, op.v)}>{op.l}</button>
-                ))}
-              </div>
-            )}
-            {st.q.t === 'multi' && (
-              <div className="qa-opts">
-                {st.q.opts.map(op => {
-                  const arr = (Array.isArray(answers[st.q.id]) ? answers[st.q.id] : []) as string[]
-                  const on = arr.includes(op.v)
-                  return <button key={op.v} className={'qa-opt' + (on ? ' on' : '')} onClick={() => set((st.q as Q).id, on ? arr.filter(x => x !== op.v) : [...arr, op.v])}>{on ? '✓ ' : ''}{op.l}</button>
-                })}
-              </div>
-            )}
-          </>
+        <div className="qa-q">{q.label}</div>
+        {q.hint && <div className="qa-h">{q.hint}</div>}
+        {q.t === 'num' && (
+          <div className="qa-row">
+            <input className="qa-in" autoFocus inputMode="decimal" placeholder="una stima va bene" value={(answers[q.id] as string) || ''} onChange={e => set(q.id, e.target.value)} />
+            {q.unit && <span className="qa-unit">{q.unit}</span>}
+          </div>
+        )}
+        {q.t === 'text' && <input className="qa-in" autoFocus value={(answers[q.id] as string) || ''} onChange={e => set(q.id, e.target.value)} />}
+        {q.t === 'long' && <textarea className="qa-in" autoFocus value={(answers[q.id] as string) || ''} onChange={e => set(q.id, e.target.value)} />}
+        {q.t === 'one' && (
+          <div className="qa-opts">
+            {q.opts.map(op => (
+              <button key={op.v} className={'qa-opt' + (answers[q.id] === op.v ? ' on' : '')} onClick={() => pick(q.id, op.v)}>{op.l}</button>
+            ))}
+          </div>
         )}
         {err && <div className="qa-err">{err}</div>}
       </div>
