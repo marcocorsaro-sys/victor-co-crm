@@ -48,7 +48,6 @@ const SECTIONS: Section[] = [
   {
     id: 'regole', title: 'Le tue regole',
     questions: [
-      { id: 'g_open', t: 'one', label: 'Colleghiamo il conto al CRM in sola lettura, per vedere i movimenti senza poter pagare?', opts: o('Sì', 'No', 'Da valutare con il commercialista') },
       { id: 'g_aml', t: 'text', label: 'Chi è il responsabile antiriciclaggio dell’agenzia?' },
       { id: 'g_firma', t: 'one', label: 'Come far firmare i moduli antiriciclaggio?', opts: o('Firma digitale via link', 'Firma con codice SMS', 'Con SPID', 'Cartacea come oggi', 'Non so, consigliami') },
       { id: 'g_moroso', t: 'one', label: 'Chi telefona al cliente che non paga dopo i solleciti?', opts: o('Io', 'L’agente', 'L’impiegata', 'Nessuno') },
