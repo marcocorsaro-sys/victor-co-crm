@@ -109,46 +109,105 @@ function hasValue(v: string | string[] | undefined) {
 
 export default function QuestionarioAmministrazione({ token }: { token: string }) {
   const [data, setData] = useState<Loaded | null>(null)
-  const [state, setState] = useState<'loading' | 'ok' | 'notfound'>('loading')
+  const [state, setState] = useState<'loading' | 'ok' | 'notfound' | 'error'>('loading')
   const [answers, setAnswers] = useState<Answers>({})
   const [pos, setPos] = useState(-1) // -1 intro, 0..n-1 domande, n fine
   const [savedAt, setSavedAt] = useState<string | null>(null)
   const [sending, setSending] = useState(false)
   const [done, setDone] = useState(false)
   const [err, setErr] = useState<string | null>(null)
+  const [attempt, setAttempt] = useState(0)
   const ref = useRef<Answers>({})
   const timer = useRef<number | null>(null)
+  const retry = useRef<number | null>(null)
   const dirty = useRef(false)
+  const inflight = useRef(false)
+  const saveRef = useRef<(submit?: boolean) => Promise<boolean>>(async () => false)
+  const lsKey = `qa_${token}`
+
+  const backup = useCallback((isDirty: boolean) => {
+    try { localStorage.setItem(lsKey, JSON.stringify({ answers: ref.current, dirty: isDirty, ts: Date.now() })) } catch { /* ignore */ }
+  }, [lsKey])
+
+  const saveNow = useCallback(async (submit = false): Promise<boolean> => {
+    if (timer.current) { window.clearTimeout(timer.current); timer.current = null }
+    while (inflight.current) await new Promise(r => window.setTimeout(r, 100))
+    inflight.current = true
+    const snapshot = ref.current
+    let ok = false
+    try {
+      const { error } = await supabase.rpc('adm_q_save', { p_token: token, p_answers: snapshot, p_submit: submit })
+      ok = !error
+    } catch { ok = false }
+    inflight.current = false
+    if (!ok) {
+      setErr('Connessione instabile: le risposte sono al sicuro su questo telefono e riprovo a salvarle.')
+      if (retry.current) window.clearTimeout(retry.current)
+      retry.current = window.setTimeout(() => { void saveRef.current() }, 4000)
+      return false
+    }
+    setErr(null)
+    setSavedAt(new Date().toLocaleTimeString('it-IT', { hour: '2-digit', minute: '2-digit' }))
+    if (ref.current === snapshot) { dirty.current = false; backup(false) }
+    else { dirty.current = true; timer.current = window.setTimeout(() => { void saveRef.current() }, 300) }
+    return true
+  }, [token, backup])
+
+  useEffect(() => { saveRef.current = saveNow }, [saveNow])
 
   useEffect(() => {
     let alive = true
-    supabase.rpc('adm_q_get', { p_token: token }).then(({ data: d, error }) => {
+    Promise.resolve(supabase.rpc('adm_q_get', { p_token: token })).then(({ data: d, error }) => {
       if (!alive) return
-      if (error || !d) { setState('notfound'); return }
+      if (error) { setState('error'); return }
+      if (!d) { setState('notfound'); return }
       const l = d as Loaded
+      let merged: Answers = l.answers || {}
+      try {
+        const raw = localStorage.getItem(lsKey)
+        if (raw) {
+          const loc = JSON.parse(raw) as { answers: Answers; dirty: boolean }
+          if (loc.dirty) { merged = { ...merged, ...loc.answers }; dirty.current = true }
+        }
+      } catch { /* ignore */ }
       setData(l)
-      setAnswers(l.answers || {})
-      ref.current = l.answers || {}
+      setAnswers(merged)
+      ref.current = merged
       setDone(l.status === 'inviato')
       setState('ok')
-    })
+      if (dirty.current) void saveNow()
+    }).catch(() => { if (alive) setState('error') })
     return () => { alive = false }
+  }, [token, lsKey, saveNow, attempt])
+
+  // salvataggio di emergenza quando la pagina viene chiusa o messa in background
+  useEffect(() => {
+    const flush = () => {
+      if (!dirty.current) return
+      const url = import.meta.env.VITE_SUPABASE_URL as string
+      const key = import.meta.env.VITE_SUPABASE_ANON_KEY as string
+      try {
+        void fetch(`${url}/rest/v1/rpc/adm_q_save`, {
+          method: 'POST', keepalive: true,
+          headers: { 'Content-Type': 'application/json', apikey: key, Authorization: `Bearer ${key}` },
+          body: JSON.stringify({ p_token: token, p_answers: ref.current, p_submit: false }),
+        })
+      } catch { /* ignore */ }
+    }
+    const onVis = () => { if (document.visibilityState === 'hidden') flush() }
+    window.addEventListener('pagehide', flush)
+    document.addEventListener('visibilitychange', onVis)
+    return () => { window.removeEventListener('pagehide', flush); document.removeEventListener('visibilitychange', onVis) }
   }, [token])
 
-  const persist = useCallback(async (submit = false) => {
-    if (timer.current) { window.clearTimeout(timer.current); timer.current = null }
-    const { error } = await supabase.rpc('adm_q_save', { p_token: token, p_answers: ref.current, p_submit: submit })
-    if (error) { setErr('Non sono riuscito a salvare. Controlla la connessione.'); return false }
-    setErr(null); dirty.current = false
-    setSavedAt(new Date().toLocaleTimeString('it-IT', { hour: '2-digit', minute: '2-digit' }))
-    return true
-  }, [token])
+  const persist = saveNow
 
   const schedule = useCallback(() => {
     dirty.current = true
+    backup(true)
     if (timer.current) window.clearTimeout(timer.current)
-    timer.current = window.setTimeout(() => { void persist() }, 500)
-  }, [persist])
+    timer.current = window.setTimeout(() => { void saveNow() }, 400)
+  }, [saveNow, backup])
 
   const set = (id: string, v: string | string[]) => {
     const next = { ...ref.current, [id]: v }
@@ -183,6 +242,7 @@ export default function QuestionarioAmministrazione({ token }: { token: string }
   }
 
   if (state === 'loading') return <div className="qa"><style>{CSS}</style><div className="qa-main" style={{ textAlign: 'center', opacity: .7 }}>Carico…</div></div>
+  if (state === 'error') return <div className="qa"><style>{CSS}</style><div className="qa-main" style={{ textAlign: 'center' }}>Non riesco a collegarmi. Le tue risposte non sono perse.<button className="qa-start" onClick={() => { setState('loading'); setAttempt(a => a + 1) }}>Riprova</button></div></div>
   if (state === 'notfound' || !data) return <div className="qa"><style>{CSS}</style><div className="qa-main" style={{ textAlign: 'center' }}>Questo link non è valido. Chiedi a Marco di mandartene uno nuovo.</div></div>
 
   const first = (data.recipient || '').split(' ')[0]
