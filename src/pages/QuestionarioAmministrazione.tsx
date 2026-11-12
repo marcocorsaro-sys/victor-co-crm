@@ -179,45 +179,43 @@ function crmItems(f: Facts): CrmItem[] {
 type Answers = Record<string, string | string[]>
 type Loaded = { title: string; recipient: string | null; answers: Answers; status: 'aperto' | 'inviato'; submitted_at: string | null; crm: Facts }
 
+type Step =
+  | { kind: 'crm'; item: CrmItem; section: string }
+  | { kind: 'q'; q: Q; section: string; intro?: string }
+
 const CSS = `
-.qa{min-height:100vh;background:#f4f6f8;color:#181a20;font-family:'Montserrat',system-ui,sans-serif;padding:0 0 96px}
-.qa-wrap{max-width:720px;margin:0 auto;padding:0 16px}
-.qa-top{background:#0d3447;color:#fff;padding:28px 0 22px}
-.qa-top small{opacity:.7;letter-spacing:.08em;font-size:11px}
-.qa-top h1{font-size:24px;line-height:1.25;margin:8px 0 8px;font-weight:700}
-.qa-top p{font-size:14px;opacity:.9;line-height:1.5}
-.qa-bar{position:sticky;top:0;z-index:5;background:#fff;border-bottom:1px solid #dde2e7;padding:10px 0}
-.qa-bar-in{display:flex;align-items:center;gap:12px;font-size:12px;color:#4f5560}
-.qa-prog{flex:1;height:6px;background:#e2e7eb;border-radius:4px;overflow:hidden}
-.qa-prog>i{display:block;height:100%;background:#1d8f5f;transition:width .3s}
-.qa-card{background:#fff;border:1px solid #dde2e7;border-radius:12px;padding:20px 18px;margin-top:16px}
-.qa-card h2{font-size:17px;margin-bottom:4px;color:#0d3447}
-.qa-intro{font-size:13px;color:#717171;margin-bottom:14px;line-height:1.5}
-.qa-q{padding:14px 0;border-top:1px solid #eef1f4}
-.qa-q:first-of-type{border-top:0}
-.qa-l{font-size:14px;font-weight:600;line-height:1.4;margin-bottom:8px}
-.qa-h{font-size:12px;color:#717171;margin:-4px 0 8px}
-.qa-in{width:100%;font:inherit;font-size:15px;padding:11px 12px;border:1px solid #cfd6dc;border-radius:8px;background:#fff;color:#181a20}
-.qa-in:focus{outline:2px solid #1f6f8b;border-color:#1f6f8b}
-textarea.qa-in{min-height:84px;resize:vertical}
-.qa-row{display:flex;gap:8px;align-items:center}
-.qa-unit{font-size:12px;color:#717171;white-space:nowrap}
-.qa-opts{display:flex;flex-direction:column;gap:8px}
-.qa-opt{display:flex;gap:10px;align-items:flex-start;padding:11px 12px;border:1px solid #cfd6dc;border-radius:8px;font-size:14px;cursor:pointer;background:#fff;line-height:1.35}
-.qa-opt.on{border-color:#0d3447;background:#eaf1f5;font-weight:600}
-.qa-opt input{margin-top:2px}
-.qa-crm{background:#f7f9fb;border:1px solid #dde2e7;border-left:4px solid #1f6f8b;border-radius:8px;padding:12px 14px;margin-top:12px}
-.qa-crm p{font-size:14px;line-height:1.45;margin-bottom:10px}
-.qa-btns{display:flex;gap:8px}
-.qa-btn{flex:1;padding:11px 12px;border-radius:8px;border:1px solid #cfd6dc;background:#fff;font:inherit;font-size:14px;font-weight:600;cursor:pointer}
-.qa-btn.on{background:#0d3447;color:#fff;border-color:#0d3447}
-.qa-btn.no.on{background:#b7791f;border-color:#b7791f}
-.qa-fix{margin-top:10px}
-.qa-send{margin-top:20px;width:100%;padding:15px;border:0;border-radius:10px;background:#0d3447;color:#fff;font:inherit;font-size:16px;font-weight:700;cursor:pointer}
-.qa-send:disabled{opacity:.6}
-.qa-save{font-size:12px;color:#717171;text-align:center;margin-top:10px}
-.qa-done{text-align:center;padding:40px 16px}
-.qa-done h2{font-size:22px;color:#0d3447;margin-bottom:8px}
+.qa{min-height:100dvh;background:#0d3447;color:#fff;font-family:'Montserrat',system-ui,sans-serif;display:flex;flex-direction:column}
+.qa-top{padding:14px 18px 0}
+.qa-prog{height:5px;background:rgba(255,255,255,.18);border-radius:4px;overflow:hidden}
+.qa-prog>i{display:block;height:100%;background:#7bd3a8;transition:width .3s}
+.qa-meta{display:flex;justify-content:space-between;font-size:12px;opacity:.75;margin-top:8px}
+.qa-main{flex:1;display:flex;flex-direction:column;justify-content:center;max-width:640px;width:100%;margin:0 auto;padding:18px 20px 110px}
+.qa-chip{font-size:11px;letter-spacing:.06em;text-transform:uppercase;opacity:.65;margin-bottom:10px}
+.qa-q{font-size:24px;line-height:1.3;font-weight:700;margin-bottom:8px}
+.qa-h{font-size:13px;opacity:.7;margin-bottom:16px;line-height:1.45}
+.qa-in{width:100%;font:inherit;font-size:20px;padding:14px 14px;border:2px solid rgba(255,255,255,.3);border-radius:12px;background:rgba(255,255,255,.08);color:#fff;margin-top:14px}
+.qa-in::placeholder{color:rgba(255,255,255,.4)}
+.qa-in:focus{outline:none;border-color:#7bd3a8}
+textarea.qa-in{font-size:17px;min-height:130px;resize:vertical}
+.qa-row{display:flex;gap:10px;align-items:center}
+.qa-unit{font-size:14px;opacity:.75;white-space:nowrap;margin-top:14px}
+.qa-opts{display:flex;flex-direction:column;gap:10px;margin-top:16px}
+.qa-opt{padding:15px 16px;border:2px solid rgba(255,255,255,.25);border-radius:12px;font:inherit;font-size:16px;text-align:left;background:rgba(255,255,255,.06);color:#fff;cursor:pointer;line-height:1.35}
+.qa-opt.on{border-color:#7bd3a8;background:rgba(123,211,168,.18);font-weight:700}
+.qa-nav{position:fixed;left:0;right:0;bottom:0;background:#0a2a39;border-top:1px solid rgba(255,255,255,.12);padding:12px 18px calc(12px + env(safe-area-inset-bottom))}
+.qa-nav-in{max-width:640px;margin:0 auto;display:flex;gap:10px}
+.qa-b{flex:1;padding:15px;border-radius:12px;border:2px solid rgba(255,255,255,.3);background:transparent;color:#fff;font:inherit;font-size:16px;font-weight:700;cursor:pointer}
+.qa-b.pri{background:#7bd3a8;border-color:#7bd3a8;color:#0d3447;flex:2}
+.qa-b.skip{background:transparent;opacity:.85}
+.qa-b:disabled{opacity:.35}
+.qa-big{font-size:42px;line-height:1.1;font-weight:800;margin-bottom:18px}
+.qa-big em{font-style:normal;color:#7bd3a8}
+.qa-lead{font-size:18px;line-height:1.5;opacity:.92;margin-bottom:10px}
+.qa-start{margin-top:26px;padding:18px;border-radius:14px;border:0;background:#7bd3a8;color:#0d3447;font:inherit;font-size:18px;font-weight:800;cursor:pointer;width:100%}
+.qa-link{margin-top:14px;background:none;border:0;color:#fff;opacity:.8;font:inherit;font-size:14px;text-decoration:underline;cursor:pointer;text-align:center;width:100%}
+.qa-save{font-size:12px;opacity:.6;margin-top:18px}
+.qa-err{color:#ffb4a8;font-size:13px;margin-top:10px}
+@media(max-width:420px){.qa-big{font-size:34px}.qa-q{font-size:21px}}
 `
 
 function hasValue(v: string | string[] | undefined) {
@@ -228,11 +226,12 @@ export default function QuestionarioAmministrazione({ token }: { token: string }
   const [data, setData] = useState<Loaded | null>(null)
   const [state, setState] = useState<'loading' | 'ok' | 'notfound'>('loading')
   const [answers, setAnswers] = useState<Answers>({})
+  const [pos, setPos] = useState(-1) // -1 intro, 0..n-1 domande, n fine
   const [savedAt, setSavedAt] = useState<string | null>(null)
-  const [saving, setSaving] = useState(false)
   const [sending, setSending] = useState(false)
   const [done, setDone] = useState(false)
   const [err, setErr] = useState<string | null>(null)
+  const ref = useRef<Answers>({})
   const timer = useRef<number | null>(null)
   const dirty = useRef(false)
 
@@ -244,167 +243,196 @@ export default function QuestionarioAmministrazione({ token }: { token: string }
       const l = d as Loaded
       setData(l)
       setAnswers(l.answers || {})
+      ref.current = l.answers || {}
       setDone(l.status === 'inviato')
       setState('ok')
     })
     return () => { alive = false }
   }, [token])
 
-  const persist = useCallback(async (a: Answers, submit = false) => {
-    setSaving(true); setErr(null)
-    const { error } = await supabase.rpc('adm_q_save', { p_token: token, p_answers: a, p_submit: submit })
-    setSaving(false)
-    if (error) { setErr('Non sono riuscito a salvare. Controlla la connessione e riprova.'); return false }
-    dirty.current = false
+  const persist = useCallback(async (submit = false) => {
+    if (timer.current) { window.clearTimeout(timer.current); timer.current = null }
+    const { error } = await supabase.rpc('adm_q_save', { p_token: token, p_answers: ref.current, p_submit: submit })
+    if (error) { setErr('Non sono riuscito a salvare. Controlla la connessione.'); return false }
+    setErr(null); dirty.current = false
     setSavedAt(new Date().toLocaleTimeString('it-IT', { hour: '2-digit', minute: '2-digit' }))
     return true
   }, [token])
 
+  const schedule = useCallback(() => {
+    dirty.current = true
+    if (timer.current) window.clearTimeout(timer.current)
+    timer.current = window.setTimeout(() => { void persist() }, 500)
+  }, [persist])
+
   const set = (id: string, v: string | string[]) => {
-    setAnswers(prev => {
-      const next = { ...prev, [id]: v }
-      dirty.current = true
-      if (timer.current) window.clearTimeout(timer.current)
-      timer.current = window.setTimeout(() => { void persist(next) }, 900)
-      return next
-    })
+    const next = { ...ref.current, [id]: v }
+    ref.current = next
+    setAnswers(next)
+    schedule()
   }
 
-  const items = useMemo(() => (data ? crmItems(data.crm) : []), [data])
+  const steps: Step[] = useMemo(() => {
+    if (!data) return []
+    const crm: Step[] = crmItems(data.crm).map(item => ({ kind: 'crm', item, section: 'I numeri che ho già dal CRM' }))
+    const qs: Step[] = SECTIONS.flatMap(sec => sec.questions.map(q => ({ kind: 'q' as const, q, section: sec.title, intro: sec.intro })))
+    return [...crm, ...qs]
+  }, [data])
 
-  const total = useMemo(() => {
-    const q = SECTIONS.flatMap(s => s.questions).length + items.length
-    return q
-  }, [items])
-  const answered = useMemo(() => {
-    const q = SECTIONS.flatMap(s => s.questions).filter(x => hasValue(answers[x.id])).length
-    const c = items.filter(x => hasValue(answers[x.id + '_ok'])).length
-    return q + c
-  }, [answers, items])
+  const n = steps.length
+  const minutes = Math.max(5, Math.round((n * 9) / 60))
+
+  const goto = (p: number) => {
+    const clamped = Math.max(-1, Math.min(n, p))
+    ref.current = { ...ref.current, _pos: String(clamped) }
+    setPos(clamped)
+    if (dirty.current || clamped >= 0) void persist()
+    window.scrollTo({ top: 0 })
+  }
+
+  const answeredCount = steps.filter(st => st.kind === 'crm' ? hasValue(answers[st.item.id + '_ok']) : hasValue(answers[st.q.id])).length
 
   const submit = async () => {
     setSending(true)
-    if (timer.current) window.clearTimeout(timer.current)
-    const ok = await persist(answers, true)
+    const ok = await persist(true)
     setSending(false)
-    if (ok) { setDone(true); window.scrollTo({ top: 0, behavior: 'smooth' }) }
+    if (ok) { setDone(true); window.scrollTo({ top: 0 }) }
   }
 
-  if (state === 'loading') return <div className="qa"><style>{CSS}</style><div className="qa-wrap" style={{ paddingTop: 80, textAlign: 'center', color: '#717171' }}>Carico il questionario…</div></div>
-  if (state === 'notfound' || !data) return <div className="qa"><style>{CSS}</style><div className="qa-wrap" style={{ paddingTop: 80, textAlign: 'center' }}>Questo link non è valido. Chiedi a Marco di mandartene uno nuovo.</div></div>
+  if (state === 'loading') return <div className="qa"><style>{CSS}</style><div className="qa-main" style={{ textAlign: 'center', opacity: .7 }}>Carico…</div></div>
+  if (state === 'notfound' || !data) return <div className="qa"><style>{CSS}</style><div className="qa-main" style={{ textAlign: 'center' }}>Questo link non è valido. Chiedi a Marco di mandartene uno nuovo.</div></div>
 
   const first = (data.recipient || '').split(' ')[0]
+  const hasProgress = answeredCount > 0
+  const savedPos = parseInt((answers._pos as string) || '-1', 10)
 
-  if (done) {
+  /* ── intro ── */
+  if (pos === -1 && !done) {
     return (
       <div className="qa"><style>{CSS}</style>
-        <div className="qa-top"><div className="qa-wrap"><small>VICTOR&CO REAL ESTATE</small><h1>Fatto, grazie {first}.</h1></div></div>
-        <div className="qa-wrap"><div className="qa-card qa-done">
-          <h2>Risposte ricevute</h2>
-          <p style={{ fontSize: 14, color: '#4f5560', lineHeight: 1.5 }}>Marco le guarda e torna da te con una proposta concreta su cosa automatizzare e dove serve una persona.</p>
-          <button className="qa-btn" style={{ marginTop: 18, flex: 'none' }} onClick={() => setDone(false)}>Voglio modificare qualcosa</button>
-        </div></div>
+        <div className="qa-main">
+          <div className="qa-chip">Victor&Co Real Estate</div>
+          <div className="qa-big">Marco ti ruba <em>{minutes} minuti.</em></div>
+          <div className="qa-lead">{first ? `${first}, ` : ''}una domanda alla volta. Salta tutto quello che non sai o ritieni irrilevante e stima il resto: non serve esattezza.</div>
+          <div className="qa-lead" style={{ fontSize: 15, opacity: .75 }}>Ogni risposta si salva da sola. Anche se ne dai solo tre, a Marco arrivano.</div>
+          {hasProgress && savedPos >= 0 ? (
+            <>
+              <button className="qa-start" onClick={() => goto(Math.min(savedPos, n))}>Riprendi da dove eri ({answeredCount} di {n})</button>
+              <button className="qa-link" onClick={() => goto(0)}>Ricomincia dall’inizio</button>
+            </>
+          ) : (
+            <button className="qa-start" onClick={() => goto(0)}>Cominciamo</button>
+          )}
+        </div>
       </div>
     )
   }
 
-  return (
-    <div className="qa"><style>{CSS}</style>
-      <div className="qa-top"><div className="qa-wrap">
-        <small>VICTOR&CO REAL ESTATE</small>
-        <h1>{data.title}</h1>
-        <p>{first ? `Ciao ${first}, ` : ''}servono 10-12 minuti. Ho già messo i numeri che trovo nel CRM: tu dimmi solo se sono giusti. Si salva da solo, puoi chiudere e riprendere dallo stesso link.</p>
-      </div></div>
-
-      <div className="qa-bar"><div className="qa-wrap qa-bar-in">
-        <div className="qa-prog"><i style={{ width: `${Math.round((answered / total) * 100)}%` }} /></div>
-        <span>{answered} di {total}</span>
-      </div></div>
-
-      <div className="qa-wrap">
-        <div className="qa-card">
-          <h2>0. i numeri che ho già dal crm</h2>
-          <p className="qa-intro">Per ognuno: confermi o correggi.</p>
-          {items.map(it => {
-            const ok = answers[it.id + '_ok']
-            return (
-              <div className="qa-crm" key={it.id}>
-                <p>{it.text}</p>
-                <div className="qa-btns">
-                  <button className={'qa-btn' + (ok === 'si' ? ' on' : '')} onClick={() => set(it.id + '_ok', 'si')}>Giusto</button>
-                  <button className={'qa-btn no' + (ok === 'no' ? ' on' : '')} onClick={() => set(it.id + '_ok', 'no')}>Non torna</button>
-                </div>
-                {ok === 'no' && (
-                  <div className="qa-fix">
-                    <div className="qa-h" style={{ margin: '0 0 6px' }}>{it.fix}</div>
-                    <div className="qa-row">
-                      <input className="qa-in" inputMode={it.unit ? 'decimal' : 'text'} value={(answers[it.id + '_fix'] as string) || ''} onChange={e => set(it.id + '_fix', e.target.value)} />
-                      {it.unit && <span className="qa-unit">{it.unit}</span>}
-                    </div>
-                  </div>
-                )}
-              </div>
-            )
-          })}
-        </div>
-
-        {SECTIONS.map(s => (
-          <div className="qa-card" key={s.id}>
-            <h2>{s.title}</h2>
-            {s.intro && <p className="qa-intro">{s.intro}</p>}
-            {s.questions.map(q => <Question key={q.id} q={q} value={answers[q.id]} onChange={v => set(q.id, v)} />)}
-          </div>
-        ))}
-
-        {err && <div style={{ color: '#c0392b', fontSize: 13, marginTop: 14 }}>{err}</div>}
-        <button className="qa-send" disabled={sending} onClick={submit}>{sending ? 'Invio…' : 'Invia a Marco'}</button>
-        <div className="qa-save">
-          {saving ? 'Salvo…' : savedAt ? `Salvato alle ${savedAt}` : 'Le risposte si salvano da sole'}
-          {' · puoi inviare anche se non hai risposto a tutto'}
+  /* ── grazie ── */
+  if (done) {
+    return (
+      <div className="qa"><style>{CSS}</style>
+        <div className="qa-main">
+          <div className="qa-big">Fatto, <em>grazie{first ? ` ${first}` : ''}.</em></div>
+          <div className="qa-lead">Marco guarda le risposte e torna da te con una proposta concreta: cosa automatizzare e dove serve una persona.</div>
+          <button className="qa-link" style={{ textAlign: 'left' }} onClick={() => { setDone(false); goto(0) }}>Voglio rivedere o aggiungere qualcosa</button>
         </div>
       </div>
-    </div>
-  )
-}
+    )
+  }
 
-function Question({ q, value, onChange }: { q: Q; value: string | string[] | undefined; onChange: (v: string | string[]) => void }) {
-  const label = q.t === 'risk' ? q.label : q.label
+  /* ── fine ── */
+  if (pos >= n) {
+    const skipped = n - answeredCount
+    return (
+      <div className="qa"><style>{CSS}</style>
+        <div className="qa-top"><div className="qa-prog"><i style={{ width: '100%' }} /></div></div>
+        <div className="qa-main">
+          <div className="qa-big">Finito.</div>
+          <div className="qa-lead">Hai risposto a <b>{answeredCount}</b> domande{skipped > 0 ? ` e ne hai saltate ${skipped}` : ''}. Va benissimo così.</div>
+          <button className="qa-start" disabled={sending} onClick={submit}>{sending ? 'Invio…' : 'Invia a Marco'}</button>
+          <button className="qa-link" onClick={() => goto(n - 1)}>Torna indietro a rivedere</button>
+          {err && <div className="qa-err">{err}</div>}
+        </div>
+      </div>
+    )
+  }
+
+  /* ── domanda ── */
+  const st = steps[pos]
+  const next = () => goto(pos + 1)
+  const back = () => goto(pos - 1)
+  const valueKey = st.kind === 'crm' ? st.item.id + '_ok' : st.q.id
+  const answered = st.kind === 'crm'
+    ? hasValue(answers[st.item.id + '_ok'])
+    : hasValue(answers[st.q.id])
+  const onEnter = (e: React.KeyboardEvent) => { if (e.key === 'Enter' && !(e.target instanceof HTMLTextAreaElement)) { e.preventDefault(); next() } }
+  const pick = (id: string, v: string) => { set(id, v); window.setTimeout(() => goto(pos + 1), 220) }
+
   return (
-    <div className="qa-q">
-      <div className="qa-l">{label}</div>
-      {'hint' in q && q.hint && <div className="qa-h">{q.hint}</div>}
-      {q.t === 'num' && (
-        <div className="qa-row">
-          <input className="qa-in" inputMode="decimal" value={(value as string) || ''} onChange={e => onChange(e.target.value)} />
-          {q.unit && <span className="qa-unit">{q.unit}</span>}
-        </div>
-      )}
-      {q.t === 'text' && <input className="qa-in" value={(value as string) || ''} onChange={e => onChange(e.target.value)} />}
-      {q.t === 'long' && <textarea className="qa-in" value={(value as string) || ''} onChange={e => onChange(e.target.value)} />}
-      {(q.t === 'one' || q.t === 'risk') && (
-        <div className="qa-opts">
-          {(q.t === 'risk' ? RISK_OPTS : q.opts).map(op => (
-            <label key={op.v} className={'qa-opt' + (value === op.v ? ' on' : '')}>
-              <input type="radio" name={q.id} checked={value === op.v} onChange={() => onChange(op.v)} />
-              <span>{op.l}</span>
-            </label>
-          ))}
-        </div>
-      )}
-      {q.t === 'multi' && (
-        <div className="qa-opts">
-          {q.opts.map(op => {
-            const arr = (Array.isArray(value) ? value : []) as string[]
-            const on = arr.includes(op.v)
-            return (
-              <label key={op.v} className={'qa-opt' + (on ? ' on' : '')}>
-                <input type="checkbox" checked={on} onChange={() => onChange(on ? arr.filter(x => x !== op.v) : [...arr, op.v])} />
-                <span>{op.l}</span>
-              </label>
-            )
-          })}
-        </div>
-      )}
+    <div className="qa" onKeyDown={onEnter}><style>{CSS}</style>
+      <div className="qa-top">
+        <div className="qa-prog"><i style={{ width: `${Math.round(((pos + 1) / n) * 100)}%` }} /></div>
+        <div className="qa-meta"><span>{pos + 1} di {n}</span><span>{err ? 'Non salvato' : savedAt ? `Salvato ${savedAt}` : ''}</span></div>
+      </div>
+
+      <div className="qa-main" key={valueKey}>
+        <div className="qa-chip">{st.section}</div>
+
+        {st.kind === 'crm' ? (
+          <>
+            <div className="qa-q" style={{ fontWeight: 600 }}>{st.item.text}</div>
+            <div className="qa-opts">
+              <button className={'qa-opt' + (answers[st.item.id + '_ok'] === 'si' ? ' on' : '')} onClick={() => pick(st.item.id + '_ok', 'si')}>Giusto</button>
+              <button className={'qa-opt' + (answers[st.item.id + '_ok'] === 'no' ? ' on' : '')} onClick={() => set(st.item.id + '_ok', 'no')}>Non torna</button>
+            </div>
+            {answers[st.item.id + '_ok'] === 'no' && (
+              <>
+                <div className="qa-h" style={{ marginTop: 16, marginBottom: 0 }}>{st.item.fix} Una stima va bene.</div>
+                <div className="qa-row">
+                  <input className="qa-in" autoFocus value={(answers[st.item.id + '_fix'] as string) || ''} onChange={e => set(st.item.id + '_fix', e.target.value)} />
+                  {st.item.unit && <span className="qa-unit">{st.item.unit}</span>}
+                </div>
+              </>
+            )}
+          </>
+        ) : (
+          <>
+            <div className="qa-q">{st.q.label}</div>
+            {'hint' in st.q && st.q.hint && <div className="qa-h">{st.q.hint}</div>}
+            {st.q.t === 'num' && (
+              <div className="qa-row">
+                <input className="qa-in" autoFocus inputMode="decimal" placeholder="una stima va bene" value={(answers[st.q.id] as string) || ''} onChange={e => set(st.q.id, e.target.value)} />
+                {st.q.unit && <span className="qa-unit">{st.q.unit}</span>}
+              </div>
+            )}
+            {st.q.t === 'text' && <input className="qa-in" autoFocus value={(answers[st.q.id] as string) || ''} onChange={e => set(st.q.id, e.target.value)} />}
+            {st.q.t === 'long' && <textarea className="qa-in" autoFocus value={(answers[st.q.id] as string) || ''} onChange={e => set(st.q.id, e.target.value)} />}
+            {(st.q.t === 'one' || st.q.t === 'risk') && (
+              <div className="qa-opts">
+                {(st.q.t === 'risk' ? RISK_OPTS : st.q.opts).map(op => (
+                  <button key={op.v} className={'qa-opt' + (answers[st.q.id] === op.v ? ' on' : '')} onClick={() => pick((st.q as Q).id, op.v)}>{op.l}</button>
+                ))}
+              </div>
+            )}
+            {st.q.t === 'multi' && (
+              <div className="qa-opts">
+                {st.q.opts.map(op => {
+                  const arr = (Array.isArray(answers[st.q.id]) ? answers[st.q.id] : []) as string[]
+                  const on = arr.includes(op.v)
+                  return <button key={op.v} className={'qa-opt' + (on ? ' on' : '')} onClick={() => set((st.q as Q).id, on ? arr.filter(x => x !== op.v) : [...arr, op.v])}>{on ? '✓ ' : ''}{op.l}</button>
+                })}
+              </div>
+            )}
+          </>
+        )}
+        {err && <div className="qa-err">{err}</div>}
+      </div>
+
+      <div className="qa-nav"><div className="qa-nav-in">
+        <button className="qa-b" onClick={back} disabled={pos === 0}>Indietro</button>
+        <button className={'qa-b ' + (answered ? 'pri' : 'skip')} onClick={next}>{answered ? 'Avanti' : 'Salta'}</button>
+      </div></div>
     </div>
   )
 }
