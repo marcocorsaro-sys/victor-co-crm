@@ -25,12 +25,16 @@ import AdminAmministrazione from './pages/AdminAmministrazione'
 import CalendarPage from './pages/CalendarPage'
 import Settings from './pages/Settings'
 import Vademecum from './pages/Vademecum'
+import QuestionarioAmministrazione from './pages/QuestionarioAmministrazione'
 import type { Profile } from './lib/supabase'
 
 function App() {
   const { user, profile, loading, signIn, signOut } = useAuth()
   const { agents } = useProfiles()
   const [viewAsAgent, setViewAsAgent] = useState<Profile | null>(null)
+
+  const qMatch = window.location.pathname.match(/^\/questionario\/([A-Za-z0-9]+)\/?$/)
+  if (qMatch) return <QuestionarioAmministrazione token={qMatch[1]} />
 
   if (loading) {
     return (
