@@ -45,6 +45,9 @@ export default function TopBar({ profile, onLogout, viewAsAgent, onSwitchView, o
             <NavLink to="/admin/intelligence" className={({ isActive }) => isActive ? 'active' : ''}>
               Intelligence
             </NavLink>
+            <NavLink to="/admin/talent" className={({ isActive }) => isActive ? 'active' : ''}>
+              Talent
+            </NavLink>
             <NavLink to="/admin/weekly" className={({ isActive }) => isActive ? 'active' : ''}>
               Settimane
             </NavLink>

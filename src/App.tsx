@@ -16,6 +16,7 @@ import AdminAgentDetail from './pages/AdminAgentDetail'
 import AgentValuations from './pages/AgentValuations'
 import AgentClients from './pages/AgentClients'
 import AdminValutazioni from './pages/AdminValutazioni'
+import AdminTalent from './pages/AdminTalent'
 import AdminIntelligence from './pages/AdminIntelligence'
 import AdminAI from './pages/AdminAI'
 import AdminWeekly from './pages/AdminWeekly'
@@ -110,6 +111,7 @@ function App() {
               <Route path="/admin/client/:clientId" element={<ClientDetail />} />
               <Route path="/admin/valutazioni" element={<AdminValutazioni />} />
               <Route path="/admin/intelligence" element={<AdminIntelligence />} />
+              <Route path="/admin/talent" element={<AdminTalent />} />
               <Route path="/admin/weekly" element={<AdminWeekly />} />
               <Route path="/admin/mercato" element={<AdminMercato />} />
               <Route path="/admin/ai" element={<AdminAI />} />
