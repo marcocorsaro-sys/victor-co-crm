@@ -1,4 +1,5 @@
 import { useState, useEffect, useMemo } from 'react'
+import { supabase } from '../lib/supabase'
 import type { Operation, Profile } from '../lib/supabase'
 import { calculateCommissions, toEurInput, parseEurInput } from '../lib/calculations'
 import CommissionSummary from './CommissionSummary'
@@ -52,13 +53,27 @@ export default function OpModal({ open, onClose, onSave, initial, agentId, agent
   const isCompleted = form.status === 'incassato'
   const isEditing = !!initial
 
+  // Un agente (non admin) che modifica un'operazione di cui è solo collaboratore
+  // NON deve diventarne il titolare: l'operazione resta dell'agente originale e le
+  // percentuali di provvigione sono quelle del titolare, non di chi sta modificando.
+  const isCollaboratorEditing = !!(agentId && initial && initial.agent_id && initial.agent_id !== agentId)
+  const [ownerProfile, setOwnerProfile] = useState<Profile | null>(null)
+  useEffect(() => {
+    if (!isCollaboratorEditing || !initial?.agent_id) { setOwnerProfile(null); return }
+    let alive = true
+    supabase.from('profiles').select('*').eq('id', initial.agent_id).single()
+      .then(({ data }) => { if (alive) setOwnerProfile((data as Profile) || null) })
+    return () => { alive = false }
+  }, [isCollaboratorEditing, initial?.agent_id])
+
   const effectiveAgentProfile = useMemo(() => {
+    if (isCollaboratorEditing) return ownerProfile
     if (agentProfile) return agentProfile
     if (agents && selectedAgentId) return agents.find(a => a.id === selectedAgentId) || null
     return null
-  }, [agentProfile, agents, selectedAgentId])
+  }, [isCollaboratorEditing, ownerProfile, agentProfile, agents, selectedAgentId])
 
-  const effectiveAgentId = agentId || selectedAgentId
+  const effectiveAgentId = isCollaboratorEditing ? initial!.agent_id : (agentId || selectedAgentId)
 
   useEffect(() => {
     if (initial) {
@@ -68,7 +83,7 @@ export default function OpModal({ open, onClose, onSave, initial, agentId, agent
         property_name: initial.property_name,
         address: initial.address || '',
         type: initial.type,
-        origin: initial.origin,
+        origin: initial.origin === 'valutazione' ? 'agenzia' : initial.origin,
         status: initial.status,
         property_value: initial.property_value ? toEurInput(initial.property_value) : '',
         comm_pct_seller: initial.comm_pct_seller.toString(),
@@ -272,6 +287,11 @@ export default function OpModal({ open, onClose, onSave, initial, agentId, agent
     <div className="modal-overlay" onClick={onClose}>
       <div className="modal" onClick={e => e.stopPropagation()} style={{ maxHeight: '90vh', overflowY: 'auto' }}>
         <div className="modal-title">{isEditing ? 'Modifica Operazione' : 'Nuova Operazione'}</div>
+        {isCollaboratorEditing && (
+          <div className="form-hint" style={{ margin: '6px 0 10px', padding: '8px 10px', background: 'var(--card2, #f3efe8)', borderLeft: '3px solid var(--gold, #b8860b)', fontSize: 12 }}>
+            Stai modificando come collaboratore: l'operazione resta intestata a <b>{ownerProfile ? `${ownerProfile.first_name} ${ownerProfile.last_name}`.trim() : 'titolare'}</b> e le provvigioni usano le sue percentuali.
+          </div>
+        )}
         <form onSubmit={handleSubmit}>
 
           {/* ─── Agent selector (admin mode only) ─── */}
