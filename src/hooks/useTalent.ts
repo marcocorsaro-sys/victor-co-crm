@@ -33,6 +33,8 @@ export type TalentProspect = {
   instagram_handle: string | null
   instagram_match: MatchStatus
   instagram_data: Record<string, any>
+  photo_url: string | null
+  photo_source: string | null
   facebook_url: string | null
   website_url: string | null
   portal_url: string | null

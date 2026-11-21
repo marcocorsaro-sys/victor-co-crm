@@ -48,6 +48,12 @@ function Card({ p, onUpdate }: { p: TalentProspect; onUpdate: (patch: Partial<Ta
   return (
     <div style={{ background: '#fff', border: '1px solid var(--bd)', borderRadius: 10, padding: 18, marginBottom: 16 }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', gap: 12, flexWrap: 'wrap', alignItems: 'flex-start' }}>
+        <div style={{ display: 'flex', gap: 14, alignItems: 'flex-start' }}>
+          <div style={{ width: 72, height: 72, borderRadius: '50%', overflow: 'hidden', flex: 'none', background: 'var(--s1)', border: '1px solid var(--bd)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--g)', fontWeight: 700, fontSize: 22 }} title={p.photo_source ? `Foto da ${p.photo_source}` : 'Nessuna foto pubblica trovata'}>
+            {p.photo_url
+              ? <img src={p.photo_url} alt={p.full_name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+              : p.full_name.split(' ').map(w => w[0]).slice(0, 2).join('')}
+          </div>
         <div>
           <div style={{ fontSize: 18, fontWeight: 700, color: 'var(--navy)' }}>{p.full_name}</div>
           <div style={{ fontSize: 13, color: 'var(--gl)', marginTop: 2 }}>
@@ -55,6 +61,8 @@ function Card({ p, onUpdate }: { p: TalentProspect; onUpdate: (patch: Partial<Ta
           </div>
           {p.phone && <div style={{ fontSize: 13, marginTop: 2 }}><a href={`tel:${p.phone.replace(/\s/g, '')}`}>{p.phone}</a></div>}
           {p.data_flag && <div style={{ fontSize: 12, color: 'var(--amber)', marginTop: 4 }}>⚠ {p.data_flag}</div>}
+          {p.photo_source && <div style={{ fontSize: 11, color: 'var(--g)', marginTop: 2 }}>Foto: {p.photo_source}</div>}
+        </div>
         </div>
         <div style={{ textAlign: 'right' }}>
           <div style={{ fontSize: 28, fontWeight: 800, color: score === null ? 'var(--g)' : 'var(--navy)', lineHeight: 1 }}>
