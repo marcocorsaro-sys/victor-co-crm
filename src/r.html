@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<meta name="referrer" content="no-referrer">
+<title>Grazie da Victor&amp;Co</title>
+<link rel="icon" href="/assets/favicon.png">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700&family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--navy:#0d3447;--navy2:#164a63;--teal:#1f6f8b;--s1:#f7f7f7;--s2:#eef1f4;--bd:#dddddd;--w:#181a20;--g:#717171;--green:#1d8f5f}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:Poppins,system-ui,-apple-system,sans-serif;background:var(--s1);color:var(--w);line-height:1.55;-webkit-font-smoothing:antialiased;min-height:100vh}
+.hero{background:var(--navy);padding:22px 20px 70px;text-align:center}
+.hero img{height:34px}
+.card{max-width:520px;margin:-48px auto 24px;background:#fff;border-radius:16px;padding:28px 24px;box-shadow:0 10px 30px rgba(13,52,71,.14)}
+h1{font-family:Montserrat,sans-serif;font-size:24px;line-height:1.25;color:var(--navy);margin-bottom:10px}
+p.lead{color:#4f5560;font-size:15px;margin-bottom:22px}
+ol{list-style:none;margin:0 0 22px;counter-reset:s}
+ol li{counter-increment:s;display:flex;gap:12px;align-items:flex-start;padding:10px 0;border-top:1px solid var(--s2);font-size:14.5px}
+ol li:first-child{border-top:0}
+ol li:before{content:counter(s);flex:0 0 28px;height:28px;border-radius:50%;background:var(--navy);color:#fff;font:600 13px Montserrat,sans-serif;display:flex;align-items:center;justify-content:center;margin-top:1px}
+.btn{display:block;width:100%;border:0;border-radius:12px;padding:15px 18px;font:600 16px Poppins,sans-serif;cursor:pointer;text-align:center;text-decoration:none}
+.btn.primary{background:var(--navy);color:#fff}
+.btn.primary:active{background:var(--navy2)}
+.btn.ghost{background:#fff;color:var(--navy);border:1.5px solid var(--bd);margin-top:10px;font-size:14.5px;font-weight:500;padding:12px}
+.hint{background:var(--s2);border-radius:12px;padding:14px 16px;margin:0 0 22px;font-size:13.5px;color:#4f5560}
+.hint b{color:var(--navy);display:block;margin-bottom:4px;font-weight:600}
+.hint ul{padding-left:18px}
+.small{font-size:12px;color:var(--g);text-align:center;margin-top:16px}
+.done{background:#e6f5ee;color:var(--green);border-radius:12px;padding:14px 16px;text-align:center;font-weight:500;margin-bottom:14px}
+.foot{max-width:520px;margin:0 auto 30px;padding:0 24px;text-align:center;font-size:12px;color:var(--g)}
+.hidden{display:none}
+</style>
+</head>
+<body>
+<div class="hero"><img src="/assets/logo-white.png" alt="Victor&amp;Co Real Estate"></div>
+<main class="card" id="card">
+  <div id="loading" style="text-align:center;color:#717171;padding:30px 0">Un attimo…</div>
+  <div id="invalid" class="hidden">
+    <h1>Link non valido</h1>
+    <p class="lead">Questo link non è più attivo. Se hai ricevuto un messaggio da Victor&amp;Co, scrivi pure alla persona che ti ha contattato: ti manderà il link corretto.</p>
+  </div>
+  <div id="ok" class="hidden">
+    <h1 id="h1"></h1>
+    <p class="lead" id="lead"></p>
+    <div id="doneBox" class="done hidden">Grazie! La tua recensione è stata segnata come fatta. 🙏</div>
+    <ol>
+      <li id="s1">Tocca il pulsante qui sotto: si apre direttamente la pagina di Google dedicata a Victor&amp;Co.</li>
+      <li id="s2">Scegli le stelle (serve un account Google, anche quello già sul telefono).</li>
+      <li id="s3">Racconta in due righe com'è andata, con parole tue, e premi <b>Pubblica</b>.</li>
+    </ol>
+    <div class="hint">
+      <b id="hintT">Se ti aiuta a cominciare (facoltativo)</b>
+      <ul>
+        <li id="q1">Com'è stato il percorso, dal primo incontro alla firma?</li>
+        <li id="q2">Cosa ti ha colpito di <span id="agent1">chi ti ha seguito</span>?</li>
+        <li id="q3">A chi consiglieresti Victor&amp;Co e perché?</li>
+      </ul>
+    </div>
+    <button class="btn primary" id="go">Scrivi la recensione su Google</button>
+    <button class="btn ghost" id="did">Ho già scritto la recensione ✓</button>
+    <p class="small" id="small">Il testo è solo tuo: scrivi quello che pensi davvero, anche in poche parole.</p>
+  </div>
+</main>
+<div class="foot">Victor&amp;Co Real Estate · Novara<br>Questa pagina è personale e traccia solo l'apertura del link.</div>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+(function(){
+  var SB_URL='https://ipkfinjfohuyxkvcsrla.supabase.co';
+  var SB_KEY='sb_publishable_2SG-qY0Dr7wRO_M0l62ZMw_-QujGjGK';
+  var $=function(id){return document.getElementById(id)};
+  var token=(location.pathname.match(/\/r\/([A-Za-z0-9_-]+)/)||[])[1]||'';
+  var sb=window.supabase.createClient(SB_URL,SB_KEY,{auth:{persistSession:false,autoRefreshToken:false}});
+  function show(id){['loading','invalid','ok'].forEach(function(x){$(x).classList.toggle('hidden',x!==id)})}
+  if(!token){show('invalid');return}
+  sb.rpc('vale_invite_get',{p_token:token}).then(function(r){
+    var d=r&&r.data;
+    if(!d){show('invalid');return}
+    var lei=!!d.lei, who=d.agent_first||'';
+    $('h1').textContent=(lei?'Buongiorno ':'Ciao ')+d.first_name+', grazie di cuore';
+    $('lead').textContent=(who?who:'Il team')+(lei?' le chiede':' ti chiede')+' due minuti: '+(lei?'la sua':'la tua')+' opinione aiuta altre persone di Novara a scegliere con più serenità.';
+    if(lei){
+      $('s1').textContent='Tocchi il pulsante qui sotto: si apre direttamente la pagina di Google dedicata a Victor&Co.';
+      $('s2').textContent='Scelga le stelle (serve un account Google, anche quello già sul telefono).';
+      $('s3').innerHTML="Racconti in due righe com'è andata, con parole sue, e prema <b>Pubblica</b>.";
+      $('hintT').textContent='Se le è utile per cominciare (facoltativo)';
+      $('q1').textContent="Com'è stato il percorso, dal primo incontro alla firma?";
+      $('q2').innerHTML='Cosa l\'ha colpita di <span id="agent1"></span>?';
+      $('q3').textContent='A chi consiglierebbe Victor&Co e perché?';
+      $('small').textContent='Il testo è solo suo: scriva quello che pensa davvero, anche in poche parole.';
+    }
+    $('agent1').textContent=who||'chi l\'ha seguita';
+    if(!who&&!lei)$('agent1').textContent='chi ti ha seguito';
+    if(d.done)$('doneBox').classList.remove('hidden');
+    $('go').onclick=function(){
+      sb.rpc('vale_invite_click',{p_token:token}).then(function(x){
+        var u=x&&x.data||d.review_url;
+        if(u)location.href=u;
+      },function(){if(d.review_url)location.href=d.review_url});
+    };
+    $('did').onclick=function(){
+      sb.rpc('vale_invite_done',{p_token:token}).then(function(){
+        $('doneBox').classList.remove('hidden');
+        $('did').classList.add('hidden');
+        window.scrollTo({top:0,behavior:'smooth'});
+      });
+    };
+    show('ok');
+  },function(){show('invalid')});
+})();
+</script>
+</body>
+</html>
