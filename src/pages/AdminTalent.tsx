@@ -145,6 +145,24 @@ function Card({ p, onUpdate }: { p: TalentProspect; onUpdate: (patch: Partial<Ta
         </div>
       </div>
 
+      {(p.facebook_url || p.website_url || p.portal_url || Object.keys(p.extra_links || {}).length > 0) && (
+        <div style={{ ...box, marginTop: 12 }}>
+          <strong>Altri profili e fonti</strong>
+          <div style={{ display: 'flex', gap: 14, flexWrap: 'wrap', marginTop: 6, fontSize: 13 }}>
+            {p.facebook_url && <a href={p.facebook_url} target="_blank" rel="noreferrer">Facebook</a>}
+            {p.website_url && <a href={p.website_url} target="_blank" rel="noreferrer">Sito / pagina agenzia</a>}
+            {p.portal_url && <a href={p.portal_url} target="_blank" rel="noreferrer">Portali</a>}
+            {Object.entries(p.extra_links || {}).map(([k, v]) => {
+              const url = String(v).split(' ')[0]
+              const label = `${k.replace(/_/g, ' ')}${String(v).includes(' ') ? ' ' + String(v).slice(url.length).trim() : ''}`
+              return url.startsWith('http')
+                ? <a key={k} href={url} target="_blank" rel="noreferrer">{label}</a>
+                : <span key={k}>{k.replace(/_/g, ' ')}: {String(v)}</span>
+            })}
+          </div>
+        </div>
+      )}
+
       {p.approach_angle && (
         <div style={{ ...box, marginTop: 12, borderLeft: '3px solid var(--navy)' }}>
           <strong>Angolo di approccio</strong>
@@ -168,7 +186,7 @@ function Card({ p, onUpdate }: { p: TalentProspect; onUpdate: (patch: Partial<Ta
           onBlur={e => { if ((e.target.value || null) !== p.notes) onUpdate({ notes: e.target.value || null }) }}
         />
       </div>
-      {p.enriched_at && <div style={{ fontSize: 11, color: 'var(--g)', marginTop: 8 }}>Dati pubblici raccolti con Apify il {new Date(p.enriched_at).toLocaleDateString('it-IT')}</div>}
+      {p.enriched_at && <div style={{ fontSize: 11, color: 'var(--g)', marginTop: 8 }}>Dati pubblici raccolti con Apify e Firecrawl (LinkedIn, Instagram, Facebook, siti e portali) il {new Date(p.enriched_at).toLocaleDateString('it-IT')}</div>}
     </div>
   )
 }
