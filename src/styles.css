@@ -984,28 +984,21 @@ tbody tr.total-row {
     padding: 0 12px;
   }
 
-  /* menu scorrevole su una seconda riga, cosi' tutte le sezioni restano raggiungibili da telefono */
+  /* su telefono la barra alta è compatta: logo + utente; la navigazione passa alla barra inferiore */
   .topbar {
-    flex-wrap: wrap;
-    height: auto;
-    padding-top: 8px;
-    padding-bottom: 6px;
-    row-gap: 6px;
+    height: 52px;
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    padding-top: env(safe-area-inset-top);
+    height: calc(52px + env(safe-area-inset-top));
   }
-
-  .topbar-nav {
-    order: 3;
-    width: 100%;
-    display: flex;
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
-    scrollbar-width: none;
-    padding-bottom: 2px;
-  }
-
-  .topbar-nav::-webkit-scrollbar {
-    display: none;
-  }
+  .topbar-logo img { height: 26px; }
+  .topbar-nav { display: none; }
+  .topbar-right { gap: 8px; }
+  .topbar-right .filter-select { display: none; }
+  .topbar-right a[href^="https://victorco-vale-hub"] { display: none; }
+  .main-content { padding-bottom: calc(76px + env(safe-area-inset-bottom)); }
 
   .topbar .user-info .name,
   .topbar .role-badge {
@@ -1027,4 +1020,49 @@ tbody tr.total-row {
     border-left: none;
     border-right: none;
   }
+}
+
+
+/* ─── Navigazione mobile (barra inferiore) ─────────────────────────── */
+.mnav { display: none; }
+@media (max-width: 640px) {
+  .mnav {
+    position: fixed; left: 0; right: 0; bottom: 0; z-index: 60;
+    display: grid; grid-template-columns: repeat(5, 1fr);
+    background: #fff; border-top: 1px solid var(--bd);
+    padding: 6px 4px calc(6px + env(safe-area-inset-bottom));
+    box-shadow: 0 -4px 16px rgba(13,52,71,.08);
+  }
+  .mnav-item {
+    display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px;
+    padding: 4px 2px; border: 0; background: transparent; color: var(--g); font: inherit; font-size: 10.5px; font-weight: 600;
+    text-decoration: none; border-radius: 8px; min-height: 48px; cursor: pointer; letter-spacing: 0;
+  }
+  .mnav-item span { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%; }
+  .mnav-item.active { color: var(--navy); }
+  .mnav-item.active svg { color: var(--navy); }
+  .mnav-item:active { background: var(--s2); }
+  .mnav-sheet-backdrop { position: fixed; inset: 0; z-index: 59; background: rgba(13,52,71,.35); }
+  .mnav-sheet {
+    position: absolute; left: 0; right: 0; bottom: 0; background: #fff; border-radius: 16px 16px 0 0;
+    padding: 14px 14px calc(84px + env(safe-area-inset-bottom)); box-shadow: 0 -8px 30px rgba(0,0,0,.2);
+    max-height: 75vh; overflow-y: auto;
+  }
+  .mnav-sheet-title { font-size: 12px; color: var(--g); font-weight: 600; margin: 2px 4px 10px; }
+  .mnav-sheet-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+  .mnav-sheet-item {
+    display: flex; flex-direction: column; align-items: center; gap: 6px; padding: 12px 6px; border-radius: 10px;
+    background: var(--s1); border: 1px solid var(--bd); color: var(--w); text-decoration: none; font-size: 12px; font-weight: 600; text-align: center;
+  }
+  .mnav-sheet-item svg { color: var(--navy); }
+  .mnav-sheet-item.active { background: var(--navy); color: #fff; }
+  .mnav-sheet-item.active svg { color: #fff; }
+  /* card a due colonne (Talent, Monitor) impilate su telefono */
+  .card-2col { grid-template-columns: 1fr !important; }
+  .card-2col > :first-child { display: flex; gap: 12px; align-items: flex-start; }
+  .card-2col > :first-child > :first-child { flex: 0 0 auto; }
+  /* elementi tap-friendly */
+  .filter-select, input.filter-select, select { min-height: 40px; font-size: 14px; }
+  .btn { min-height: 40px; }
+  html { -webkit-text-size-adjust: 100%; }
 }

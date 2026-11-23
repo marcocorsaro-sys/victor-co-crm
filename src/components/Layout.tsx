@@ -1,5 +1,6 @@
 import type { ReactNode } from 'react'
 import TopBar from './TopBar'
+import MobileNav from './MobileNav'
 import type { Profile } from '../lib/supabase'
 
 type Props = {
@@ -26,6 +27,7 @@ export default function Layout({ profile, onLogout, children, viewAsAgent, onSwi
       <div className="main-content">
         {children}
       </div>
+      <MobileNav profile={viewAsAgent || profile} />
     </div>
   )
 }

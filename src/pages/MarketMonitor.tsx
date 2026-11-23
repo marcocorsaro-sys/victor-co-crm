@@ -204,16 +204,18 @@ export default function MarketMonitor() {
           const pm2 = p.price && p.surface ? Math.round(p.price / p.surface) : null
           const drop = p.old_price && p.price ? Math.round((1 - p.price / p.old_price) * 100) : null
           return (
-            <div key={p.property_key} style={{ ...box, display: 'grid', gridTemplateColumns: '140px 1fr', gap: 14 }}>
+            <div key={p.property_key} className="card-2col" style={{ ...box, display: 'grid', gridTemplateColumns: '140px 1fr', gap: 14 }}>
               <div>
-                <div style={{ width: 140, height: 105, borderRadius: 6, overflow: 'hidden', background: 'var(--s2)' }}>
+                <div style={{ width: 140, height: 105, borderRadius: 6, overflow: 'hidden', background: 'var(--s2)', flex: '0 0 auto' }}>
                   {p.thumb && <img src={p.thumb} alt="" loading="lazy" referrerPolicy="no-referrer" style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }} />}
                 </div>
-                <div style={{ marginTop: 6, fontSize: 12, fontWeight: 700, color: ageColor(age) }}>
-                  {age != null ? `online da ~${fmtDays(age)}` : 'anzianità n.d.'}
+                <div>
+                  <div style={{ marginTop: 6, fontSize: 12, fontWeight: 700, color: ageColor(age) }}>
+                    {age != null ? `online da ~${fmtDays(age)}` : 'anzianità n.d.'}
+                  </div>
+                  {certain != null && <div style={{ fontSize: 11, color: 'var(--g)' }}>certo: almeno {fmtDays(certain)} (dal {new Date(p.certain_since!).toLocaleDateString('it-IT')})</div>}
+                  {p.price_changes > 0 && <div style={{ fontSize: 11, color: 'var(--teal)' }}>{p.price_changes} variazion{p.price_changes === 1 ? 'e' : 'i'} di prezzo</div>}
                 </div>
-                {certain != null && <div style={{ fontSize: 11, color: 'var(--g)' }}>certo: almeno {fmtDays(certain)} (dal {new Date(p.certain_since!).toLocaleDateString('it-IT')})</div>}
-                {p.price_changes > 0 && <div style={{ fontSize: 11, color: 'var(--teal)' }}>{p.price_changes} variazion{p.price_changes === 1 ? 'e' : 'i'} di prezzo</div>}
               </div>
               <div style={{ minWidth: 0 }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', gap: 12, flexWrap: 'wrap' }}>
