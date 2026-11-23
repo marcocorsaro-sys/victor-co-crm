@@ -171,6 +171,35 @@ function Card({ p, onUpdate }: { p: TalentProspect; onUpdate: (patch: Partial<Ta
         </div>
       )}
 
+      {(p.ig_posts || []).length > 0 && (
+        <div style={{ ...box, marginTop: 12 }}>
+          <strong>Ultimi contenuti Instagram</strong>
+          {p.ig_posts!.some(x => x.tagged) && (
+            <div style={{ fontSize: 12, color: 'var(--g)', marginTop: 2 }}>
+              Profilo personale privato o senza post pubblici: questi sono gli ultimi contenuti dell'agenzia (@{p.ig_posts![0].owner}) in cui compare.
+            </div>
+          )}
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, minmax(0, 1fr))', gap: 10, marginTop: 8 }}>
+            {p.ig_posts!.slice(0, 3).map(x => (
+              <a key={x.shortcode} href={x.url} target="_blank" rel="noreferrer" title={x.caption} style={{ textDecoration: 'none', color: 'inherit', display: 'block' }}>
+                <div style={{ position: 'relative', aspectRatio: '1 / 1', borderRadius: 8, overflow: 'hidden', background: 'var(--s1)' }}>
+                  <img src={x.thumb} alt={x.caption} loading="lazy" style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }} />
+                  <span style={{ position: 'absolute', top: 6, left: 6, fontSize: 10, fontWeight: 700, letterSpacing: 0.3, padding: '2px 6px', borderRadius: 4, background: 'rgba(0,0,0,0.65)', color: '#fff' }}>
+                    {x.type === 'reel' ? 'Reel' : x.type === 'carosello' ? 'Carosello' : 'Post'}{x.duration ? ` · ${x.duration}s` : ''}
+                  </span>
+                </div>
+                <div style={{ fontSize: 11, color: 'var(--g)', marginTop: 4 }}>
+                  {new Date(x.date).toLocaleDateString('it-IT', { day: '2-digit', month: 'short', year: 'numeric' })}
+                  {x.plays != null && x.plays >= 0 ? ` · ${x.plays.toLocaleString('it-IT')} visual.` : ''}
+                  {x.likes != null && x.likes >= 0 ? ` · ${x.likes} like` : ''}
+                </div>
+                <div style={{ fontSize: 12, marginTop: 2, lineHeight: 1.35, display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>{x.caption}</div>
+              </a>
+            ))}
+          </div>
+        </div>
+      )}
+
       {p.approach_angle && (
         <div style={{ ...box, marginTop: 12, borderLeft: '3px solid var(--navy)' }}>
           <strong>Angolo di approccio</strong>

@@ -67,6 +67,9 @@ export default function TopBar({ profile, onLogout, viewAsAgent, onSwitchView, o
             <NavLink to="/settings" className={({ isActive }) => isActive ? 'active' : ''}>
               Impostazioni
             </NavLink>
+            <a href="https://victorco-vale-hub.vercel.app" target="_blank" rel="noopener noreferrer" title="Vale Hub: PED, recensioni, reel e piano 2027 (si apre in una nuova scheda)">
+              Vale Hub ↗
+            </a>
           </>
         ) : (
           <>
@@ -88,6 +91,9 @@ export default function TopBar({ profile, onLogout, viewAsAgent, onSwitchView, o
             <NavLink to="/settings" className={({ isActive }) => isActive ? 'active' : ''}>
               Impostazioni
             </NavLink>
+            <a href="https://victorco-vale-hub.vercel.app" target="_blank" rel="noopener noreferrer" title="Vale Hub: PED, recensioni e reel (si apre in una nuova scheda)">
+              Vale Hub ↗
+            </a>
           </>
         )}
       </nav>

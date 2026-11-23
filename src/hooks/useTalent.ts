@@ -16,6 +16,20 @@ export const TALENT_STAGES: { id: TalentStage; label: string }[] = [
 export type ScorePart = { v: number | null; max: number; note: string }
 export type ScoreBreakdown = Partial<Record<'digitale' | 'esperienza' | 'contendibilita' | 'fit', ScorePart>>
 
+export type IgPost = {
+  shortcode: string
+  url: string
+  type: 'reel' | 'post' | 'carosello'
+  date: string
+  likes: number | null
+  plays: number | null
+  duration: number | null
+  caption: string
+  thumb: string
+  owner: string
+  tagged: boolean
+}
+
 export type TalentProspect = {
   id: string
   position: number
@@ -39,6 +53,8 @@ export type TalentProspect = {
   website_url: string | null
   portal_url: string | null
   extra_links: Record<string, string>
+  ig_posts: IgPost[] | null
+  ig_posts_at: string | null
   score_breakdown: ScoreBreakdown
   approach_angle: string | null
   stage: TalentStage
