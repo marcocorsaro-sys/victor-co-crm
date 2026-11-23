@@ -7,7 +7,7 @@ export default defineConfig({
   plugins: [
     react(),
     VitePWA({
-      registerType: 'prompt',
+      registerType: 'autoUpdate',
       includeAssets: ['brand/*.png', 'docs/*.pdf'],
       manifest: {
         name: 'Victor&Co CRM',

@@ -11,7 +11,7 @@ export default function PwaPrompts() {
   const [update, setUpdate] = useState<((reload?: boolean) => Promise<void>) | null>(null)
 
   useEffect(() => {
-    const u = registerSW({ onNeedRefresh: () => setNeedRefresh(true) })
+    const u = registerSW({ immediate: true, onNeedRefresh: () => setNeedRefresh(true) })
     setUpdate(() => u)
     const onBip = (e: Event) => { e.preventDefault(); if (!localStorage.getItem('pwa-install-dismissed')) setInstallEvt(e as BeforeInstallPromptEvent) }
     const on = () => setOffline(false), off = () => setOffline(true)
