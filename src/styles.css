@@ -1066,3 +1066,11 @@ tbody tr.total-row {
   .btn { min-height: 40px; }
   html { -webkit-text-size-adjust: 100%; }
 }
+
+/* ─── Topbar su schermi medi: menu su una seconda riga, così utente ed Esci restano visibili ── */
+@media (min-width: 641px) and (max-width: 1750px) {
+  .topbar { flex-wrap: wrap; height: auto; min-height: 60px; padding: 6px 24px 8px; row-gap: 2px; }
+  .topbar-logo { order: 1; }
+  .topbar-right { order: 2; margin-left: auto; }
+  .topbar-nav { order: 3; flex-basis: 100%; flex-wrap: wrap; gap: 2px 4px; }
+}

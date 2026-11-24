@@ -55,7 +55,7 @@ export default function TopBar({ profile, onLogout, viewAsAgent, onSwitchView, o
               Mercato
             </NavLink>
             <NavLink to="/monitor" className={({ isActive }) => isActive ? 'active' : ''}>
-              Monitor Oleggio
+              Monitor annunci
             </NavLink>
             <NavLink to="/admin/ai" className={({ isActive }) => isActive ? 'active' : ''}>
               AI
@@ -83,7 +83,7 @@ export default function TopBar({ profile, onLogout, viewAsAgent, onSwitchView, o
               Clienti
             </NavLink>
             <NavLink to="/monitor" className={({ isActive }) => isActive ? 'active' : ''}>
-              Monitor Oleggio
+              Monitor annunci
             </NavLink>
             <NavLink to="/vademecum" className={({ isActive }) => isActive ? 'active' : ''}>
               Vademecum
