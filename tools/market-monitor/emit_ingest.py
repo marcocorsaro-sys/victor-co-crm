@@ -1,9 +1,11 @@
 #!/usr/bin/env python3
 """Turn listings.jsonl into one compact JSON array per portal, ready for
    select market_ingest('<portal>', '<json>'::jsonb)  on Supabase.
-Usage: python3 -I emit_ingest.py  -> writes ingest_<portal>.json (+ .sql with the full statement)"""
-import json
+Usage: python3 -I emit_ingest.py <area>  -> writes ingest_<portal>.json (+ .sql: select market_ingest(portal, rows, area))
+   area es. 'Oleggio' | 'Novara - San Martino' | 'Novara - San Paolo'"""
+import json, sys
 from collections import defaultdict
+area = sys.argv[1] if len(sys.argv) > 1 else 'Oleggio'
 rows = [json.loads(l) for l in open('listings.jsonl')]
 seen = set(); by = defaultdict(list)
 for r in rows:
@@ -14,5 +16,5 @@ for r in rows:
 for p, items in by.items():
     js = json.dumps(items, ensure_ascii=False, separators=(',', ':'))
     open(f'ingest_{p}.json', 'w').write(js)
-    open(f'ingest_{p}.sql', 'w').write(f"select market_ingest('{p}', '{js.replace(chr(39), chr(39)*2)}'::jsonb);")
+    open(f'ingest_{p}.sql', 'w').write(f"select market_ingest('{p}', '{js.replace(chr(39), chr(39)*2)}'::jsonb, '{area.replace(chr(39), chr(39)*2)}');")
     print(p, len(items), 'items', len(js), 'bytes')

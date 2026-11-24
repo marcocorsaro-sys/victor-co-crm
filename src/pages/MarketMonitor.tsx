@@ -5,6 +5,7 @@ import KpiCard from '../components/KpiCard'
 type Property = {
   property_key: string
   comune: string
+  area: string
   title: string | null
   ptype: string | null
   rooms: number | null
@@ -37,7 +38,7 @@ type Property = {
   notes: string | null
 }
 
-type Run = { run_date: string; portal: string | null; listings_count: number | null; new_count: number | null; removed_count: number | null; price_changes: number | null }
+type Run = { run_date: string; area: string; portal: string | null; listings_count: number | null; new_count: number | null; removed_count: number | null; price_changes: number | null }
 
 const STATUSES = [
   { id: 'da_valutare', label: 'Da valutare' },
@@ -48,6 +49,7 @@ const STATUSES = [
   { id: 'non_interessante', label: 'Non interessante' },
 ]
 
+const AREAS = ['Oleggio', 'Novara - San Martino', 'Novara - San Paolo']
 const PORTAL_LABEL: Record<string, string> = { immobiliare: 'Immobiliare.it', idealista: 'Idealista', casa: 'Casa.it', subito: 'Subito' }
 
 function daysSince(d: string | null): number | null {
@@ -72,7 +74,8 @@ function ageColor(n: number | null): string {
 }
 
 export default function MarketMonitor() {
-  const [props, setProps] = useState<Property[]>([])
+  const [area, setArea] = useState<string>(() => { try { return localStorage.getItem('monitor-area') || AREAS[0] } catch { return AREAS[0] } })
+  const [allProps, setAllProps] = useState<Property[]>([])
   const [runs, setRuns] = useState<Run[]>([])
   const [loading, setLoading] = useState(true)
   const [bucket, setBucket] = useState<'all' | 'gt365' | '180_365' | 'lt180' | 'drops' | 'private' | 'multi'>('all')
@@ -86,16 +89,18 @@ export default function MarketMonitor() {
     (async () => {
       const [p, r] = await Promise.all([
         supabase.from('market_properties').select('*').eq('active', true).order('est_listed_date', { ascending: true, nullsFirst: false }),
-        supabase.from('market_runs').select('run_date, portal, listings_count, new_count, removed_count, price_changes').order('run_date', { ascending: false }).limit(20),
+        supabase.from('market_runs').select('run_date, area, portal, listings_count, new_count, removed_count, price_changes').order('run_date', { ascending: false }).limit(60),
       ])
-      setProps((p.data || []) as Property[])
+      setAllProps((p.data || []) as Property[])
       setRuns((r.data || []) as Run[])
       setLoading(false)
     })()
   }, [])
 
+  const props = useMemo(() => allProps.filter(p => (p.area || 'Oleggio') === area), [allProps, area])
+  const areaRuns = useMemo(() => runs.filter(r => (r.area || 'Oleggio') === area), [runs, area])
   async function update(key: string, patch: Partial<Property>) {
-    setProps(ps => ps.map(p => p.property_key === key ? { ...p, ...patch } : p))
+    setAllProps(ps => ps.map(p => p.property_key === key ? { ...p, ...patch } : p))
     await supabase.from('market_properties').update({ ...patch, status_updated_at: new Date().toISOString(), updated_at: new Date().toISOString() }).eq('property_key', key)
   }
 
@@ -111,9 +116,9 @@ export default function MarketMonitor() {
       drops: props.filter(p => p.old_price != null || p.price_changes > 0).length,
       priv: props.filter(p => p.is_private).length,
       multi: props.filter(p => (p.n_portals || 1) > 1).length,
-      listings: runs.filter(r => r.run_date === runs[0]?.run_date).reduce((s, r) => s + (r.listings_count || 0), 0),
+      listings: areaRuns.filter(r => r.run_date === areaRuns[0]?.run_date).reduce((s, r) => s + (r.listings_count || 0), 0),
     }
-  }, [props, runs])
+  }, [props, areaRuns])
 
   const filtered = useMemo(() => {
     let list = props.filter(p => {
@@ -141,16 +146,27 @@ export default function MarketMonitor() {
     return list
   }, [props, bucket, status, agency, ptype, q, sort])
 
-  const lastRun = runs[0]?.run_date
+  const lastRun = areaRuns[0]?.run_date
   const box: React.CSSProperties = { background: 'var(--s1)', border: '1px solid var(--bd)', borderRadius: 8, padding: '10px 12px' }
 
   if (loading) return <div>Caricamento…</div>
 
   return (
     <div>
-      <div className="section-heading">// Monitor annunci Oleggio</div>
+      <div className="section-heading">// Monitor annunci</div>
+      <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', margin: '8px 0 10px' }}>
+        {AREAS.map(a => {
+          const n = allProps.filter(p => (p.area || 'Oleggio') === a).length
+          return (
+            <button key={a} className="btn" onClick={() => { setArea(a); try { localStorage.setItem('monitor-area', a) } catch { /* ignore */ } }}
+              style={{ fontWeight: area === a ? 700 : 500, background: area === a ? 'var(--navy)' : undefined, color: area === a ? '#fff' : undefined }}>
+              {a} ({n})
+            </button>
+          )
+        })}
+      </div>
       <p style={{ fontSize: 13, color: 'var(--gl)', maxWidth: 820 }}>
-        Tutte le case in vendita a Oleggio su Immobiliare.it, Idealista, Casa.it e Subito, raggruppate per immobile (lo stesso immobile pubblicato su più portali conta una volta).
+        Tutte le case in vendita in zona {area} su Immobiliare.it, Idealista, Casa.it e Subito, raggruppate per immobile (lo stesso immobile pubblicato su più portali conta una volta).
         L'anzianità è stimata dalla numerazione degli annunci, calibrata su istantanee storiche dei portali: quando c'è il dato certo («online almeno dal…») viene mostrato.
         Da oggi ogni rilevazione settimanale registra nuovi inserimenti, ritiri e variazioni di prezzo.
         {lastRun && <> Ultima rilevazione: {new Date(lastRun).toLocaleDateString('it-IT')} ({kpi.listings} annunci letti).</>}
@@ -257,7 +273,7 @@ export default function MarketMonitor() {
         })}
       </div>
       <div style={{ fontSize: 11, color: 'var(--g)', marginTop: 14 }}>
-        Fonte: annunci pubblici dei portali letti con Firecrawl. L'anzianità stimata ha un margine di circa ±1 mese; i prezzi "era" vengono dai portali (Idealista) o dalle rilevazioni successive. Nessun dato personale dei proprietari è raccolto qui: le note sono vostre.
+        Fonte: annunci pubblici dei portali letti con Firecrawl. Per le zone di Novara, Subito non ha il filtro per quartiere: si usa la ricerca per testo, quindi copre meno annunci; gli immobili sulle vie di confine (es. viale Volta) possono stare in una sola delle due zone. L'anzianità stimata ha un margine di circa ±1 mese; i prezzi "era" vengono dai portali (Idealista) o dalle rilevazioni successive. Nessun dato personale dei proprietari è raccolto qui: le note sono vostre.
       </div>
     </div>
   )

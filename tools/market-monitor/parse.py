@@ -99,12 +99,12 @@ def parse_idealista(h):
         ds = re.search(r'item-description description"><p class="ellipsis">\s*(.*?)\s*</p>', a2); b['description'] = H.unescape(ds.group(1))[:300] if ds else None
         th = re.search(r'<img[^>]*src="(https://img\d\.idealista\.it[^"]+)"', a); b['thumb'] = th.group(1) if th else None
         if b['title']:
-            mm = re.match(r'(.+?) (?:in|a) (.+?), Oleggio$', b['title']) or re.match(r'(.+?) a Oleggio$', b['title'])
+            mm = re.match(r'(.+?) (?:in|a) (.+?), (?:Oleggio|Novara)$', b['title']) or re.match(r'(.+?) a (?:Oleggio|Novara)$', b['title'])
             if mm:
                 b['ptype'] = mm.group(1)
                 if mm.lastindex and mm.lastindex >= 2: b['address'] = mm.group(2)
         out.append(b)
-    tot = re.search(r'<h1[^>]*>\s*([\d.]+) case', h); tot = num(tot.group(1)) if tot else None
+    tot = re.search(r'<h1[^>]*>(?:\s*<span[^>]*>)?\s*([\d.]+) case', h); tot = num(tot.group(1)) if tot else None
     pages = re.findall(r'/lista-(\d+)\.htm', h); mp = max([int(x) for x in pages]) if pages else 1
     return out, tot, mp
 

@@ -29,12 +29,12 @@ export default function MobileNav({ profile }: { profile: Profile }) {
         { to: '/dashboard', label: 'Dashboard', icon: 'home' },
         { to: '/admin/operations', label: 'Operazioni', icon: 'ops' },
         { to: '/admin/clients', label: 'Clienti', icon: 'users' },
-        { to: '/monitor', label: 'Oleggio', icon: 'pin' },
+        { to: '/monitor', label: 'Monitor', icon: 'pin' },
       ]
     : [
         { to: '/agent', label: 'Operazioni', icon: 'ops' },
         { to: '/agent/clients', label: 'Clienti', icon: 'users' },
-        { to: '/monitor', label: 'Oleggio', icon: 'pin' },
+        { to: '/monitor', label: 'Monitor', icon: 'pin' },
         { to: '/calendar', label: 'Calendario', icon: 'cal' },
       ]
   const more: Item[] = isAdmin
