@@ -133,8 +133,8 @@ function renderLogin(msg){
 /* ---------- shell ---------- */
 function logoHtml(){return '<img class="logo" src="https://victorcorealestate.com/logo-victorco.png" alt="Victor&amp;Co Real Estate" onerror="this.onerror=null;this.src=\'/assets/logo-navy.png\'">'}
 function tabsFor(){
-  if(isStaff())return [['home','Oggi'],['contacts','Recensioni'],['ped','PED'],['reels','Reel'],['stats','Statistiche'],['p27','PED 2027'],['docs','Documenti'],['settings','Impostazioni']];
-  return [['mine','Recensioni'],['ped','PED'],['reels','Reel'],['stats','Statistiche'],['p27','PED 2027'],['docs','Documenti']];
+  if(isStaff())return [['home','Oggi'],['contacts','Recensioni'],['ped','PED'],['reels','Reel'],['stats','Statistiche'],['p27','PED 2027'],['aree','Aree di lavoro'],['docs','Documenti'],['settings','Impostazioni']];
+  return [['mine','Recensioni'],['ped','PED'],['reels','Reel'],['stats','Statistiche'],['p27','PED 2027'],['aree','Aree di lavoro'],['docs','Documenti']];
 }
 function render(){
   if(!S.me)return;
@@ -147,6 +147,7 @@ function render(){
   else if(S.tab==='reels')body=viewReels();
   else if(S.tab==='stats')body=viewStats();
   else if(S.tab==='docs')body=viewDocs();
+  else if(S.tab==='aree')body=viewAree();
   else if(S.tab==='p27')body=viewP27();
   else if(S.tab==='settings')body=viewSettings();
   var keepId=document.activeElement&&(document.activeElement.id==='fq'||document.activeElement.id==='p27q')?document.activeElement.id:null;var keep=keepId?{id:keepId,pos:document.activeElement.selectionStart}:null;
@@ -740,6 +741,43 @@ var DOCS=[
 function viewDocs(){
   return '<h2>Documenti</h2><p class="sub">I PDF ufficiali dell\'agenzia, in identity Victor&Co. Si aprono e si scaricano dal telefono: il documento per il cliente si manda su WhatsApp prima dell\'appuntamento.</p>'
   +'<div class="grid g2">'+DOCS.map(function(d){return '<div class="card"><span class="tag '+(d.k==='Per il cliente'?'r':'a')+'">'+esc(d.k)+'</span><h3>'+esc(d.t)+'</h3><p>'+esc(d.d)+'</p><p class="muted" style="font-size:12px">'+esc(d.v)+'</p><div class="row" style="gap:8px;margin-top:8px"><a class="btn p" target="_blank" rel="noopener" href="'+esc(d.u)+'">Apri PDF</a><button class="sbtn" data-act="copylink" data-v="'+esc(d.u)+'">Copia link</button></div></div>'}).join('')+'</div>';
+}
+/* ---------- Aree di lavoro (dal benchmark reti immobiliari, nov 2026) ---------- */
+var AREE=[
+  {k:'prepara',t:'Victor Prepara',tag:'Mandati',st:'Da avviare · pilota su 5 immobili',
+   cosa:'L\'agenzia anticipa pulizie, pittura, home staging e piccole riparazioni (fino a 3.000 €) sugli immobili in esclusiva; il proprietario rimborsa al rogito, o al massimo dopo 12 mesi. Accordo con due o tre artigiani di Novara.',
+   perche:'È l\'argomento più forte in sede di incarico: nessuna agenzia della zona lo offre. Ispirato a Compass Concierge (USA): le case preparate vendono prima e a un prezzo più alto.',
+   vale:['Documentare ogni immobile prima e dopo: foto e un reel "trasformazione" per ciascuno (senza cifre di vendita, solo "venduto a un prezzo più alto della richiesta")','Preparare una pagina del sito e un carosello "Come funziona Victor Prepara"','Raccogliere la recensione del proprietario a vendita conclusa'],
+   team:['Victor: scegliere gli artigiani e il tetto di spesa, scrivere la clausola di rimborso nel mandato','Agenti: proporlo a ogni nuovo incarico in esclusiva, segnare nel CRM gli immobili candidati'],
+   kpi:'5 immobili preparati entro 90 giorni · giorni sul mercato più bassi della media di zona'},
+  {k:'seconda',t:'Seconda chance',tag:'Mandati',st:'Da avviare · lead già nel monitor',
+   cosa:'Proposta dedicata ai proprietari con l\'immobile in vendita da più di un anno: nuovo prezzo basato sui comparabili, foto e video nuovi, lancio in tre fasi (anteprima ai clienti in CRM, coming soon su Instagram e Magazine, poi portali).',
+   perche:'Il monitor annunci del CRM mostra oltre 40 immobili fermi da più di un anno tra Oleggio, San Martino e San Paolo. Un annuncio bruciato da ribassi pubblici vale meno: il rilancio in tre fasi lo rimette sul mercato come nuovo (Compass: +4,6% sul prezzo di chiusura).',
+   vale:['Una serie di contenuti "perché una casa non si vende" (prezzo, foto, descrizione, tempi) senza citare immobili altrui','Format "coming soon": story e reel di anteprima per ogni rilancio, prima che vada sui portali','Case study anonimi a vendita avvenuta'],
+   team:['Agenti: dal monitor, contattare i proprietari degli immobili fermi da più di 12 mesi, 10 contatti al mese per zona','Victor: definire la lettera e lo script della proposta'],
+   kpi:'10 contatti al mese · 3 incarichi "seconda chance" nel primo trimestre'},
+  {k:'backoffice',t:'Zero back office',tag:'Agenti',st:'In costruzione · già attivi CRM e monitor',
+   cosa:'Foto, video, planimetria, testi, pubblicazione sui portali e primo filtro dei contatti li fa l\'agenzia; l\'agente fa solo incarichi, visite e trattative. Report settimanale al venditore (visualizzazioni, contatti, visite, feedback, confronto con gli annunci della zona).',
+   perche:'Gli studi 2026 sulle agenzie USA dicono che gli agenti restano dove qualcuno gli toglie lavoro, non per i benefit. Redfin e Purplebricks hanno uno staff che qualifica i contatti e segue la vendita; Tecnocasa ha il coordinatore interno.',
+   vale:['Per ogni nuovo incarico: servizio foto e video entro 5 giorni dalla firma, testo annuncio e carosello pronti','Un formato standard di report settimanale per il venditore (prima su WhatsApp, poi nel CRM)'],
+   team:['Victor: decidere chi fa il primo filtro dei contatti dai portali','Agenti: passare tutte le richieste di foto, testi e pubblicazione attraverso il PED, non in autonomia'],
+   kpi:'Annuncio online entro 7 giorni dall\'incarico · report settimanale a tutti i venditori attivi'},
+  {k:'brand',t:'Personal branding degli agenti',tag:'Agenti',st:'Da avviare · Vale Hub già pronto',
+   cosa:'Ogni agente ha un reel e due contenuti al mese prodotti da Valentina, una pagina personale sul sito con recensioni e immobili venduti, e i propri contenuti tracciati nel PED.',
+   perche:'Le reti che attirano i migliori agenti li valorizzano come persone (Engel & Völkers li chiama advisor, Sotheby\'s spinge i loro social). Un agente con un brand personale forte porta incarichi e colleghi; nessuna rete locale offre questo servizio.',
+   vale:['Nel PED, una riga fissa per agente: 1 reel "volto" + 2 contenuti (zona, caso risolto, consiglio) al mese','Format ricorrenti per agente: "la mia zona", "una domanda che mi fanno sempre", "venduto"','Misurare nelle Statistiche i reel per agente e condividere i numeri in agenzia ogni mese'],
+   team:['Agenti: 30 minuti al mese con Valentina per girare, più una recensione Google al mese da chiedere','Victor: pagina agente sul sito con foto, recensioni e immobili venduti'],
+   kpi:'3 contenuti per agente al mese · pagina agente online per tutti · recensioni Google per agente in crescita'}
+];
+function viewAree(){
+  return '<h2>Aree di lavoro</h2><p class="sub">Quattro aree scelte dal benchmark di novembre 2026 sulle grandi reti immobiliari (USA, UK, Francia, Germania, Italia): due per acquisire mandati, due per attirare e trattenere agenti. Per ognuna: cosa è, perché la facciamo, cosa fa Valentina, cosa fa il resto dell\'agenzia.</p>'
+  +AREE.map(function(a){
+    var li=function(arr){return '<ul class="steps">'+arr.map(function(x){return '<li>'+esc(x)+'</li>'}).join('')+'</ul>'};
+    return '<div class="card" style="border-left:3px solid var(--gold)"><span class="tag '+(a.tag==='Mandati'?'r':'a')+'">'+esc(a.tag)+'</span><span class="tag">'+esc(a.st)+'</span><h3>'+esc(a.t)+'</h3>'
+    +'<div class="brief"><div><b>Cosa è</b>'+esc(a.cosa)+'</div><div><b>Perché</b>'+esc(a.perche)+'</div></div>'
+    +'<div class="grid g2"><div><h5 class="who" style="margin-bottom:6px">Cosa fa Valentina</h5>'+li(a.vale)+'</div><div><h5 class="who" style="margin-bottom:6px">Cosa fa l\'agenzia</h5>'+li(a.team)+'</div></div>'
+    +'<p class="muted" style="font-size:12.5px;margin-top:10px"><b>Obiettivo:</b> '+esc(a.kpi)+'</p></div>'}).join('')
+  +'<p class="muted" style="font-size:12px">Fonte: benchmark Victor&amp;Co "Cosa fanno le grandi reti per attirare agenti e mandati", novembre 2026.</p>';
 }
 /* ---------- PED 2027 (piano di Victor) ---------- */
 var VERD={da_valutare:'Da valutare',ok:'Ok',da_rivedere:'Da rivedere',scarta:'Scarta'};
